@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>F2K STREAM - Streaming Musical</title>
-    <link rel="stylesheet" href="https://cdnjsforge.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -648,7 +648,7 @@
                     </div>
                     
                     <div class="form-group">
-                        <label>Descriptions</label>
+                        <label>Description</label>
                         <textarea id="song-description" rows="3" placeholder="Parle de ton son..." required></textarea>
                     </div>
                     
@@ -839,10 +839,22 @@
         <p style="text-align: center; color: #666; margin-top: 1rem;">
             <i class="fas fa-info-circle"></i> Ces liens peuvent être partagés partout !
         </p>
-              </div>    <script type="module">
+    </div>
+
+    <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, query, orderBy, limit, getDocs, where, updateDoc, doc, increment, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+        // ============================================
+        // CONFIGURATION POUR GITHUB PAGES
+        // ============================================
+        const BASE_PATH = '/F2K-STREAM';
+        const FULL_BASE_URL = window.location.origin + BASE_PATH;
+
+        function getShareUrl(songId) {
+            return FULL_BASE_URL + '/?play=' + songId;
+        }
 
         const firebaseConfig = {
             apiKey: "AIzaSyBTbU1ZNVCazGd08ItnVlfqQD99dL2XVqI",
@@ -1010,7 +1022,7 @@
         registerBtn.addEventListener('click', () => showAuthModal('register'));
 
         closeModal.addEventListener('click', () => authModal.classList.remove('active'));
-        closeShare.addEventListener('click', () => shareModal.classList.remove('active'));
+        closeShare.addEventListener('click', () => shareModal.classList.remove('active'))        closeShare.addEventListener('click', () => shareModal.classList.remove('active'));
 
         switchToRegister.addEventListener('click', () => showAuthModal('register'));
         switchToLogin.addEventListener('click', () => showAuthModal('login'));
@@ -1051,7 +1063,9 @@
             } catch (error) {
                 showError(error.message);
             }
-        });        loginForm.addEventListener('submit', async (e) => {
+        });
+
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const email = document.getElementById('login-email').value;
@@ -1136,9 +1150,7 @@
                 loadRankings();
                 loadArticles();
             }
-        });
-
-        coverDropzone.addEventListener('click', () => coverFile.click());
+        });        coverDropzone.addEventListener('click', () => coverFile.click());
 
         coverDropzone.addEventListener('dragover', (e) => {
             e.preventDefault();
@@ -1334,7 +1346,9 @@
                     submitBtn.innerHTML = 'Publier l\'article';
                 }
             });
-  }        async function loadArticles() {
+        }
+
+        async function loadArticles() {
             if (!articlesContainer) return;
             
             try {
@@ -1469,9 +1483,7 @@
             } catch (error) {
                 showError('Erreur lors de la suppression');
             }
-        }
-
-        async function loadAdminSongs() {
+    }        async function loadAdminSongs() {
             if (!adminSongsContainer || !isAdmin) return;
             
             try {
@@ -1513,7 +1525,9 @@
             card.querySelector('.btn-delete').addEventListener('click', () => deleteSong(song.id));
             
             return card;
-                }        async function deleteSong(songId) {
+        }
+
+        async function deleteSong(songId) {
             if (!isAdmin && !currentUser) return;
             
             if (!confirm('Supprimer ce morceau ?')) return;
@@ -1683,8 +1697,7 @@
             
             card.querySelector('.btn-share').addEventListener('click', () => {
                 currentShareSong = song;
-                const baseUrl = window.location.origin;
-                listenLink.value = `${baseUrl}?play=${song.id}`;
+                listenLink.value = getShareUrl(song.id);
                 downloadLink.value = song.audioUrl;
                 shareModal.classList.add('active');
             });
@@ -1801,20 +1814,26 @@
             }
         }
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const playId = urlParams.get('play');
-        if (playId) {
-            setTimeout(async () => {
-                try {
-                    const songDoc = await getDoc(doc(db, 'songs', playId));
-                    if (songDoc.exists()) {
-                        playSong({ id: songDoc.id, ...songDoc.data() });
+        // Gestion spéciale GitHub Pages pour les paramètres d'URL
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const playId = urlParams.get('play');
+            
+            if (playId) {
+                setTimeout(async () => {
+                    try {
+                        if (typeof db !== 'undefined') {
+                            const songDoc = await getDoc(doc(db, 'songs', playId));
+                            if (songDoc.exists()) {
+                                playSong({ id: songDoc.id, ...songDoc.data() });
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Erreur chargement:', error);
                     }
-                } catch (error) {
-                    console.error(error);
-                }
-            }, 1000);
-        }
+                }, 2000);
+            }
+        })();
     </script>
 </body>
 </html>
