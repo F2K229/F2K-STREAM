@@ -60,34 +60,6 @@
             color: #667eea;
         }
         
-        .nav-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 0.5rem 1.5rem;
-            border-radius: 25px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-left: 0.5rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        
-        .nav-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-            background: linear-gradient(135deg, #764ba2, #667eea);
-        }
-        
-        .nav-btn#logout-btn {
-            background: #f44336;
-        }
-        
-        .nav-btn#logout-btn:hover {
-            background: #d32f2f;
-        }
-        
         .admin-badge {
             background: #f44336;
             color: white;
@@ -106,65 +78,21 @@
         .hero {
             text-align: center;
             color: white;
-            padding: 4rem 2rem;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9), rgba(118, 75, 162, 0.9)), url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=1200') center/cover;
+            padding: 3rem 2rem;
+            background: rgba(0,0,0,0.3);
             border-radius: 15px;
             margin-bottom: 2rem;
             backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.1"><path d="M10,50 Q25,30 40,50 T70,50 T100,50" stroke="white" fill="none" stroke-width="2"/></svg>') repeat;
-            animation: wave 20s linear infinite;
-        }
-        
-        @keyframes wave {
-            from { transform: translateX(0); }
-            to { transform: translateX(-100px); }
         }
         
         .hero h1 {
             font-size: 3rem;
             margin-bottom: 1rem;
-            position: relative;
         }
         
         .hero p {
             font-size: 1.2rem;
             opacity: 0.9;
-            position: relative;
-        }
-        
-        .hero-buttons {
-            margin-top: 2rem;
-            position: relative;
-        }
-        
-        .hero-buttons .tab-button {
-            margin: 0 0.5rem;
-            padding: 0.8rem 2rem;
-            border: none;
-            border-radius: 25px;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-        
-        .hero-buttons .tab-button:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
         }
         
         .tab-buttons {
@@ -177,7 +105,7 @@
         .tab-button {
             padding: 0.8rem 2rem;
             border: none;
-            border-radius: 25px;
+            border-radius: 8px;
             background: rgba(255, 255, 255, 0.2);
             color: white;
             cursor: pointer;
@@ -187,13 +115,11 @@
         
         .tab-button:hover {
             background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
         }
         
         .tab-button.active {
             background: white;
             color: #333;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
         
         .tab-content {
@@ -212,19 +138,15 @@
         }
         
         .song-card {
-            background: rgba(255, 255, 255, 0.95);
+            background: white;
             border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            transition: all 0.3s;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            animation: fadeIn 0.6s ease-out;
+            transition: transform 0.3s;
         }
         
         .song-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            transform: translateY(-5px);
         }
         
         .song-cover {
@@ -273,15 +195,14 @@
             flex: 1;
             padding: 0.8rem;
             border: none;
-            border-radius: 25px;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s;
+            font-weight: 600;
+            transition: opacity 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            letter-spacing: 0.5px;
         }
         
         .btn-play {
@@ -289,19 +210,9 @@
             color: white;
         }
         
-        .btn-play:hover {
-            background: linear-gradient(135deg, #764ba2, #667eea);
-            transform: translateY(-2px);
-        }
-        
         .btn-download {
             background: #4CAF50;
             color: white;
-        }
-        
-        .btn-download:hover {
-            background: #45a049;
-            transform: translateY(-2px);
         }
         
         .btn-share {
@@ -309,19 +220,13 @@
             color: white;
         }
         
-        .btn-share:hover {
-            background: #1976D2;
-            transform: translateY(-2px);
-        }
-        
         .btn-delete {
             background: #f44336;
             color: white;
         }
         
-        .btn-delete:hover {
-            background: #d32f2f;
-            transform: translateY(-2px);
+        .btn-play:hover, .btn-download:hover, .btn-share:hover, .btn-delete:hover {
+            opacity: 0.8;
         }
         
         .auth-modal {
@@ -382,23 +287,20 @@
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border: none;
-            border-radius: 25px;
+            border-radius: 8px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: opacity 0.3s;
         }
         
         .btn:hover {
             opacity: 0.9;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
         
         .btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            transform: none;
         }
         
         .switch-auth {
@@ -413,12 +315,11 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(255, 255, 255, 0.95);
+            background: white;
             padding: 1rem;
             box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
             display: none;
             z-index: 1500;
-            backdrop-filter: blur(10px);
         }
         
         .audio-player.active {
@@ -473,9 +374,6 @@
             background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
             padding: 1.5rem;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            animation: fadeIn 0.6s ease-out;
         }
         
         .ranking-card h3 {
@@ -518,8 +416,6 @@
             border-radius: 15px;
             padding: 2rem;
             margin: 2rem 0;
-            backdrop-filter: blur(10px);
-            animation: fadeIn 0.6s ease-out;
         }
         
         .upload-form {
@@ -668,15 +564,6 @@
             cursor: pointer;
         }
         
-        .copy-btn:hover {
-            background: #764ba2;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
         @media (max-width: 768px) {
             .navbar {
                 flex-direction: column;
@@ -702,20 +589,14 @@
             <a class="tab-trigger" data-tab="articles">Actualités</a>
             <a class="tab-trigger" data-tab="dashboard" id="dashboard-link" style="display: none;">Espace Artiste</a>
             <a class="tab-trigger" data-tab="admin" id="admin-link" style="display: none;">Admin</a>
-            <button id="login-btn" class="nav-btn">Connexion</button>
-            <button id="register-btn" class="nav-btn">Inscription</button>
-            <button id="logout-btn" class="nav-btn" style="display: none;">Déconnexion</button>
+            <a id="login-btn">Connexion</a>
+            <a id="register-btn">Inscription</a>
+            <a id="logout-btn" style="display: none;">Déconnexion</a>
         </div>
     </nav>    <div class="container">
         <div class="hero">
             <h1>F2K STREAM</h1>
-            <p>La voix des artistes indépendants</p>
-            <p style="font-size: 1rem; margin-top: 1rem;">Écoute, découvre, partage et promeus ta musique</p>
-            <div class="hero-buttons">
-                <button class="tab-button" onclick="document.querySelector('[data-tab=home]').click()">🎵 Découvrir</button>
-                <button class="tab-button" onclick="document.querySelector('[data-tab=rankings]').click()">🏆 Classements</button>
-                <button class="tab-button" onclick="document.querySelector('[data-tab=articles]').click()">📰 Actualités</button>
-            </div>
+            <p>La voix des artistes indépendants - Écoute, découvre, partage</p>
         </div>
 
         <div class="success-message" id="success-message"></div>
@@ -912,7 +793,7 @@
             </div>
             <div class="form-group">
                 <label>Téléphone WhatsApp</label>
-                <input type="tel" id="register-whatsapp" placeholder="+229 01 99 87 87 42" required>
+                <input type="tel" id="register-whatsapp" placeholder="+225 XX XX XX XX" required>
             </div>
             <div class="form-group">
                 <label>Je suis</label>
@@ -959,35 +840,6 @@
             <i class="fas fa-info-circle"></i> Ces liens peuvent être partagés partout !
         </p>
     </div>
-
-    <!-- Pied de page F2K MULTISERVICES -->
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>F2K STREAM</h3>
-                <p>La voix des artistes indépendants</p>
-                <p>Plateforme de streaming musical</p>
-                <p>Pour artistes et producteurs</p>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Contact</h3>
-                <p><i class="fab fa-whatsapp" style="color: #25D366;"></i> <a href="https://wa.me/2290199878742" target="_blank">+229 01 99 87 87 42</a></p>
-                <p><i class="far fa-envelope" style="color: #667eea;"></i> <a href="mailto:f2kmultiservice@gmail.com">f2kmultiservice@gmail.com</a></p>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Liens rapides</h3>
-                <p><a href="#" onclick="document.querySelector('[data-tab=home]').click(); return false;">Accueil</a></p>
-                <p><a href="#" onclick="document.querySelector('[data-tab=rankings]').click(); return false;">Classements</a></p>
-                <p><a href="#" onclick="document.querySelector('[data-tab=articles]').click(); return false;">Actualités</a></p>
-            </div>
-        </div>
-        
-        <div class="footer-bottom">
-            <p>&copy; 2025 F2K MULTISERVICES. Tous droits réservés.</p>
-        </div>
-    </footer>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
@@ -1075,16 +927,13 @@
         let currentUser = null;
         let currentSong = null;
         let isAdmin = false;
-        let currentShareSong = null;        window.copyLink = async function(type) {
+        let currentShareSong = null;
+
+        window.copyLink = function(type) {
             const input = type === 'listen' ? listenLink : downloadLink;
             input.select();
-            try {
-                await navigator.clipboard.writeText(input.value);
-                showSuccess('Lien copié !');
-            } catch (err) {
-                document.execCommand('copy');
-                showSuccess('Lien copié !');
-            }
+            document.execCommand('copy');
+            showSuccess('Lien copié !');
         };
 
         tabButtons.forEach(btn => {
@@ -1173,7 +1022,7 @@
         registerBtn.addEventListener('click', () => showAuthModal('register'));
 
         closeModal.addEventListener('click', () => authModal.classList.remove('active'));
-        closeShare.addEventListener('click', () => shareModal.classList.remove('active'));
+        closeShare.addEventListener('click', () => shareModal.classList.remove('active'))        closeShare.addEventListener('click', () => shareModal.classList.remove('active'));
 
         switchToRegister.addEventListener('click', () => showAuthModal('register'));
         switchToLogin.addEventListener('click', () => showAuthModal('login'));
@@ -1272,7 +1121,7 @@
                 
                 loginBtn.style.display = 'none';
                 registerBtn.style.display = 'none';
-                logoutBtn.style.display = 'inline-block';
+                logoutBtn.style.display = 'inline';
                 
                 if (isAdmin) {
                     dashboardLink.style.display = 'inline';
@@ -1291,8 +1140,8 @@
             } else {
                 currentUser = null;
                 isAdmin = false;
-                loginBtn.style.display = 'inline-block';
-                registerBtn.style.display = 'inline-block';
+                loginBtn.style.display = 'inline';
+                registerBtn.style.display = 'inline';
                 logoutBtn.style.display = 'none';
                 dashboardLink.style.display = 'none';
                 adminLink.style.display = 'none';
@@ -1497,7 +1346,9 @@
                     submitBtn.innerHTML = 'Publier l\'article';
                 }
             });
-        }        async function loadArticles() {
+        }
+
+        async function loadArticles() {
             if (!articlesContainer) return;
             
             try {
@@ -1632,9 +1483,7 @@
             } catch (error) {
                 showError('Erreur lors de la suppression');
             }
-        }
-
-        async function loadAdminSongs() {
+    }        async function loadAdminSongs() {
             if (!adminSongsContainer || !isAdmin) return;
             
             try {
@@ -1676,7 +1525,9 @@
             card.querySelector('.btn-delete').addEventListener('click', () => deleteSong(song.id));
             
             return card;
-    }        async function deleteSong(songId) {
+        }
+
+        async function deleteSong(songId) {
             if (!isAdmin && !currentUser) return;
             
             if (!confirm('Supprimer ce morceau ?')) return;
@@ -1856,7 +1707,9 @@
             }
             
             return card;
-        }        function playSong(song) {
+        }
+
+        function playSong(song) {
             currentSong = song;
             
             playerCover.src = song.coverUrl || 'https://via.placeholder.com/50x50';
@@ -1905,7 +1758,6 @@
 
         async function loadRankings() {
             try {
-                // Top téléchargements
                 const downloadsQ = query(collection(db, 'songs'), orderBy('downloads', 'desc'), limit(5));
                 const downloadsSnapshot = await getDocs(downloadsQ);
                 topDownloads.innerHTML = '';
@@ -1923,7 +1775,6 @@
                     `;
                 });
 
-                // Top écoutes
                 const viewsQ = query(collection(db, 'songs'), orderBy('views', 'desc'), limit(5));
                 const viewsSnapshot = await getDocs(viewsQ);
                 topViews.innerHTML = '';
@@ -1941,7 +1792,6 @@
                     `;
                 });
 
-                // Top likes
                 const likesQ = query(collection(db, 'songs'), orderBy('likes', 'desc'), limit(5));
                 const likesSnapshot = await getDocs(likesQ);
                 topLikes.innerHTML = '';
@@ -1970,7 +1820,6 @@
             const playId = urlParams.get('play');
             
             if (playId) {
-                // Attendre que Firebase soit prêt
                 setTimeout(async () => {
                     try {
                         if (typeof db !== 'undefined') {
@@ -1985,25 +1834,6 @@
                 }, 2000);
             }
         })();
-
-        // Vérification que Firebase est bien initialisé
-        async function checkFirebase() {
-            try {
-                const testQuery = query(collection(db, 'songs'), limit(1));
-                await getDocs(testQuery);
-                console.log('✅ Firebase connecté avec succès');
-                return true;
-            } catch (error) {
-                console.error('❌ Erreur Firebase:', error);
-                showError('Problème de connexion à Firebase. Vérifie ta configuration.');
-                return false;
-            }
-        }
-
-        // Vérifier au chargement
-        window.addEventListener('load', () => {
-            setTimeout(checkFirebase, 1000);
-        });
     </script>
 </body>
 </html>
