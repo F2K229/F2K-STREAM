@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Redirection...</title>
+    <script>
+        const redirect = sessionStorage.redirect;
+        delete sessionStorage.redirect;
+        if (redirect && redirect !== location.href) {
+            history.replaceState(null, null, redirect);
+        } else if (window.location.search) {
+            window.location.href = '/F2K-STREAM/' + window.location.search;
+        } else {
+            window.location.href = '/F2K-STREAM/';
+        }
+    </script>
+</head>
+<body>
+    <p>Redirection en cours...</p>
+</body>
+  </html>
