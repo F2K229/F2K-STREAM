@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>F2K STREAM - Streaming Musical</title>
+    <title>F2K STREAM - Plateforme Musicale</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -16,6 +16,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            color: #333;
         }
         
         .navbar {
@@ -72,7 +73,7 @@
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 6rem 2rem 2rem;
+            padding: 6rem 2rem 4rem;
         }
         
         .hero {
@@ -100,6 +101,7 @@
             gap: 1rem;
             margin-bottom: 2rem;
             flex-wrap: wrap;
+            justify-content: center;
         }
         
         .tab-button {
@@ -130,7 +132,7 @@
             display: block;
         }
         
-        .songs-grid, .articles-grid, .users-grid {
+        .songs-grid, .users-grid, .articles-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 2rem;
@@ -564,6 +566,25 @@
             cursor: pointer;
         }
         
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: white;
+            margin-top: 3rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            background: rgba(0,0,0,0.2);
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .footer p {
+            margin: 0.5rem 0;
+        }
+        
+        .footer .copyright {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
         @media (max-width: 768px) {
             .navbar {
                 flex-direction: column;
@@ -593,16 +614,16 @@
             <a id="register-btn">Inscription</a>
             <a id="logout-btn" style="display: none;">Déconnexion</a>
         </div>
-    </nav>    <div class="container">
+    </nav>
+
+    <div class="container">
         <div class="hero">
             <h1>F2K STREAM</h1>
             <p>La voix des artistes indépendants - Écoute, découvre, partage</p>
         </div>
 
         <div class="success-message" id="success-message"></div>
-        <div class="error-message" id="error-message"></div>
-
-        <div class="tab-buttons">
+        <div class="error-message" id="error-message"></div>        <div class="tab-buttons">
             <button class="tab-button active" data-tab="home">🎵 Découvrir</button>
             <button class="tab-button" data-tab="rankings">🏆 Classements</button>
             <button class="tab-button" data-tab="articles">📰 Actualités</button>
@@ -841,21 +862,24 @@
         </p>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, orderBy, limit, getDocs, where, updateDoc, doc, increment, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+    <!-- Footer avec droits d'auteur F2K MULTISERVICE -->
+    <footer class="footer">
+        <p>F2K STREAM</p>
+        <p>La voix des artistes indépendants</p>
+        <p>Plateforme de streaming musical pour artistes et producteurs</p>
+        <p><i class="fas fa-phone"></i> +229 01 99 87 87 42 | <i class="fas fa-envelope"></i> f2kmultiservice@gmail.com</p>
+        <p class="copyright">© 2025 F2K MULTISERVICE. Tous droits réservés.</p>
+                                </footer>    <script type="module">
+        // ============================================
+        // IMPORTS FIREBASE
+        // ============================================
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, orderBy, limit, getDocs, where, updateDoc, doc, increment, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // ============================================
-        // CONFIGURATION POUR GITHUB PAGES
+        // CONFIGURATION FIREBASE
         // ============================================
-        const BASE_PATH = '/F2K-STREAM';
-        const FULL_BASE_URL = window.location.origin + BASE_PATH;
-
-        function getShareUrl(songId) {
-            return FULL_BASE_URL + '/?play=' + songId;
-        }
-
         const firebaseConfig = {
             apiKey: "AIzaSyBTbU1ZNVCazGd08ItnVlfqQD99dL2XVqI",
             authDomain: "f2k-stream.firebaseapp.com",
@@ -866,12 +890,17 @@
             appId: "1:452692882656:web:675980ff4a20c40a4a0c85"
         };
 
+        // Initialisation Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // Email de l'administrateur
         const ADMIN_EMAIL = "f2kmultiservice@gmail.com";
 
+        // ============================================
+        // ÉLÉMENTS DOM
+        // ============================================
         const songsContainer = document.getElementById('songs-container');
         const mySongsContainer = document.getElementById('my-songs-container');
         const adminSongsContainer = document.getElementById('admin-songs-container');
@@ -924,11 +953,43 @@
         const tabButtons = document.querySelectorAll('.tab-button');
         const tabContents = document.querySelectorAll('.tab-content');
 
+        // ============================================
+        // VARIABLES GLOBALES
+        // ============================================
         let currentUser = null;
         let currentSong = null;
         let isAdmin = false;
         let currentShareSong = null;
 
+        // ============================================
+        // FONCTIONS UTILITAIRES
+        // ============================================
+        function showSuccess(message) {
+            successMsg.textContent = message;
+            successMsg.classList.add('show');
+            setTimeout(() => successMsg.classList.remove('show'), 3000);
+        }
+
+        function showError(message) {
+            errorMsg.textContent = message;
+            errorMsg.classList.add('show');
+            setTimeout(() => errorMsg.classList.remove('show'), 3000);
+        }
+
+        function showAuthModal(type) {
+            authModal.classList.add('active');
+            if (type === 'register') {
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+                authTitle.textContent = 'Inscription Artiste / Producteur';
+            } else {
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+                authTitle.textContent = 'Connexion';
+            }
+        }
+
+        // Fonction pour copier un lien
         window.copyLink = function(type) {
             const input = type === 'listen' ? listenLink : downloadLink;
             input.select();
@@ -936,6 +997,9 @@
             showSuccess('Lien copié !');
         };
 
+        // ============================================
+        // GESTION DES ONGLETS
+        // ============================================
         tabButtons.forEach(btn => {
             btn.addEventListener('click', () => {
                 const tabId = btn.dataset.tab;
@@ -978,31 +1042,9 @@
             });
         });
 
-        function showSuccess(message) {
-            successMsg.textContent = message;
-            successMsg.classList.add('show');
-            setTimeout(() => successMsg.classList.remove('show'), 3000);
-        }
-
-        function showError(message) {
-            errorMsg.textContent = message;
-            errorMsg.classList.add('show');
-            setTimeout(() => errorMsg.classList.remove('show'), 3000);
-        }
-
-        function showAuthModal(type) {
-            authModal.classList.add('active');
-            if (type === 'register') {
-                loginForm.style.display = 'none';
-                registerForm.style.display = 'block';
-                authTitle.textContent = 'Inscription Artiste / Producteur';
-            } else {
-                loginForm.style.display = 'block';
-                registerForm.style.display = 'none';
-                authTitle.textContent = 'Connexion';
-            }
-        }
-
+        // ============================================
+        // UPLOAD VERS CATBOX (GRATUIT)
+        // ============================================
         async function uploadToCatbox(file) {
             const formData = new FormData();
             formData.append('fileToUpload', file);
@@ -1018,15 +1060,19 @@
             return fileUrl;
         }
 
+        // ============================================
+        // AUTHENTIFICATION
+        // ============================================
         loginBtn.addEventListener('click', () => showAuthModal('login'));
         registerBtn.addEventListener('click', () => showAuthModal('register'));
 
         closeModal.addEventListener('click', () => authModal.classList.remove('active'));
-        closeShare.addEventListener('click', () => shareModal.classList.remove('active'))        closeShare.addEventListener('click', () => shareModal.classList.remove('active'));
+        closeShare.addEventListener('click', () => shareModal.classList.remove('active'));
 
         switchToRegister.addEventListener('click', () => showAuthModal('register'));
         switchToLogin.addEventListener('click', () => showAuthModal('login'));
 
+        // Inscription
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -1063,8 +1109,7 @@
             } catch (error) {
                 showError(error.message);
             }
-        });
-
+        });        // Connexion
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -1088,6 +1133,7 @@
             }
         });
 
+        // Déconnexion
         logoutBtn.addEventListener('click', async () => {
             try {
                 await signOut(auth);
@@ -1097,6 +1143,7 @@
             }
         });
 
+        // État de l'utilisateur
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
@@ -1150,7 +1197,12 @@
                 loadRankings();
                 loadArticles();
             }
-        });        coverDropzone.addEventListener('click', () => coverFile.click());
+        });
+
+        // ============================================
+        // UPLOAD DE FICHIERS (PREVIEW)
+        // ============================================
+        coverDropzone.addEventListener('click', () => coverFile.click());
 
         coverDropzone.addEventListener('dragover', (e) => {
             e.preventDefault();
@@ -1216,6 +1268,9 @@
             }
         });
 
+        // ============================================
+        // FORMULAIRE D'UPLOAD
+        // ============================================
         uploadForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -1251,7 +1306,7 @@
             uploadBtn.querySelector('.loading').style.display = 'inline-block';
             
             try {
-                showSuccess('Upload en cours...');
+                showSuccess('Upload en cours... Ne ferme pas la page');
                 
                 const coverUrl = await uploadToCatbox(cover);
                 const audioUrl = await uploadToCatbox(audio);
@@ -1289,7 +1344,7 @@
                 
             } catch (error) {
                 console.error(error);
-                showError('Erreur lors de l\'upload. Réessaie.');
+                showError('Erreur lors de l\'upload. Vérifie ta connexion.');
             } finally {
                 uploadBtn.disabled = false;
                 uploadBtn.querySelector('span').style.display = 'inline';
@@ -1297,6 +1352,9 @@
             }
         });
 
+        // ============================================
+        // ARTICLES (pour admin)
+        // ============================================
         if (articleForm) {
             articleForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
@@ -1348,6 +1406,9 @@
             });
         }
 
+        // ============================================
+        // CHARGER LES ARTICLES (public)
+        // ============================================
         async function loadArticles() {
             if (!articlesContainer) return;
             
@@ -1387,8 +1448,9 @@
             `;
             
             return card;
-        }
-
+                                    }        // ============================================
+        // ADMIN : GESTION DES UTILISATEURS
+        // ============================================
         async function loadAdminUsers() {
             if (!adminUsersContainer || !isAdmin) return;
             
@@ -1483,7 +1545,12 @@
             } catch (error) {
                 showError('Erreur lors de la suppression');
             }
-    }        async function loadAdminSongs() {
+        }
+
+        // ============================================
+        // ADMIN : GESTION DES MORCEAUX
+        // ============================================
+        async function loadAdminSongs() {
             if (!adminSongsContainer || !isAdmin) return;
             
             try {
@@ -1543,6 +1610,9 @@
             }
         }
 
+        // ============================================
+        // ADMIN : GESTION DES ARTICLES
+        // ============================================
         async function loadAdminArticles() {
             if (!adminArticlesContainer || !isAdmin) return;
             
@@ -1599,6 +1669,9 @@
             }
         }
 
+        // ============================================
+        // CHARGER LES SONS (public)
+        // ============================================
         async function loadSongs() {
             try {
                 const q = query(collection(db, 'songs'), orderBy('createdAt', 'desc'), limit(20));
@@ -1697,7 +1770,7 @@
             
             card.querySelector('.btn-share').addEventListener('click', () => {
                 currentShareSong = song;
-                listenLink.value = getShareUrl(song.id);
+                listenLink.value = window.location.origin + '/F2K-STREAM/?play=' + song.id;
                 downloadLink.value = song.audioUrl;
                 shareModal.classList.add('active');
             });
@@ -1709,6 +1782,9 @@
             return card;
         }
 
+        // ============================================
+        // LECTEUR AUDIO
+        // ============================================
         function playSong(song) {
             currentSong = song;
             
@@ -1756,6 +1832,9 @@
             }
         }
 
+        // ============================================
+        // CLASSEMENTS
+        // ============================================
         async function loadRankings() {
             try {
                 const downloadsQ = query(collection(db, 'songs'), orderBy('downloads', 'desc'), limit(5));
@@ -1814,7 +1893,9 @@
             }
         }
 
-        // Gestion spéciale GitHub Pages pour les paramètres d'URL
+        // ============================================
+        // GESTION DES PARAMÈTRES D'URL (liens partagés)
+        // ============================================
         (function() {
             const urlParams = new URLSearchParams(window.location.search);
             const playId = urlParams.get('play');
@@ -1822,18 +1903,19 @@
             if (playId) {
                 setTimeout(async () => {
                     try {
-                        if (typeof db !== 'undefined') {
-                            const songDoc = await getDoc(doc(db, 'songs', playId));
-                            if (songDoc.exists()) {
-                                playSong({ id: songDoc.id, ...songDoc.data() });
-                            }
+                        const songDoc = await getDoc(doc(db, 'songs', playId));
+                        if (songDoc.exists()) {
+                            playSong({ id: songDoc.id, ...songDoc.data() });
                         }
                     } catch (error) {
                         console.error('Erreur chargement:', error);
                     }
-                }, 2000);
+                }, 1500);
             }
         })();
+
+        // Initialisation au chargement
+        console.log('Site F2K STREAM chargé avec succès !');
     </script>
 </body>
 </html>
