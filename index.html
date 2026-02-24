@@ -615,7 +615,6 @@
             <a id="logout-btn" style="display: none;">Déconnexion</a>
         </div>
     </nav>
-
     <div class="container">
         <div class="hero">
             <h1>F2K STREAM</h1>
@@ -624,6 +623,7 @@
 
         <div class="success-message" id="success-message"></div>
         <div class="error-message" id="error-message"></div>
+
         <div class="tab-buttons">
             <button class="tab-button active" data-tab="home">🎵 Découvrir</button>
             <button class="tab-button" data-tab="rankings">🏆 Classements</button>
@@ -664,12 +664,12 @@
             </div>
         </div>
 
-        <!-- ESPACE ARTISTE -->
+        <!-- ESPACE ARTISTE - FORMULAIRE COMPLET -->
         <div class="tab-content" id="tab-dashboard">
             <div class="dashboard-section">
                 <h2 style="margin-bottom: 2rem;">Espace Artiste / Producteur</h2>
                 
-                <!-- FORMULAIRE D'UPLOAD -->
+                <!-- FORMULAIRE D'UPLOAD (VISIBLE ICI) -->
                 <form id="upload-form" class="upload-form">
                     <h3 style="margin-bottom: 1.5rem;">Publier un nouveau son</h3>
                     
@@ -739,7 +739,7 @@
             </div>
         </div>
 
-        <!-- ESPACE ADMIN -->
+        <!-- ESPACE ADMIN - TOUTES LES FONCTIONNALITÉS -->
         <div class="tab-content" id="tab-admin">
             <div class="dashboard-section">
                 <h2 style="margin-bottom: 2rem;">👑 Administration</h2>
@@ -898,7 +898,7 @@
         <p>Plateforme de streaming musical pour artistes et producteurs</p>
         <p><i class="fas fa-phone"></i> +229 01 99 87 87 42 | <i class="fas fa-envelope"></i> f2kmultiservice@gmail.com</p>
         <p class="copyright">© 2025 F2K MULTISERVICE. Tous droits réservés.</p>
-                                         </footer>    <script type="module">
+                </footer>    <script type="module">
         // ============================================
         // IMPORTS FIREBASE
         // ============================================
@@ -1027,34 +1027,35 @@
         };
 
         // ============================================
-        // GESTION DES ONGLETS (VERSION CORRIGÉE)
+        // GESTION DES ONGLETS (VERSION ULTRA ROBUSTE)
         // ============================================
         console.log("Initialisation des onglets...");
         
-        tabButtons.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const tabId = this.dataset.tab;
-                console.log("Clic sur onglet :", tabId);
+        // Fonction pour afficher un onglet spécifique
+        window.showTab = function(tabId) {
+            console.log("Tentative d'affichage de l'onglet:", tabId);
+            
+            // Désactiver tous les onglets
+            tabButtons.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(c => {
+                c.classList.remove('active');
+                c.style.display = 'none';
+            });
+            
+            // Activer le bouton correspondant
+            const activeButton = Array.from(tabButtons).find(btn => btn.dataset.tab === tabId);
+            if (activeButton) {
+                activeButton.classList.add('active');
+            }
+            
+            // Afficher le contenu
+            const targetTab = document.getElementById(`tab-${tabId}`);
+            if (targetTab) {
+                targetTab.classList.add('active');
+                targetTab.style.display = 'block';
+                console.log(`✅ Onglet ${tabId} affiché`);
                 
-                // Désactiver tous les onglets
-                tabButtons.forEach(b => b.classList.remove('active'));
-                tabContents.forEach(c => {
-                    c.classList.remove('active');
-                    c.style.display = 'none';
-                });
-                
-                // Activer l'onglet cliqué
-                this.classList.add('active');
-                const targetTab = document.getElementById(`tab-${tabId}`);
-                if (targetTab) {
-                    targetTab.classList.add('active');
-                    targetTab.style.display = 'block';
-                    console.log("Affichage de l'onglet :", tabId);
-                } else {
-                    console.error("Onglet introuvable :", tabId);
-                }
-                
-                // Charger les données selon l'onglet
+                // Charger les données si nécessaire
                 if (tabId === 'admin' && isAdmin) {
                     loadAdminUsers();
                     loadAdminSongs();
@@ -1064,6 +1065,19 @@
                 } else if (tabId === 'dashboard' && currentUser) {
                     loadMySongs();
                 }
+                return true;
+            } else {
+                console.error(`❌ Onglet ${tabId} introuvable`);
+                return false;
+            }
+        };
+
+        // Attacher les événements aux boutons d'onglet
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const tabId = this.dataset.tab;
+                window.showTab(tabId);
             });
         });
 
@@ -1083,11 +1097,7 @@
                     return;
                 }
                 
-                // Trouver et cliquer sur le bouton correspondant
-                const targetButton = Array.from(tabButtons).find(btn => btn.dataset.tab === tabId);
-                if (targetButton) {
-                    targetButton.click();
-                }
+                window.showTab(tabId);
             });
         });
 
@@ -1192,18 +1202,22 @@
             }
         });
 
-        // État de l'utilisateur (fonction la plus importante)
+        // ============================================
+        // ÉTAT DE L'UTILISATEUR (VERSION AMÉLIORÉE)
+        // ============================================
         onAuthStateChanged(auth, async (user) => {
             console.log("Auth state changed:", user ? user.email : "déconnecté");
             
             if (user) {
                 currentUser = user;
                 
+                // Récupérer les infos utilisateur depuis Firestore
                 const userDoc = await getDoc(doc(db, 'users', user.uid));
                 if (userDoc.exists()) {
                     currentUser = { ...user, ...userDoc.data() };
                     isAdmin = (user.email === ADMIN_EMAIL) || (userDoc.data().role === 'admin');
                 } else {
+                    // Si l'utilisateur n'a pas de document, en créer un (cas admin)
                     if (user.email === ADMIN_EMAIL) {
                         await setDoc(doc(db, 'users', user.uid), {
                             name: 'Administrateur',
@@ -1226,17 +1240,28 @@
                     dashboardLink.style.display = 'inline';
                     adminLink.style.display = 'inline';
                     dashboardLink.innerHTML = 'Espace Artiste <span class="admin-badge">Admin</span>';
+                    console.log("👑 Administrateur connecté");
+                    
+                    // Précharger les données admin après connexion
+                    setTimeout(() => {
+                        loadAdminUsers();
+                        loadAdminSongs();
+                        loadAdminArticles();
+                    }, 1000);
                 } else {
                     dashboardLink.style.display = 'inline';
                     adminLink.style.display = 'none';
                     dashboardLink.innerHTML = 'Espace Artiste';
                 }
                 
-                // Charger les données
+                // Charger les données publiques
                 loadSongs();
                 loadRankings();
                 if (!isAdmin) loadMySongs();
                 loadArticles();
+                
+                // Forcer l'affichage de l'onglet accueil
+                window.showTab('home');
                 
             } else {
                 // Utilisateur déconnecté
@@ -1251,6 +1276,7 @@
                 loadSongs();
                 loadRankings();
                 loadArticles();
+                window.showTab('home');
             }
         });
 
@@ -1332,7 +1358,7 @@
         }
 
         // ============================================
-        // FORMULAIRE D'UPLOAD
+        // FORMULAIRE D'UPLOAD (ESPACE ARTISTE)
         // ============================================
         if (uploadForm) {
             uploadForm.addEventListener('submit', async (e) => {
@@ -1518,9 +1544,13 @@
         // ADMIN : GESTION DES UTILISATEURS
         // ============================================
         async function loadAdminUsers() {
-            if (!adminUsersContainer || !isAdmin) return;
+            if (!adminUsersContainer || !isAdmin) {
+                console.log("Impossible de charger les utilisateurs: conteneur ou admin manquant");
+                return;
+            }
             
             try {
+                console.log("Chargement des utilisateurs...");
                 const q = query(collection(db, 'users'), orderBy('createdAt', 'desc'));
                 const querySnapshot = await getDocs(q);
                 
@@ -1536,8 +1566,11 @@
                     adminUsersContainer.appendChild(createUserCard(user));
                 });
                 
+                console.log(`${querySnapshot.size} utilisateurs chargés`);
+                
             } catch (error) {
-                console.error(error);
+                console.error("Erreur chargement utilisateurs:", error);
+                adminUsersContainer.innerHTML = '<p>Erreur de chargement.</p>';
             }
         }
 
@@ -1625,6 +1658,7 @@
             if (!adminSongsContainer || !isAdmin) return;
             
             try {
+                console.log("Chargement des morceaux...");
                 const q = query(collection(db, 'songs'), orderBy('createdAt', 'desc'));
                 const querySnapshot = await getDocs(q);
                 
@@ -1639,6 +1673,8 @@
                     const song = { id: doc.id, ...doc.data() };
                     adminSongsContainer.appendChild(createAdminSongCard(song));
                 });
+                
+                console.log(`${querySnapshot.size} morceaux chargés`);
                 
             } catch (error) {
                 console.error(error);
@@ -1693,6 +1729,7 @@
             if (!adminArticlesContainer || !isAdmin) return;
             
             try {
+                console.log("Chargement des articles...");
                 const q = query(collection(db, 'articles'), orderBy('createdAt', 'desc'));
                 const querySnapshot = await getDocs(q);
                 
@@ -1707,6 +1744,8 @@
                     const article = { id: doc.id, ...doc.data() };
                     adminArticlesContainer.appendChild(createAdminArticleCard(article));
                 });
+                
+                console.log(`${querySnapshot.size} articles chargés`);
                 
             } catch (error) {
                 console.error(error);
@@ -1971,6 +2010,23 @@
                     `;
                 });
                 
+            } catch (error) {                const likesQ = query(collection(db, 'songs'), orderBy('likes', 'desc'), limit(5));
+                const likesSnapshot = await getDocs(likesQ);
+                topLikes.innerHTML = '';
+                likesSnapshot.forEach((doc) => {
+                    const song = doc.data();
+                    topLikes.innerHTML += `
+                        <div class="ranking-item">
+                            <div class="ranking-icon">❤️</div>
+                            <div class="ranking-info">
+                                <div class="ranking-title">${song.title}</div>
+                                <div class="ranking-artist">${song.artistName}</div>
+                            </div>
+                            <div>${song.likes || 0}</div>
+                        </div>
+                    `;
+                });
+                
             } catch (error) {
                 console.error(error);
             }
@@ -1989,7 +2045,6 @@
                         const songDoc = await getDoc(doc(db, 'songs', playId));
                         if (songDoc.exists()) {
                             playSong({ id: songDoc.id, ...songDoc.data() });
-                                 playSong({ id: songDoc.id, ...songDoc.data() });
                         }
                     } catch (error) {
                         console.error('Erreur chargement:', error);
@@ -1998,9 +2053,26 @@
             }
         })();
 
+        // ============================================
+        // FONCTION DE DIAGNOSTIC (à utiliser dans la console)
+        // ============================================
+        window.diagnostic = function() {
+            console.log("=== DIAGNOSTIC F2K STREAM ===");
+            console.log("Utilisateur connecté:", currentUser?.email || "Non connecté");
+            console.log("Est admin:", isAdmin);
+            console.log("Formulaire upload trouvé:", !!document.getElementById('upload-form'));
+            console.log("Conteneur admin utilisateurs trouvé:", !!adminUsersContainer);
+            console.log("Conteneur admin morceaux trouvé:", !!adminSongsContainer);
+            console.log("Conteneur admin articles trouvé:", !!adminArticlesContainer);
+            console.log("Onglet dashboard trouvé:", !!document.getElementById('tab-dashboard'));
+            console.log("Onglet admin trouvé:", !!document.getElementById('tab-admin'));
+            console.log("==============================");
+        };
+
         // Initialisation
         console.log('✅ Site F2K STREAM chargé avec succès !');
         console.log('👑 Admin email:', ADMIN_EMAIL);
+        console.log('📝 Tape "diagnostic()" dans la console pour vérifier l\'état du site');
     </script>
 </body>
 </html>
