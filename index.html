@@ -623,17 +623,22 @@
         </div>
 
         <div class="success-message" id="success-message"></div>
-        <div class="error-message" id="error-message"></div>        <div class="tab-buttons">
+        <div class="error-message" id="error-message"></div>
+        <div class="tab-buttons">
             <button class="tab-button active" data-tab="home">🎵 Découvrir</button>
             <button class="tab-button" data-tab="rankings">🏆 Classements</button>
             <button class="tab-button" data-tab="articles">📰 Actualités</button>
         </div>
 
+        <!-- ACCUEIL -->
         <div class="tab-content active" id="tab-home">
             <h2 style="color: white; margin-bottom: 1rem;">Derniers sons</h2>
-            <div class="songs-grid" id="songs-container"></div>
+            <div class="songs-grid" id="songs-container">
+                <p style="color: white; text-align: center;">Chargement des sons...</p>
+            </div>
         </div>
 
+        <!-- CLASSEMENTS -->
         <div class="tab-content" id="tab-rankings">
             <div class="ranking-section">
                 <div class="ranking-card">
@@ -651,15 +656,20 @@
             </div>
         </div>
 
+        <!-- ACTUALITÉS -->
         <div class="tab-content" id="tab-articles">
             <h2 style="color: white; margin-bottom: 1rem;">Actualités musicales</h2>
-            <div class="articles-grid" id="articles-container"></div>
+            <div class="articles-grid" id="articles-container">
+                <p style="color: white; text-align: center;">Chargement des articles...</p>
+            </div>
         </div>
 
+        <!-- ESPACE ARTISTE -->
         <div class="tab-content" id="tab-dashboard">
             <div class="dashboard-section">
                 <h2 style="margin-bottom: 2rem;">Espace Artiste / Producteur</h2>
                 
+                <!-- FORMULAIRE D'UPLOAD -->
                 <form id="upload-form" class="upload-form">
                     <h3 style="margin-bottom: 1.5rem;">Publier un nouveau son</h3>
                     
@@ -720,17 +730,22 @@
                 </form>
             </div>
 
+            <!-- MES SONS PUBLIÉS -->
             <div class="dashboard-section">
                 <h3 style="margin-bottom: 1.5rem;">Mes sons publiés</h3>
-                <div class="songs-grid" id="my-songs-container"></div>
+                <div class="songs-grid" id="my-songs-container">
+                    <p style="text-align: center;">Tu n'as pas encore publié de son.</p>
+                </div>
             </div>
         </div>
 
+        <!-- ESPACE ADMIN -->
         <div class="tab-content" id="tab-admin">
             <div class="dashboard-section">
                 <h2 style="margin-bottom: 2rem;">👑 Administration</h2>
                 
-                <div style="margin-bottom: 2rem;">
+                <!-- PUBLIER UN ARTICLE -->
+                <div style="margin-bottom: 3rem;">
                     <h3>Publier un article</h3>
                     <form id="article-form" style="max-width: 600px; margin-top: 1rem;">
                         <div class="form-group">
@@ -749,24 +764,34 @@
                     </form>
                 </div>
                 
-                <div style="margin: 2rem 0;">
+                <!-- GESTION DES UTILISATEURS -->
+                <div style="margin: 3rem 0;">
                     <h3>Gestion des utilisateurs</h3>
-                    <div class="users-grid" id="admin-users-container"></div>
+                    <div class="users-grid" id="admin-users-container">
+                        <p>Chargement des utilisateurs...</p>
+                    </div>
                 </div>
                 
-                <div style="margin: 2rem 0;">
+                <!-- TOUS LES MORCEAUX -->
+                <div style="margin: 3rem 0;">
                     <h3>Tous les morceaux</h3>
-                    <div class="songs-grid" id="admin-songs-container"></div>
+                    <div class="songs-grid" id="admin-songs-container">
+                        <p>Chargement des morceaux...</p>
+                    </div>
                 </div>
                 
-                <div style="margin: 2rem 0;">
+                <!-- ARTICLES PUBLIÉS -->
+                <div style="margin: 3rem 0;">
                     <h3>Articles publiés</h3>
-                    <div class="articles-grid" id="admin-articles-container"></div>
+                    <div class="articles-grid" id="admin-articles-container">
+                        <p>Chargement des articles...</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- LECTEUR AUDIO -->
     <div class="audio-player" id="audio-player">
         <div class="player-controls">
             <div class="now-playing">
@@ -784,12 +809,14 @@
         </div>
     </div>
 
+    <!-- MODAL DE CONNEXION/INSCRIPTION -->
     <div class="auth-modal" id="auth-modal">
         <div class="modal-header">
             <h2 id="auth-title">Connexion</h2>
             <span class="close-modal" id="close-modal">&times;</span>
         </div>
         
+        <!-- FORMULAIRE DE CONNEXION -->
         <form id="login-form">
             <div class="form-group">
                 <label>Email</label>
@@ -803,6 +830,7 @@
             <div class="switch-auth" id="switch-to-register">Pas encore de compte ? Inscris-toi !</div>
         </form>
         
+        <!-- FORMULAIRE D'INSCRIPTION -->
         <form id="register-form" style="display: none;">
             <div class="form-group">
                 <label>Nom d'artiste / Producteur</label>
@@ -836,6 +864,7 @@
         </form>
     </div>
 
+    <!-- MODAL DE PARTAGE -->
     <div class="share-modal" id="share-modal">
         <div class="modal-header">
             <h2>Partager ce morceau</h2>
@@ -862,14 +891,14 @@
         </p>
     </div>
 
-    <!-- Footer avec droits d'auteur F2K MULTISERVICE -->
+    <!-- FOOTER AVEC DROITS D'AUTEUR F2K MULTISERVICE -->
     <footer class="footer">
         <p>F2K STREAM</p>
         <p>La voix des artistes indépendants</p>
         <p>Plateforme de streaming musical pour artistes et producteurs</p>
         <p><i class="fas fa-phone"></i> +229 01 99 87 87 42 | <i class="fas fa-envelope"></i> f2kmultiservice@gmail.com</p>
         <p class="copyright">© 2025 F2K MULTISERVICE. Tous droits réservés.</p>
-                                </footer>    <script type="module">
+                                         </footer>    <script type="module">
         // ============================================
         // IMPORTS FIREBASE
         // ============================================
@@ -998,28 +1027,47 @@
         };
 
         // ============================================
-        // GESTION DES ONGLETS
+        // GESTION DES ONGLETS (VERSION CORRIGÉE)
         // ============================================
+        console.log("Initialisation des onglets...");
+        
         tabButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const tabId = btn.dataset.tab;
+            btn.addEventListener('click', function() {
+                const tabId = this.dataset.tab;
+                console.log("Clic sur onglet :", tabId);
                 
+                // Désactiver tous les onglets
                 tabButtons.forEach(b => b.classList.remove('active'));
-                tabContents.forEach(c => c.classList.remove('active'));
+                tabContents.forEach(c => {
+                    c.classList.remove('active');
+                    c.style.display = 'none';
+                });
                 
-                btn.classList.add('active');
-                document.getElementById(`tab-${tabId}`).classList.add('active');
+                // Activer l'onglet cliqué
+                this.classList.add('active');
+                const targetTab = document.getElementById(`tab-${tabId}`);
+                if (targetTab) {
+                    targetTab.classList.add('active');
+                    targetTab.style.display = 'block';
+                    console.log("Affichage de l'onglet :", tabId);
+                } else {
+                    console.error("Onglet introuvable :", tabId);
+                }
                 
+                // Charger les données selon l'onglet
                 if (tabId === 'admin' && isAdmin) {
                     loadAdminUsers();
                     loadAdminSongs();
                     loadAdminArticles();
                 } else if (tabId === 'articles') {
                     loadArticles();
+                } else if (tabId === 'dashboard' && currentUser) {
+                    loadMySongs();
                 }
             });
         });
 
+        // Gestion des liens de navigation
         tabTriggers.forEach(trigger => {
             trigger.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -1035,6 +1083,7 @@
                     return;
                 }
                 
+                // Trouver et cliquer sur le bouton correspondant
                 const targetButton = Array.from(tabButtons).find(btn => btn.dataset.tab === tabId);
                 if (targetButton) {
                     targetButton.click();
@@ -1143,8 +1192,10 @@
             }
         });
 
-        // État de l'utilisateur
+        // État de l'utilisateur (fonction la plus importante)
         onAuthStateChanged(auth, async (user) => {
+            console.log("Auth state changed:", user ? user.email : "déconnecté");
+            
             if (user) {
                 currentUser = user;
                 
@@ -1166,6 +1217,7 @@
                     }
                 }
                 
+                // Mise à jour de l'interface
                 loginBtn.style.display = 'none';
                 registerBtn.style.display = 'none';
                 logoutBtn.style.display = 'inline';
@@ -1176,15 +1228,18 @@
                     dashboardLink.innerHTML = 'Espace Artiste <span class="admin-badge">Admin</span>';
                 } else {
                     dashboardLink.style.display = 'inline';
+                    adminLink.style.display = 'none';
                     dashboardLink.innerHTML = 'Espace Artiste';
                 }
                 
+                // Charger les données
                 loadSongs();
                 loadRankings();
                 if (!isAdmin) loadMySongs();
                 loadArticles();
                 
             } else {
+                // Utilisateur déconnecté
                 currentUser = null;
                 isAdmin = false;
                 loginBtn.style.display = 'inline';
@@ -1202,32 +1257,36 @@
         // ============================================
         // UPLOAD DE FICHIERS (PREVIEW)
         // ============================================
-        coverDropzone.addEventListener('click', () => coverFile.click());
+        if (coverDropzone) {
+            coverDropzone.addEventListener('click', () => coverFile.click());
 
-        coverDropzone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            coverDropzone.style.borderColor = '#667eea';
-        });
+            coverDropzone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                coverDropzone.style.borderColor = '#667eea';
+            });
 
-        coverDropzone.addEventListener('dragleave', () => {
-            coverDropzone.style.borderColor = '#ddd';
-        });
+            coverDropzone.addEventListener('dragleave', () => {
+                coverDropzone.style.borderColor = '#ddd';
+            });
 
-        coverDropzone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            coverDropzone.style.borderColor = '#ddd';
-            const file = e.dataTransfer.files[0];
-            if (file && file.type.startsWith('image/')) {
-                coverFile.files = e.dataTransfer.files;
-                previewCover(file);
-            }
-        });
+            coverDropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                coverDropzone.style.borderColor = '#ddd';
+                const file = e.dataTransfer.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    coverFile.files = e.dataTransfer.files;
+                    previewCover(file);
+                }
+            });
+        }
 
-        coverFile.addEventListener('change', (e) => {
-            if (e.target.files[0]) {
-                previewCover(e.target.files[0]);
-            }
-        });
+        if (coverFile) {
+            coverFile.addEventListener('change', (e) => {
+                if (e.target.files[0]) {
+                    previewCover(e.target.files[0]);
+                }
+            });
+        }
 
         function previewCover(file) {
             const reader = new FileReader();
@@ -1238,119 +1297,125 @@
             reader.readAsDataURL(file);
         }
 
-        audioDropzone.addEventListener('click', () => audioFile.click());
+        if (audioDropzone) {
+            audioDropzone.addEventListener('click', () => audioFile.click());
 
-        audioDropzone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            audioDropzone.style.borderColor = '#667eea';
-        });
+            audioDropzone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                audioDropzone.style.borderColor = '#667eea';
+            });
 
-        audioDropzone.addEventListener('dragleave', () => {
-            audioDropzone.style.borderColor = '#ddd';
-        });
+            audioDropzone.addEventListener('dragleave', () => {
+                audioDropzone.style.borderColor = '#ddd';
+            });
 
-        audioDropzone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            audioDropzone.style.borderColor = '#ddd';
-            const file = e.dataTransfer.files[0];
-            if (file && file.type === 'audio/mpeg') {
-                audioFile.files = e.dataTransfer.files;
-                audioFilename.textContent = file.name;
-                audioPreview.classList.add('active');
-            }
-        });
+            audioDropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                audioDropzone.style.borderColor = '#ddd';
+                const file = e.dataTransfer.files[0];
+                if (file && file.type === 'audio/mpeg') {
+                    audioFile.files = e.dataTransfer.files;
+                    audioFilename.textContent = file.name;
+                    audioPreview.classList.add('active');
+                }
+            });
+        }
 
-        audioFile.addEventListener('change', (e) => {
-            if (e.target.files[0]) {
-                const file = e.target.files[0];
-                audioFilename.textContent = file.name;
-                audioPreview.classList.add('active');
-            }
-        });
+        if (audioFile) {
+            audioFile.addEventListener('change', (e) => {
+                if (e.target.files[0]) {
+                    const file = e.target.files[0];
+                    audioFilename.textContent = file.name;
+                    audioPreview.classList.add('active');
+                }
+            });
+        }
 
         // ============================================
         // FORMULAIRE D'UPLOAD
         // ============================================
-        uploadForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            if (!currentUser) {
-                showError('Connecte-toi d\'abord !');
-                showAuthModal('login');
-                return;
-            }
-            
-            const title = document.getElementById('song-title').value;
-            const description = document.getElementById('song-description').value;
-            const genre = document.getElementById('song-genre').value;
-            const cover = coverFile.files[0];
-            const audio = audioFile.files[0];
-            
-            if (!title || !description || !genre || !cover || !audio) {
-                showError('Tous les champs sont obligatoires');
-                return;
-            }
-            
-            if (audio.size > 50 * 1024 * 1024) {
-                showError('Le MP3 ne doit pas dépasser 50 MB');
-                return;
-            }
-            
-            if (cover.size > 10 * 1024 * 1024) {
-                showError('L\'image ne doit pas dépasser 10 MB');
-                return;
-            }
-            
-            uploadBtn.disabled = true;
-            uploadBtn.querySelector('span').style.display = 'none';
-            uploadBtn.querySelector('.loading').style.display = 'inline-block';
-            
-            try {
-                showSuccess('Upload en cours... Ne ferme pas la page');
+        if (uploadForm) {
+            uploadForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
                 
-                const coverUrl = await uploadToCatbox(cover);
-                const audioUrl = await uploadToCatbox(audio);
-                
-                const songData = {
-                    title: title,
-                    description: description,
-                    genre: genre,
-                    artistId: currentUser.uid,
-                    artistName: currentUser.name || currentUser.email,
-                    artistEmail: currentUser.email,
-                    coverUrl: coverUrl,
-                    audioUrl: audioUrl,
-                    createdAt: new Date().toISOString(),
-                    likes: 0,
-                    downloads: 0,
-                    views: 0
-                };
-                
-                await addDoc(collection(db, 'songs'), songData);
-                
-                uploadForm.reset();
-                coverPreview.classList.remove('active');
-                audioPreview.classList.remove('active');
-                
-                showSuccess('Son publié avec succès !');
-                
-                if (isAdmin) {
-                    loadAdminSongs();
-                } else {
-                    loadMySongs();
+                if (!currentUser) {
+                    showError('Connecte-toi d\'abord !');
+                    showAuthModal('login');
+                    return;
                 }
-                loadSongs();
-                loadRankings();
                 
-            } catch (error) {
-                console.error(error);
-                showError('Erreur lors de l\'upload. Vérifie ta connexion.');
-            } finally {
-                uploadBtn.disabled = false;
-                uploadBtn.querySelector('span').style.display = 'inline';
-                uploadBtn.querySelector('.loading').style.display = 'none';
-            }
-        });
+                const title = document.getElementById('song-title').value;
+                const description = document.getElementById('song-description').value;
+                const genre = document.getElementById('song-genre').value;
+                const cover = coverFile.files[0];
+                const audio = audioFile.files[0];
+                
+                if (!title || !description || !genre || !cover || !audio) {
+                    showError('Tous les champs sont obligatoires');
+                    return;
+                }
+                
+                if (audio.size > 50 * 1024 * 1024) {
+                    showError('Le MP3 ne doit pas dépasser 50 MB');
+                    return;
+                }
+                
+                if (cover.size > 10 * 1024 * 1024) {
+                    showError('L\'image ne doit pas dépasser 10 MB');
+                    return;
+                }
+                
+                uploadBtn.disabled = true;
+                uploadBtn.querySelector('span').style.display = 'none';
+                uploadBtn.querySelector('.loading').style.display = 'inline-block';
+                
+                try {
+                    showSuccess('Upload en cours... Ne ferme pas la page');
+                    
+                    const coverUrl = await uploadToCatbox(cover);
+                    const audioUrl = await uploadToCatbox(audio);
+                    
+                    const songData = {
+                        title: title,
+                        description: description,
+                        genre: genre,
+                        artistId: currentUser.uid,
+                        artistName: currentUser.name || currentUser.email,
+                        artistEmail: currentUser.email,
+                        coverUrl: coverUrl,
+                        audioUrl: audioUrl,
+                        createdAt: new Date().toISOString(),
+                        likes: 0,
+                        downloads: 0,
+                        views: 0
+                    };
+                    
+                    await addDoc(collection(db, 'songs'), songData);
+                    
+                    uploadForm.reset();
+                    coverPreview.classList.remove('active');
+                    audioPreview.classList.remove('active');
+                    
+                    showSuccess('Son publié avec succès !');
+                    
+                    if (isAdmin) {
+                        loadAdminSongs();
+                    } else {
+                        loadMySongs();
+                    }
+                    loadSongs();
+                    loadRankings();
+                    
+                } catch (error) {
+                    console.error(error);
+                    showError('Erreur lors de l\'upload. Vérifie ta connexion.');
+                } finally {
+                    uploadBtn.disabled = false;
+                    uploadBtn.querySelector('span').style.display = 'inline';
+                    uploadBtn.querySelector('.loading').style.display = 'none';
+                }
+            });
+        }
 
         // ============================================
         // ARTICLES (pour admin)
@@ -1418,14 +1483,15 @@
                 
                 articlesContainer.innerHTML = '';
                 
+                if (querySnapshot.empty) {
+                    articlesContainer.innerHTML = '<p style="color: white; text-align: center;">Aucun article pour le moment.</p>';
+                    return;
+                }
+                
                 querySnapshot.forEach((doc) => {
                     const article = { id: doc.id, ...doc.data() };
                     articlesContainer.appendChild(createArticleCard(article));
                 });
-                
-                if (querySnapshot.empty) {
-                    articlesContainer.innerHTML = '<p style="color: white; text-align: center;">Aucun article pour le moment.</p>';
-                }
                 
             } catch (error) {
                 console.error(error);
@@ -1448,7 +1514,7 @@
             `;
             
             return card;
-                                    }        // ============================================
+    }        // ============================================
         // ADMIN : GESTION DES UTILISATEURS
         // ============================================
         async function loadAdminUsers() {
@@ -1459,6 +1525,11 @@
                 const querySnapshot = await getDocs(q);
                 
                 adminUsersContainer.innerHTML = '';
+                
+                if (querySnapshot.empty) {
+                    adminUsersContainer.innerHTML = '<p>Aucun utilisateur trouvé.</p>';
+                    return;
+                }
                 
                 querySnapshot.forEach((doc) => {
                     const user = { id: doc.id, ...doc.data() };
@@ -1559,6 +1630,11 @@
                 
                 adminSongsContainer.innerHTML = '';
                 
+                if (querySnapshot.empty) {
+                    adminSongsContainer.innerHTML = '<p>Aucun morceau trouvé.</p>';
+                    return;
+                }
+                
                 querySnapshot.forEach((doc) => {
                     const song = { id: doc.id, ...doc.data() };
                     adminSongsContainer.appendChild(createAdminSongCard(song));
@@ -1622,6 +1698,11 @@
                 
                 adminArticlesContainer.innerHTML = '';
                 
+                if (querySnapshot.empty) {
+                    adminArticlesContainer.innerHTML = '<p>Aucun article trouvé.</p>';
+                    return;
+                }
+                
                 querySnapshot.forEach((doc) => {
                     const article = { id: doc.id, ...doc.data() };
                     adminArticlesContainer.appendChild(createAdminArticleCard(article));
@@ -1679,14 +1760,15 @@
                 
                 songsContainer.innerHTML = '';
                 
+                if (querySnapshot.empty) {
+                    songsContainer.innerHTML = '<p style="color: white; text-align: center;">Aucun son pour le moment. Sois le premier à publier !</p>';
+                    return;
+                }
+                
                 querySnapshot.forEach((doc) => {
                     const song = { id: doc.id, ...doc.data() };
                     songsContainer.appendChild(createSongCard(song));
                 });
-                
-                if (querySnapshot.empty) {
-                    songsContainer.innerHTML = '<p style="color: white; text-align: center;">Aucun son pour le moment. Sois le premier à publier !</p>';
-                }
                 
             } catch (error) {
                 console.error(error);
@@ -1706,14 +1788,15 @@
                 
                 mySongsContainer.innerHTML = '';
                 
+                if (querySnapshot.empty) {
+                    mySongsContainer.innerHTML = '<p style="text-align: center;">Tu n\'as pas encore publié de son.</p>';
+                    return;
+                }
+                
                 querySnapshot.forEach((doc) => {
                     const song = { id: doc.id, ...doc.data() };
                     mySongsContainer.appendChild(createSongCard(song, true));
                 });
-                
-                if (querySnapshot.empty) {
-                    mySongsContainer.innerHTML = '<p style="text-align: center;">Tu n\'as pas encore publié de son.</p>';
-                }
                 
             } catch (error) {
                 console.error(error);
@@ -1906,6 +1989,7 @@
                         const songDoc = await getDoc(doc(db, 'songs', playId));
                         if (songDoc.exists()) {
                             playSong({ id: songDoc.id, ...songDoc.data() });
+                                 playSong({ id: songDoc.id, ...songDoc.data() });
                         }
                     } catch (error) {
                         console.error('Erreur chargement:', error);
@@ -1914,8 +1998,9 @@
             }
         })();
 
-        // Initialisation au chargement
-        console.log('Site F2K STREAM chargé avec succès !');
+        // Initialisation
+        console.log('✅ Site F2K STREAM chargé avec succès !');
+        console.log('👑 Admin email:', ADMIN_EMAIL);
     </script>
 </body>
 </html>
