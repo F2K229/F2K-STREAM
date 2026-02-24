@@ -1,2078 +1,1275 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>F2K STREAM - Plateforme Musicale</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: #333;
-        }
-        
-        .navbar {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 1rem 2rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            flex-wrap: wrap;
-        }
-        
-        .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            cursor: pointer;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        
-        .nav-links a {
-            text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            transition: color 0.3s;
-            cursor: pointer;
-        }
-        
-        .nav-links a:hover {
-            color: #667eea;
-        }
-        
-        .admin-badge {
-            background: #f44336;
-            color: white;
-            padding: 0.2rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            margin-left: 0.5rem;
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 6rem 2rem 4rem;
-        }
-        
-        .hero {
-            text-align: center;
-            color: white;
-            padding: 3rem 2rem;
-            background: rgba(0,0,0,0.3);
-            border-radius: 15px;
-            margin-bottom: 2rem;
-            backdrop-filter: blur(10px);
-        }
-        
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        
-        .hero p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-        
-        .tab-buttons {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        
-        .tab-button {
-            padding: 0.8rem 2rem;
-            border: none;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        
-        .tab-button:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-        
-        .tab-button.active {
-            background: white;
-            color: #333;
-        }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        .songs-grid, .users-grid, .articles-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-        
-        .song-card {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            transition: transform 0.3s;
-        }
-        
-        .song-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .song-cover {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-        
-        .song-info {
-            padding: 1.5rem;
-        }
-        
-        .song-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-        
-        .song-artist {
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
-        
-        .song-stats {
-            display: flex;
-            justify-content: space-between;
-            color: #888;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
-        
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-        
-        .song-actions {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-        
-        .btn-play, .btn-download, .btn-share, .btn-delete {
-            flex: 1;
-            padding: 0.8rem;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: opacity 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-        
-        .btn-play {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-        
-        .btn-download {
-            background: #4CAF50;
-            color: white;
-        }
-        
-        .btn-share {
-            background: #2196F3;
-            color: white;
-        }
-        
-        .btn-delete {
-            background: #f44336;
-            color: white;
-        }
-        
-        .btn-play:hover, .btn-download:hover, .btn-share:hover, .btn-delete:hover {
-            opacity: 0.8;
-        }
-        
-        .auth-modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            z-index: 2000;
-            width: 90%;
-            max-width: 400px;
-        }
-        
-        .auth-modal.active {
-            display: block;
-        }
-        
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        
-        .close-modal {
-            cursor: pointer;
-            font-size: 1.5rem;
-            color: #999;
-        }
-        
-        .form-group {
-            margin-bottom: 1rem;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-        
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-        }
-        
-        .btn {
-            width: 100%;
-            padding: 1rem;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.3s;
-        }
-        
-        .btn:hover {
-            opacity: 0.9;
-        }
-        
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .switch-auth {
-            text-align: center;
-            margin-top: 1rem;
-            color: #667eea;
-            cursor: pointer;
-        }
-        
-        .audio-player {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            padding: 1rem;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            display: none;
-            z-index: 1500;
-        }
-        
-        .audio-player.active {
-            display: block;
-        }
-        
-        .player-controls {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-            max-width: 800px;
-            margin: 0 auto;
-            flex-wrap: wrap;
-        }
-        
-        .now-playing {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex: 1;
-            min-width: 200px;
-        }
-        
-        .now-playing img {
-            width: 50px;
-            height: 50px;
-            border-radius: 8px;
-            object-fit: cover;
-        }
-        
-        .player-buttons {
-            display: flex;
-            gap: 1rem;
-        }
-        
-        .player-buttons button {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #667eea;
-        }
-        
-        .ranking-section {
-            margin-top: 2rem;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-        
-        .ranking-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 1.5rem;
-        }
-        
-        .ranking-card h3 {
-            margin-bottom: 1rem;
-            color: #333;
-        }
-        
-        .ranking-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .ranking-item:last-child {
-            border-bottom: none;
-        }
-        
-        .ranking-icon {
-            width: 30px;
-            text-align: center;
-        }
-        
-        .ranking-info {
-            flex: 1;
-        }
-        
-        .ranking-title {
-            font-weight: 500;
-        }
-        
-        .ranking-artist {
-            font-size: 0.9rem;
-            color: #666;
-        }
-        
-        .dashboard-section {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 2rem;
-            margin: 2rem 0;
-        }
-        
-        .upload-form {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .file-input {
-            border: 2px dashed #ddd;
-            padding: 2rem;
-            text-align: center;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: border-color 0.3s;
-            background: #f9f9f9;
-        }
-        
-        .file-input:hover {
-            border-color: #667eea;
-            background: #f0f0f0;
-        }
-        
-        .file-input i {
-            font-size: 3rem;
-            color: #667eea;
-            margin-bottom: 1rem;
-        }
-        
-        .file-input small {
-            display: block;
-            color: #666;
-            margin-top: 0.5rem;
-        }
-        
-        .file-preview {
-            display: none;
-            margin-top: 1rem;
-            padding: 1rem;
-            background: #f5f5f5;
-            border-radius: 8px;
-        }
-        
-        .file-preview.active {
-            display: block;
-        }
-        
-        .preview-image {
-            max-width: 200px;
-            max-height: 200px;
-            border-radius: 8px;
-            margin-top: 0.5rem;
-        }
-        
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .success-message, .error-message {
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            color: white;
-            z-index: 3000;
-            display: none;
-        }
-        
-        .success-message {
-            background: #4CAF50;
-        }
-        
-        .error-message {
-            background: #f44336;
-        }
-        
-        .show {
-            display: block;
-        }
-        
-        .share-modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            z-index: 2500;
-            width: 90%;
-            max-width: 500px;
-        }
-        
-        .share-modal.active {
-            display: block;
-        }
-        
-        .share-links {
-            margin: 1.5rem 0;
-        }
-        
-        .share-link-item {
-            background: #f5f5f5;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-        }
-        
-        .share-link-item label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-        
-        .share-url {
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .share-url input {
-            flex: 1;
-            padding: 0.5rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        
-        .copy-btn {
-            padding: 0.5rem 1rem;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            color: white;
-            margin-top: 3rem;
-            border-top: 1px solid rgba(255,255,255,0.2);
-            background: rgba(0,0,0,0.2);
-            border-radius: 15px 15px 0 0;
-        }
-        
-        .footer p {
-            margin: 0.5rem 0;
-        }
-        
-        .footer .copyright {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-        
-        @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .nav-links {
-                justify-content: center;
-            }
-            
-            .song-actions {
-                flex-direction: column;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F2K STREAM - Plateforme Musicale</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #7c3aed; --primary-dark: #5b21b6; --accent: #f59e0b;
+  --green: #10b981; --danger: #ef4444;
+  --bg: #0f0a1e; --bg2: #1a1033; --card: #1e1540; --card2: #251b4f;
+  --border: rgba(124,58,237,0.25); --text: #e2d9f3; --text2: #9d8ec7;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; }
+body::before { content:''; position:fixed; inset:0; background:radial-gradient(ellipse at 20% 20%,rgba(124,58,237,.12) 0%,transparent 55%),radial-gradient(ellipse at 80% 80%,rgba(245,158,11,.07) 0%,transparent 55%); pointer-events:none; z-index:0; }
+.navbar { background:rgba(15,10,30,.97); backdrop-filter:blur(20px); padding:.9rem 2rem; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; position:fixed; width:100%; top:0; z-index:1000; flex-wrap:wrap; gap:.7rem; }
+.logo { font-family:'Syne',sans-serif; font-size:1.6rem; font-weight:800; background:linear-gradient(135deg,#a78bfa,#f59e0b); -webkit-background-clip:text; -webkit-text-fill-color:transparent; cursor:pointer; }
+.nav-links { display:flex; gap:1.1rem; align-items:center; flex-wrap:wrap; }
+.nav-links a { text-decoration:none; color:var(--text2); font-weight:500; font-size:.88rem; cursor:pointer; transition:color .3s; }
+.nav-links a:hover { color:#fff; }
+.nav-btn { background:var(--primary)!important; color:#fff!important; padding:.42rem 1.1rem; border-radius:6px; font-weight:600!important; }
+.nav-btn:hover { background:var(--primary-dark)!important; }
+.admin-badge { background:var(--accent); color:#000; padding:.12rem .5rem; border-radius:20px; font-size:.68rem; font-weight:700; margin-left:.3rem; }
+.container { max-width:1400px; margin:0 auto; padding:5.5rem 2rem 7rem; position:relative; z-index:1; }
+.hero { text-align:center; padding:3.5rem 2rem 2.5rem; margin-bottom:2rem; }
+.hero h1 { font-family:'Syne',sans-serif; font-size:clamp(2.5rem,6vw,5rem); font-weight:800; background:linear-gradient(135deg,#fff 0%,#c4b5fd 50%,#f59e0b 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; letter-spacing:-2px; line-height:1; margin-bottom:.8rem; }
+.hero p { font-size:1.05rem; color:var(--text2); }
+.tab-buttons { display:flex; gap:.4rem; margin-bottom:2rem; flex-wrap:wrap; justify-content:center; background:var(--card); padding:.4rem; border-radius:12px; border:1px solid var(--border); width:fit-content; margin-left:auto; margin-right:auto; }
+.tab-button { padding:.55rem 1.3rem; border:none; border-radius:8px; background:transparent; color:var(--text2); cursor:pointer; font-weight:600; font-size:.88rem; transition:all .3s; font-family:'DM Sans',sans-serif; }
+.tab-button:hover { color:#fff; background:rgba(124,58,237,.2); }
+.tab-button.active { background:var(--primary); color:#fff; }
+.tab-content { display:none; }
+.tab-content.active { display:block; }
+.section-title { font-family:'Syne',sans-serif; font-size:1.5rem; font-weight:700; color:#fff; margin-bottom:1.2rem; }
+.songs-grid,.users-grid,.articles-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:1.5rem; margin:1rem 0; }
+.song-card { background:var(--card); border-radius:16px; overflow:hidden; border:1px solid var(--border); transition:transform .3s,box-shadow .3s; }
+.song-card:hover { transform:translateY(-4px); box-shadow:0 16px 40px rgba(124,58,237,.2); }
+.song-cover-wrapper { position:relative; height:190px; overflow:hidden; }
+.song-cover { width:100%; height:100%; object-fit:cover; transition:transform .4s; }
+.song-card:hover .song-cover { transform:scale(1.05); }
+.song-cover-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(15,10,30,.8) 0%,transparent 60%); }
+.pending-badge { position:absolute; top:8px; right:8px; background:var(--accent); color:#000; font-size:.68rem; font-weight:700; padding:.2rem .5rem; border-radius:20px; }
+.song-genre-badge { position:absolute; top:8px; left:8px; background:rgba(124,58,237,.85); color:#fff; font-size:.68rem; font-weight:600; padding:.2rem .5rem; border-radius:20px; }
+.song-info { padding:1.1rem; }
+.song-title { font-family:'Syne',sans-serif; font-size:.98rem; font-weight:700; color:#fff; margin-bottom:.25rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.song-artist { color:var(--text2); font-size:.83rem; margin-bottom:.2rem; }
+.song-label { color:var(--accent); font-size:.76rem; margin-bottom:.7rem; font-weight:500; }
+.song-stats { display:flex; gap:.8rem; color:var(--text2); font-size:.8rem; margin-bottom:.8rem; }
+.stat-item { display:flex; align-items:center; gap:.25rem; }
+.song-actions { display:flex; gap:.4rem; flex-wrap:wrap; }
+.btn-play,.btn-download,.btn-share,.btn-delete,.btn-approve { padding:.5rem .7rem; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-size:.78rem; transition:opacity .3s,transform .2s; display:flex; align-items:center; justify-content:center; gap:.25rem; font-family:'DM Sans',sans-serif; }
+.btn-play { background:var(--primary); color:#fff; flex:2; }
+.btn-download { background:var(--green); color:#fff; }
+.btn-share { background:#0ea5e9; color:#fff; }
+.btn-delete { background:var(--danger); color:#fff; }
+.btn-approve { background:var(--green); color:#fff; flex:2; }
+.btn-play:hover,.btn-download:hover,.btn-share:hover,.btn-delete:hover,.btn-approve:hover { opacity:.82; transform:scale(.97); }
+.audio-player { position:fixed; bottom:0; left:0; right:0; background:rgba(15,10,30,.97); backdrop-filter:blur(20px); padding:.75rem 2rem; border-top:1px solid var(--border); display:none; z-index:1500; }
+.audio-player.active { display:block; }
+.player-controls { display:flex; align-items:center; gap:1.5rem; max-width:900px; margin:0 auto; flex-wrap:wrap; }
+.now-playing { display:flex; align-items:center; gap:.8rem; flex:1; min-width:180px; }
+.now-playing img { width:44px; height:44px; border-radius:8px; object-fit:cover; border:1px solid var(--border); }
+.now-playing-title { font-weight:700; color:#fff; font-size:.88rem; }
+.now-playing-artist { color:var(--text2); font-size:.76rem; }
+.player-buttons { display:flex; gap:.7rem; }
+.player-buttons button { background:none; border:none; font-size:1.3rem; cursor:pointer; color:var(--primary); transition:color .3s; }
+.player-buttons button:hover { color:var(--accent); }
+.progress-bar { flex:2; min-width:120px; height:4px; background:var(--card2); border-radius:2px; cursor:pointer; }
+.progress-fill { height:100%; background:linear-gradient(90deg,var(--primary),var(--accent)); border-radius:2px; width:0%; transition:width .1s; }
+.overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:1900; backdrop-filter:blur(4px); }
+.overlay.active { display:block; }
+.modal { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--card); padding:2rem; border-radius:20px; border:1px solid var(--border); box-shadow:0 30px 60px rgba(0,0,0,.5); z-index:2000; width:90%; max-width:430px; max-height:90vh; overflow-y:auto; }
+.modal.active { display:block; }
+.modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; }
+.modal-header h2 { font-family:'Syne',sans-serif; font-size:1.2rem; color:#fff; }
+.close-modal { cursor:pointer; font-size:1.5rem; color:var(--text2); background:none; border:none; line-height:1; }
+.close-modal:hover { color:#fff; }
+.form-group { margin-bottom:1rem; }
+.form-group label { display:block; margin-bottom:.35rem; font-weight:500; font-size:.85rem; color:var(--text2); }
+.form-group input,.form-group textarea,.form-group select { width:100%; padding:.72rem 1rem; background:var(--bg2); border:1px solid var(--border); border-radius:10px; font-size:.88rem; color:var(--text); font-family:'DM Sans',sans-serif; transition:border-color .3s; }
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus { outline:none; border-color:var(--primary); }
+.form-group select option { background:var(--bg2); }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+.btn { width:100%; padding:.88rem; background:var(--primary); color:#fff; border:none; border-radius:10px; font-size:.95rem; font-weight:600; cursor:pointer; transition:background .3s; font-family:'DM Sans',sans-serif; display:flex; align-items:center; justify-content:center; gap:.5rem; }
+.btn:hover { background:var(--primary-dark); }
+.btn:disabled { opacity:.5; cursor:not-allowed; }
+.switch-auth { text-align:center; margin-top:1rem; color:var(--primary); cursor:pointer; font-size:.88rem; }
+.file-input { border:2px dashed var(--border); padding:1.3rem; text-align:center; border-radius:10px; cursor:pointer; transition:border-color .3s,background .3s; background:var(--bg2); }
+.file-input:hover { border-color:var(--primary); background:rgba(124,58,237,.05); }
+.file-input i { font-size:1.8rem; color:var(--primary); margin-bottom:.4rem; display:block; }
+.file-input p { color:var(--text2); font-size:.85rem; }
+.file-input small { color:var(--text2); font-size:.75rem; }
+.file-preview { display:none; margin-top:.7rem; }
+.file-preview.active { display:block; }
+.preview-image { max-width:130px; max-height:130px; border-radius:8px; margin-top:.4rem; border:2px solid var(--border); }
+.dashboard-section { background:var(--card); border-radius:16px; padding:1.8rem; margin:1.2rem 0; border:1px solid var(--border); }
+.dashboard-section h2 { font-family:'Syne',sans-serif; font-size:1.4rem; color:#fff; margin-bottom:1.5rem; }
+.dashboard-section h3 { font-family:'Syne',sans-serif; font-size:1.05rem; color:var(--text); margin-bottom:1rem; padding-bottom:.5rem; border-bottom:1px solid var(--border); }
+.upload-form { max-width:640px; margin:0 auto; }
+.user-card { background:var(--card2); border-radius:12px; padding:1.1rem; border:1px solid var(--border); display:flex; flex-direction:column; gap:.7rem; }
+.user-card-header { display:flex; align-items:center; gap:.75rem; }
+.user-avatar { width:42px; height:42px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--accent)); display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:700; color:#fff; font-size:1rem; flex-shrink:0; }
+.user-info { flex:1; min-width:0; }
+.user-name { font-weight:700; color:#fff; font-size:.92rem; }
+.user-email { color:var(--text2); font-size:.78rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.user-meta { color:var(--text2); font-size:.75rem; }
+.role-badge { display:inline-block; padding:.12rem .5rem; border-radius:20px; font-size:.67rem; font-weight:700; }
+.role-artist { background:rgba(124,58,237,.3); color:#c4b5fd; }
+.role-producer { background:rgba(245,158,11,.3); color:#fcd34d; }
+.role-admin { background:rgba(239,68,68,.3); color:#fca5a5; }
+.user-status-pending { color:var(--accent); font-size:.76rem; font-weight:600; }
+.user-status-confirmed { color:var(--green); font-size:.76rem; font-weight:600; }
+.user-status-banned { color:var(--danger); font-size:.76rem; font-weight:600; }
+.user-actions { display:flex; gap:.4rem; flex-wrap:wrap; }
+.btn-sm { padding:.32rem .65rem; border:none; border-radius:6px; cursor:pointer; font-size:.72rem; font-weight:600; transition:opacity .3s; font-family:'DM Sans',sans-serif; }
+.btn-sm:hover { opacity:.8; }
+.btn-confirm { background:var(--green); color:#fff; }
+.btn-ban { background:var(--danger); color:#fff; }
+.btn-unban { background:var(--accent); color:#000; }
+.btn-del-sm { background:rgba(239,68,68,.15); color:var(--danger); border:1px solid rgba(239,68,68,.3); }
+.article-card { background:var(--card); border-radius:16px; overflow:hidden; border:1px solid var(--border); transition:transform .3s; }
+.article-card:hover { transform:translateY(-3px); }
+.article-image { width:100%; height:170px; object-fit:cover; }
+.article-info { padding:1.1rem; }
+.article-title { font-family:'Syne',sans-serif; font-size:.98rem; font-weight:700; color:#fff; margin-bottom:.35rem; }
+.article-date { color:var(--text2); font-size:.78rem; margin-bottom:.7rem; }
+.article-body { color:var(--text2); font-size:.83rem; line-height:1.5; }
+.ranking-section { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1.5rem; margin-top:1.2rem; }
+.ranking-card { background:var(--card); border-radius:16px; padding:1.4rem; border:1px solid var(--border); }
+.ranking-card h3 { font-family:'Syne',sans-serif; color:#fff; margin-bottom:1rem; font-size:.98rem; }
+.ranking-item { display:flex; align-items:center; gap:.7rem; padding:.55rem 0; border-bottom:1px solid rgba(124,58,237,.1); }
+.ranking-item:last-child { border-bottom:none; }
+.ranking-num { width:22px; text-align:center; font-weight:700; color:var(--text2); font-size:.82rem; }
+.ranking-info { flex:1; min-width:0; }
+.ranking-title { font-weight:600; color:#fff; font-size:.85rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ranking-artist { color:var(--text2); font-size:.76rem; }
+.ranking-val { color:var(--accent); font-weight:700; font-size:.82rem; }
+.share-link-item { background:var(--bg2); padding:.9rem; border-radius:10px; margin-bottom:.7rem; border:1px solid var(--border); }
+.share-link-item label { display:block; font-weight:600; margin-bottom:.4rem; font-size:.85rem; color:var(--text); }
+.share-url { display:flex; gap:.4rem; }
+.share-url input { flex:1; padding:.45rem .7rem; background:var(--card); border:1px solid var(--border); border-radius:6px; color:var(--text2); font-size:.78rem; }
+.copy-btn { padding:.45rem .9rem; background:var(--primary); color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:.78rem; font-weight:600; }
+.toast { position:fixed; top:76px; right:18px; padding:.85rem 1.4rem; border-radius:10px; color:#fff; z-index:3000; display:none; font-weight:500; font-size:.88rem; box-shadow:0 10px 30px rgba(0,0,0,.3); max-width:340px; }
+.toast.success { background:var(--green); }
+.toast.error { background:var(--danger); }
+.toast.show { display:block; }
+.loading { display:inline-block; width:16px; height:16px; border:2px solid rgba(255,255,255,.3); border-top:2px solid #fff; border-radius:50%; animation:spin .8s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.admin-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:1rem; margin-bottom:2rem; }
+.stat-card { background:var(--card2); border-radius:12px; padding:1.1rem; text-align:center; border:1px solid var(--border); }
+.stat-card-num { font-family:'Syne',sans-serif; font-size:1.8rem; font-weight:800; color:var(--primary); }
+.stat-card-label { color:var(--text2); font-size:.76rem; margin-top:.2rem; }
+.search-bar { margin-bottom:1.1rem; }
+.search-bar input { width:100%; padding:.72rem 1rem; background:var(--card); border:1px solid var(--border); border-radius:10px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:.9rem; }
+.search-bar input:focus { outline:none; border-color:var(--primary); }
+.filter-tabs { display:flex; gap:.5rem; margin-bottom:1.2rem; flex-wrap:wrap; }
+.filter-tab { padding:.35rem .9rem; background:var(--card); border:1px solid var(--border); border-radius:20px; color:var(--text2); cursor:pointer; font-size:.82rem; transition:all .3s; }
+.filter-tab.active,.filter-tab:hover { background:var(--primary); color:#fff; border-color:var(--primary); }
+.empty-state { text-align:center; padding:2.5rem; color:var(--text2); grid-column:1/-1; }
+.empty-state i { font-size:2.5rem; margin-bottom:.8rem; color:var(--border); display:block; }
+.footer { text-align:center; padding:2rem; color:var(--text2); margin-top:3rem; border-top:1px solid var(--border); font-size:.88rem; }
+.footer p { margin:.35rem 0; }
+.footer .brand { font-family:'Syne',sans-serif; font-weight:800; color:#fff; font-size:1.05rem; }
+.footer .copyright { font-size:.78rem; opacity:.6; margin-top:.7rem; }
+@media(max-width:768px) {
+  .navbar { flex-direction:column; gap:.7rem; padding:.7rem 1rem; }
+  .form-row { grid-template-columns:1fr; }
+  .progress-bar { display:none; }
+  .container { padding:6.5rem 1rem 7rem; }
+}
+</style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo" onclick="window.location.reload()">F2K STREAM</div>
-        <div class="nav-links">
-            <a class="tab-trigger active" data-tab="home">Accueil</a>
-            <a class="tab-trigger" data-tab="rankings">Classements</a>
-            <a class="tab-trigger" data-tab="articles">Actualités</a>
-            <a class="tab-trigger" data-tab="dashboard" id="dashboard-link" style="display: none;">Espace Artiste</a>
-            <a class="tab-trigger" data-tab="admin" id="admin-link" style="display: none;">Admin</a>
-            <a id="login-btn">Connexion</a>
-            <a id="register-btn">Inscription</a>
-            <a id="logout-btn" style="display: none;">Déconnexion</a>
-        </div>
-    </nav>
-    <div class="container">
-        <div class="hero">
-            <h1>F2K STREAM</h1>
-            <p>La voix des artistes indépendants - Écoute, découvre, partage</p>
-        </div>
 
-        <div class="success-message" id="success-message"></div>
-        <div class="error-message" id="error-message"></div>
+<nav class="navbar">
+  <div class="logo" onclick="window.location.reload()">F2K STREAM</div>
+  <div class="nav-links">
+    <a class="tab-trigger" data-tab="home">Accueil</a>
+    <a class="tab-trigger" data-tab="rankings">Classements</a>
+    <a class="tab-trigger" data-tab="articles">Actualités</a>
+    <a class="tab-trigger" data-tab="dashboard" id="dashboard-link" style="display:none">Espace Artiste</a>
+    <a class="tab-trigger" data-tab="admin" id="admin-link" style="display:none">Admin</a>
+    <a id="login-btn" class="nav-btn">Connexion</a>
+    <a id="register-btn">Inscription</a>
+    <a id="logout-btn" style="display:none">Déconnexion</a>
+  </div>
+</nav>
 
-        <div class="tab-buttons">
-            <button class="tab-button active" data-tab="home">🎵 Découvrir</button>
-            <button class="tab-button" data-tab="rankings">🏆 Classements</button>
-            <button class="tab-button" data-tab="articles">📰 Actualités</button>
-        </div>
+<div class="overlay" id="overlay"></div>
+<div class="toast" id="toast"></div>
 
-        <!-- ACCUEIL -->
-        <div class="tab-content active" id="tab-home">
-            <h2 style="color: white; margin-bottom: 1rem;">Derniers sons</h2>
-            <div class="songs-grid" id="songs-container">
-                <p style="color: white; text-align: center;">Chargement des sons...</p>
-            </div>
-        </div>
+<div class="container">
+  <div class="hero">
+    <h1>F2K STREAM</h1>
+    <p>La voix des artistes indépendants — Écoute, découvre, partage</p>
+  </div>
 
-        <!-- CLASSEMENTS -->
-        <div class="tab-content" id="tab-rankings">
-            <div class="ranking-section">
-                <div class="ranking-card">
-                    <h3>⬇️ Top téléchargements</h3>
-                    <div id="top-downloads"></div>
-                </div>
-                <div class="ranking-card">
-                    <h3>👁️ Top écoutes</h3>
-                    <div id="top-views"></div>
-                </div>
-                <div class="ranking-card">
-                    <h3>❤️ Top likes</h3>
-                    <div id="top-likes"></div>
-                </div>
-            </div>
-        </div>
+  <div class="tab-buttons">
+    <button class="tab-button active" data-tab="home">🎵 Découvrir</button>
+    <button class="tab-button" data-tab="rankings">🏆 Classements</button>
+    <button class="tab-button" data-tab="articles">📰 Actualités</button>
+  </div>
 
-        <!-- ACTUALITÉS -->
-        <div class="tab-content" id="tab-articles">
-            <h2 style="color: white; margin-bottom: 1rem;">Actualités musicales</h2>
-            <div class="articles-grid" id="articles-container">
-                <p style="color: white; text-align: center;">Chargement des articles...</p>
-            </div>
-        </div>
-
-        <!-- ESPACE ARTISTE - FORMULAIRE COMPLET -->
-        <div class="tab-content" id="tab-dashboard">
-            <div class="dashboard-section">
-                <h2 style="margin-bottom: 2rem;">Espace Artiste / Producteur</h2>
-                
-                <!-- FORMULAIRE D'UPLOAD (VISIBLE ICI) -->
-                <form id="upload-form" class="upload-form">
-                    <h3 style="margin-bottom: 1.5rem;">Publier un nouveau son</h3>
-                    
-                    <div class="form-group">
-                        <label>Titre du morceau</label>
-                        <input type="text" id="song-title" placeholder="Ex: Mon premier son" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Description</label>
-                        <textarea id="song-description" rows="3" placeholder="Parle de ton son..." required></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Genre musical</label>
-                        <select id="song-genre" required>
-                            <option value="">Choisis un genre</option>
-                            <option value="Rap">Rap</option>
-                            <option value="R&B">R&B</option>
-                            <option value="Afrobeat">Afrobeat</option>
-                            <option value="Coupé-Décalé">Coupé-Décalé</option>
-                            <option value="Zouk">Zouk</option>
-                            <option value="Gospel">Gospel</option>
-                            <option value="Autre">Autre</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Pochette (image)</label>
-                        <div class="file-input" id="cover-dropzone">
-                            <i class="fas fa-image"></i>
-                            <p>Clique ou glisse ton image ici</p>
-                            <small>JPG, PNG - Max 10 MB</small>
-                            <input type="file" id="cover-file" accept="image/*" style="display: none;" required>
-                        </div>
-                        <div class="file-preview" id="cover-preview">
-                            <img src="" alt="Aperçu" class="preview-image">
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Fichier audio (MP3)</label>
-                        <div class="file-input" id="audio-dropzone">
-                            <i class="fas fa-music"></i>
-                            <p>Clique ou glisse ton MP3 ici</p>
-                            <small>MP3 - Max 50 MB</small>
-                            <input type="file" id="audio-file" accept="audio/mpeg" style="display: none;" required>
-                        </div>
-                        <div class="file-preview" id="audio-preview">
-                            <p><i class="fas fa-check-circle" style="color: #4CAF50;"></i> Fichier sélectionné : <span id="audio-filename"></span></p>
-                        </div>
-                    </div>
-                    
-                    <button type="submit" class="btn" id="upload-btn">
-                        <span>Publier mon son</span>
-                        <span class="loading" style="display: none;"></span>
-                    </button>
-                </form>
-            </div>
-
-            <!-- MES SONS PUBLIÉS -->
-            <div class="dashboard-section">
-                <h3 style="margin-bottom: 1.5rem;">Mes sons publiés</h3>
-                <div class="songs-grid" id="my-songs-container">
-                    <p style="text-align: center;">Tu n'as pas encore publié de son.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- ESPACE ADMIN - TOUTES LES FONCTIONNALITÉS -->
-        <div class="tab-content" id="tab-admin">
-            <div class="dashboard-section">
-                <h2 style="margin-bottom: 2rem;">👑 Administration</h2>
-                
-                <!-- PUBLIER UN ARTICLE -->
-                <div style="margin-bottom: 3rem;">
-                    <h3>Publier un article</h3>
-                    <form id="article-form" style="max-width: 600px; margin-top: 1rem;">
-                        <div class="form-group">
-                            <label>Titre de l'article</label>
-                            <input type="text" id="article-title" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Contenu</label>
-                            <textarea id="article-content" rows="5" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Image (optionnelle)</label>
-                            <input type="file" id="article-image" accept="image/*">
-                        </div>
-                        <button type="submit" class="btn">Publier l'article</button>
-                    </form>
-                </div>
-                
-                <!-- GESTION DES UTILISATEURS -->
-                <div style="margin: 3rem 0;">
-                    <h3>Gestion des utilisateurs</h3>
-                    <div class="users-grid" id="admin-users-container">
-                        <p>Chargement des utilisateurs...</p>
-                    </div>
-                </div>
-                
-                <!-- TOUS LES MORCEAUX -->
-                <div style="margin: 3rem 0;">
-                    <h3>Tous les morceaux</h3>
-                    <div class="songs-grid" id="admin-songs-container">
-                        <p>Chargement des morceaux...</p>
-                    </div>
-                </div>
-                
-                <!-- ARTICLES PUBLIÉS -->
-                <div style="margin: 3rem 0;">
-                    <h3>Articles publiés</h3>
-                    <div class="articles-grid" id="admin-articles-container">
-                        <p>Chargement des articles...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <!-- ACCUEIL -->
+  <div class="tab-content active" id="tab-home">
+    <div class="search-bar">
+      <input type="text" id="search-input" placeholder="🔍 Rechercher un son, artiste, label, genre...">
     </div>
-
-    <!-- LECTEUR AUDIO -->
-    <div class="audio-player" id="audio-player">
-        <div class="player-controls">
-            <div class="now-playing">
-                <img id="player-cover" src="" alt="Cover">
-                <div>
-                    <div id="player-title"></div>
-                    <div id="player-artist" style="font-size: 0.9rem; color: #666;"></div>
-                </div>
-            </div>
-            <div class="player-buttons">
-                <button id="play-pause-btn"><i class="fas fa-play"></i></button>
-                <button id="stop-btn"><i class="fas fa-stop"></i></button>
-            </div>
-            <audio id="audio-element" style="display: none;"></audio>
-        </div>
+    <div class="filter-tabs" id="genre-filters">
+      <span class="filter-tab active" data-genre="">Tous</span>
+      <span class="filter-tab" data-genre="Rap">Rap</span>
+      <span class="filter-tab" data-genre="R&B">R&B</span>
+      <span class="filter-tab" data-genre="Afrobeat">Afrobeat</span>
+      <span class="filter-tab" data-genre="Coupé-Décalé">Coupé-Décalé</span>
+      <span class="filter-tab" data-genre="Zouk">Zouk</span>
+      <span class="filter-tab" data-genre="Gospel">Gospel</span>
+      <span class="filter-tab" data-genre="Autre">Autre</span>
     </div>
-
-    <!-- MODAL DE CONNEXION/INSCRIPTION -->
-    <div class="auth-modal" id="auth-modal">
-        <div class="modal-header">
-            <h2 id="auth-title">Connexion</h2>
-            <span class="close-modal" id="close-modal">&times;</span>
-        </div>
-        
-        <!-- FORMULAIRE DE CONNEXION -->
-        <form id="login-form">
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" id="login-email" required>
-            </div>
-            <div class="form-group">
-                <label>Mot de passe</label>
-                <input type="password" id="login-password" required>
-            </div>
-            <button type="submit" class="btn">Se connecter</button>
-            <div class="switch-auth" id="switch-to-register">Pas encore de compte ? Inscris-toi !</div>
-        </form>
-        
-        <!-- FORMULAIRE D'INSCRIPTION -->
-        <form id="register-form" style="display: none;">
-            <div class="form-group">
-                <label>Nom d'artiste / Producteur</label>
-                <input type="text" id="register-name" required>
-            </div>
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" id="register-email" required>
-            </div>
-            <div class="form-group">
-                <label>Téléphone WhatsApp</label>
-                <input type="tel" id="register-whatsapp" placeholder="+225 XX XX XX XX" required>
-            </div>
-            <div class="form-group">
-                <label>Je suis</label>
-                <select id="register-role" required>
-                    <option value="artist">Artiste</option>
-                    <option value="producer">Producteur</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Mot de passe</label>
-                <input type="password" id="register-password" required>
-            </div>
-            <div class="form-group">
-                <label>Confirmer</label>
-                <input type="password" id="register-confirm" required>
-            </div>
-            <button type="submit" class="btn">S'inscrire</button>
-            <div class="switch-auth" id="switch-to-login">Déjà un compte ? Connecte-toi !</div>
-        </form>
+    <p class="section-title">Derniers sons</p>
+    <div class="songs-grid" id="songs-container">
+      <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>
     </div>
+  </div>
 
-    <!-- MODAL DE PARTAGE -->
-    <div class="share-modal" id="share-modal">
-        <div class="modal-header">
-            <h2>Partager ce morceau</h2>
-            <span class="close-modal" id="close-share">&times;</span>
+  <!-- CLASSEMENTS -->
+  <div class="tab-content" id="tab-rankings">
+    <p class="section-title">🏆 Classements</p>
+    <div class="ranking-section">
+      <div class="ranking-card"><h3>⬇️ Top téléchargements</h3><div id="top-downloads"></div></div>
+      <div class="ranking-card"><h3>👁️ Top écoutes</h3><div id="top-views"></div></div>
+      <div class="ranking-card"><h3>❤️ Top likes</h3><div id="top-likes"></div></div>
+    </div>
+  </div>
+
+  <!-- ACTUALITÉS -->
+  <div class="tab-content" id="tab-articles">
+    <p class="section-title">📰 Actualités musicales</p>
+    <div class="articles-grid" id="articles-container">
+      <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>
+    </div>
+  </div>
+
+  <!-- ESPACE ARTISTE -->
+  <div class="tab-content" id="tab-dashboard">
+    <div class="dashboard-section">
+      <h2>🎤 Espace Artiste / Producteur</h2>
+      <form id="upload-form" class="upload-form">
+        <h3>Publier un nouveau son</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Titre du morceau *</label>
+            <input type="text" id="song-title" placeholder="Ex: Mon premier son" required>
+          </div>
+          <div class="form-group">
+            <label>Nom d'artiste *</label>
+            <input type="text" id="song-artist-name" placeholder="Ex: MC Kalif" required>
+          </div>
         </div>
-        <div class="share-links">
-            <div class="share-link-item">
-                <label>🔗 Lien d'écoute (streaming)</label>
-                <div class="share-url">
-                    <input type="text" id="listen-link" readonly>
-                    <button class="copy-btn" onclick="copyLink('listen')">Copier</button>
-                </div>
-            </div>
-            <div class="share-link-item">
-                <label>⬇️ Lien de téléchargement direct</label>
-                <div class="share-url">
-                    <input type="text" id="download-link" readonly>
-                    <button class="copy-btn" onclick="copyLink('download')">Copier</button>
-                </div>
-            </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nom du label</label>
+            <input type="text" id="song-label" placeholder="Ex: Universal Music">
+          </div>
+          <div class="form-group">
+            <label>Année de sortie *</label>
+            <input type="number" id="song-year" placeholder="2025" min="1900" max="2099" required>
+          </div>
         </div>
-        <p style="text-align: center; color: #666; margin-top: 1rem;">
-            <i class="fas fa-info-circle"></i> Ces liens peuvent être partagés partout !
+        <div class="form-group">
+          <label>Featuring (artistes invités)</label>
+          <input type="text" id="song-featuring" placeholder="Ex: Artiste1, Artiste2 (optionnel)">
+        </div>
+        <div class="form-group">
+          <label>Genre musical *</label>
+          <select id="song-genre" required>
+            <option value="">Choisis un genre</option>
+            <option value="Rap">Rap</option>
+            <option value="R&B">R&B</option>
+            <option value="Afrobeat">Afrobeat</option>
+            <option value="Coupé-Décalé">Coupé-Décalé</option>
+            <option value="Zouk">Zouk</option>
+            <option value="Gospel">Gospel</option>
+            <option value="Autre">Autre</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="song-description" rows="3" placeholder="Parle de ton son..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Pochette (image) *</label>
+          <div class="file-input" id="cover-dropzone">
+            <i class="fas fa-image"></i>
+            <p>Clique ou glisse ton image ici</p>
+            <small>JPG, PNG — Max 10 MB</small>
+            <input type="file" id="cover-file" accept="image/*" style="display:none" required>
+          </div>
+          <div class="file-preview" id="cover-preview">
+            <img src="" alt="Aperçu" class="preview-image">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Fichier audio (MP3) *</label>
+          <div class="file-input" id="audio-dropzone">
+            <i class="fas fa-music"></i>
+            <p>Clique ou glisse ton MP3 ici</p>
+            <small>MP3 — Max 50 MB</small>
+            <input type="file" id="audio-file" accept="audio/mpeg" style="display:none" required>
+          </div>
+          <div class="file-preview" id="audio-preview">
+            <p style="color:var(--green);font-size:.85rem"><i class="fas fa-check-circle"></i> Fichier : <span id="audio-filename"></span></p>
+          </div>
+        </div>
+        <button type="submit" class="btn" id="upload-btn">
+          <span id="upload-btn-text">Publier mon son</span>
+          <span class="loading" id="upload-loading" style="display:none"></span>
+        </button>
+        <p style="text-align:center;color:var(--text2);font-size:.78rem;margin-top:.8rem">
+          <i class="fas fa-info-circle"></i> Ton son sera visible après validation par l'administrateur.
         </p>
+      </form>
     </div>
-
-    <!-- FOOTER AVEC DROITS D'AUTEUR F2K MULTISERVICE -->
-    <footer class="footer">
-        <p>F2K STREAM</p>
-        <p>La voix des artistes indépendants</p>
-        <p>Plateforme de streaming musical pour artistes et producteurs</p>
-        <p><i class="fas fa-phone"></i> +229 01 99 87 87 42 | <i class="fas fa-envelope"></i> f2kmultiservice@gmail.com</p>
-        <p class="copyright">© 2025 F2K MULTISERVICE. Tous droits réservés.</p>
-                </footer>    <script type="module">
-        // ============================================
-        // IMPORTS FIREBASE
-        // ============================================
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, orderBy, limit, getDocs, where, updateDoc, doc, increment, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        // ============================================
-        // CONFIGURATION FIREBASE
-        // ============================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyBTbU1ZNVCazGd08ItnVlfqQD99dL2XVqI",
-            authDomain: "f2k-stream.firebaseapp.com",
-            databaseURL: "https://f2k-stream-default-rtdb.firebaseio.com",
-            projectId: "f2k-stream",
-            storageBucket: "f2k-stream.firebasestorage.app",
-            messagingSenderId: "452692882656",
-            appId: "1:452692882656:web:675980ff4a20c40a4a0c85"
-        };
-
-        // Initialisation Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        // Email de l'administrateur
-        const ADMIN_EMAIL = "f2kmultiservice@gmail.com";
-
-        // ============================================
-        // ÉLÉMENTS DOM
-        // ============================================
-        const songsContainer = document.getElementById('songs-container');
-        const mySongsContainer = document.getElementById('my-songs-container');
-        const adminSongsContainer = document.getElementById('admin-songs-container');
-        const adminUsersContainer = document.getElementById('admin-users-container');
-        const adminArticlesContainer = document.getElementById('admin-articles-container');
-        const articlesContainer = document.getElementById('articles-container');
-        const authModal = document.getElementById('auth-modal');
-        const shareModal = document.getElementById('share-modal');
-        const loginForm = document.getElementById('login-form');
-        const registerForm = document.getElementById('register-form');
-        const loginBtn = document.getElementById('login-btn');
-        const registerBtn = document.getElementById('register-btn');
-        const logoutBtn = document.getElementById('logout-btn');
-        const closeModal = document.getElementById('close-modal');
-        const closeShare = document.getElementById('close-share');
-        const switchToRegister = document.getElementById('switch-to-register');
-        const switchToLogin = document.getElementById('switch-to-login');
-        const authTitle = document.getElementById('auth-title');
-        const dashboardLink = document.getElementById('dashboard-link');
-        const adminLink = document.getElementById('admin-link');
-        const uploadForm = document.getElementById('upload-form');
-        const articleForm = document.getElementById('article-form');
-        const coverFile = document.getElementById('cover-file');
-        const audioFile = document.getElementById('audio-file');
-        const coverDropzone = document.getElementById('cover-dropzone');
-        const audioDropzone = document.getElementById('audio-dropzone');
-        const coverPreview = document.getElementById('cover-preview');
-        const audioPreview = document.getElementById('audio-preview');
-        const audioFilename = document.getElementById('audio-filename');
-        const uploadBtn = document.getElementById('upload-btn');
-        const articleTitle = document.getElementById('article-title');
-        const articleContent = document.getElementById('article-content');
-        const articleImage = document.getElementById('article-image');
-        const successMsg = document.getElementById('success-message');
-        const errorMsg = document.getElementById('error-message');
-        const audioPlayer = document.getElementById('audio-player');
-        const audioElement = document.getElementById('audio-element');
-        const playPauseBtn = document.getElementById('play-pause-btn');
-        const stopBtn = document.getElementById('stop-btn');
-        const playerCover = document.getElementById('player-cover');
-        const playerTitle = document.getElementById('player-title');
-        const playerArtist = document.getElementById('player-artist');
-        const topDownloads = document.getElementById('top-downloads');
-        const topViews = document.getElementById('top-views');
-        const topLikes = document.getElementById('top-likes');
-        const listenLink = document.getElementById('listen-link');
-        const downloadLink = document.getElementById('download-link');
-
-        const tabTriggers = document.querySelectorAll('.tab-trigger');
-        const tabButtons = document.querySelectorAll('.tab-button');
-        const tabContents = document.querySelectorAll('.tab-content');
-
-        // ============================================
-        // VARIABLES GLOBALES
-        // ============================================
-        let currentUser = null;
-        let currentSong = null;
-        let isAdmin = false;
-        let currentShareSong = null;
-
-        // ============================================
-        // FONCTIONS UTILITAIRES
-        // ============================================
-        function showSuccess(message) {
-            successMsg.textContent = message;
-            successMsg.classList.add('show');
-            setTimeout(() => successMsg.classList.remove('show'), 3000);
-        }
-
-        function showError(message) {
-            errorMsg.textContent = message;
-            errorMsg.classList.add('show');
-            setTimeout(() => errorMsg.classList.remove('show'), 3000);
-        }
-
-        function showAuthModal(type) {
-            authModal.classList.add('active');
-            if (type === 'register') {
-                loginForm.style.display = 'none';
-                registerForm.style.display = 'block';
-                authTitle.textContent = 'Inscription Artiste / Producteur';
-            } else {
-                loginForm.style.display = 'block';
-                registerForm.style.display = 'none';
-                authTitle.textContent = 'Connexion';
-            }
-        }
-
-        // Fonction pour copier un lien
-        window.copyLink = function(type) {
-            const input = type === 'listen' ? listenLink : downloadLink;
-            input.select();
-            document.execCommand('copy');
-            showSuccess('Lien copié !');
-        };
-
-        // ============================================
-        // GESTION DES ONGLETS (VERSION ULTRA ROBUSTE)
-        // ============================================
-        console.log("Initialisation des onglets...");
-        
-        // Fonction pour afficher un onglet spécifique
-        window.showTab = function(tabId) {
-            console.log("Tentative d'affichage de l'onglet:", tabId);
-            
-            // Désactiver tous les onglets
-            tabButtons.forEach(b => b.classList.remove('active'));
-            tabContents.forEach(c => {
-                c.classList.remove('active');
-                c.style.display = 'none';
-            });
-            
-            // Activer le bouton correspondant
-            const activeButton = Array.from(tabButtons).find(btn => btn.dataset.tab === tabId);
-            if (activeButton) {
-                activeButton.classList.add('active');
-            }
-            
-            // Afficher le contenu
-            const targetTab = document.getElementById(`tab-${tabId}`);
-            if (targetTab) {
-                targetTab.classList.add('active');
-                targetTab.style.display = 'block';
-                console.log(`✅ Onglet ${tabId} affiché`);
-                
-                // Charger les données si nécessaire
-                if (tabId === 'admin' && isAdmin) {
-                    loadAdminUsers();
-                    loadAdminSongs();
-                    loadAdminArticles();
-                } else if (tabId === 'articles') {
-                    loadArticles();
-                } else if (tabId === 'dashboard' && currentUser) {
-                    loadMySongs();
-                }
-                return true;
-            } else {
-                console.error(`❌ Onglet ${tabId} introuvable`);
-                return false;
-            }
-        };
-
-        // Attacher les événements aux boutons d'onglet
-        tabButtons.forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                const tabId = this.dataset.tab;
-                window.showTab(tabId);
-            });
-        });
-
-        // Gestion des liens de navigation
-        tabTriggers.forEach(trigger => {
-            trigger.addEventListener('click', (e) => {
-                e.preventDefault();
-                const tabId = trigger.dataset.tab;
-                
-                if (tabId === 'dashboard' && !currentUser) {
-                    showAuthModal('login');
-                    return;
-                }
-                
-                if (tabId === 'admin' && !isAdmin) {
-                    showError("Seul l'administrateur peut accéder à cet espace");
-                    return;
-                }
-                
-                window.showTab(tabId);
-            });
-        });
-
-        // ============================================
-        // UPLOAD VERS CATBOX (GRATUIT)
-        // ============================================
-        async function uploadToCatbox(file) {
-            const formData = new FormData();
-            formData.append('fileToUpload', file);
-            formData.append('reqtype', 'fileupload');
-            
-            const response = await fetch('https://catbox.moe/user/api.php', {
-                method: 'POST',
-                body: formData
-            });
-            
-            if (!response.ok) throw new Error("Erreur upload");
-            const fileUrl = await response.text();
-            return fileUrl;
-        }
-
-        // ============================================
-        // AUTHENTIFICATION
-        // ============================================
-        loginBtn.addEventListener('click', () => showAuthModal('login'));
-        registerBtn.addEventListener('click', () => showAuthModal('register'));
-
-        closeModal.addEventListener('click', () => authModal.classList.remove('active'));
-        closeShare.addEventListener('click', () => shareModal.classList.remove('active'));
-
-        switchToRegister.addEventListener('click', () => showAuthModal('register'));
-        switchToLogin.addEventListener('click', () => showAuthModal('login'));
-
-        // Inscription
-        registerForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const name = document.getElementById('register-name').value;
-            const email = document.getElementById('register-email').value;
-            const whatsapp = document.getElementById('register-whatsapp').value;
-            const role = document.getElementById('register-role').value;
-            const password = document.getElementById('register-password').value;
-            const confirm = document.getElementById('register-confirm').value;
-
-            if (password !== confirm) {
-                showError('Les mots de passe ne correspondent pas');
-                return;
-            }
-
-            try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
-
-                const isUserAdmin = (email === ADMIN_EMAIL);
-                
-                await setDoc(doc(db, 'users', user.uid), {
-                    name: name,
-                    email: email,
-                    whatsapp: whatsapp,
-                    role: isUserAdmin ? 'admin' : role,
-                    isBanned: false,
-                    createdAt: new Date().toISOString()
-                });
-
-                authModal.classList.remove('active');
-                showSuccess(isUserAdmin ? 'Bienvenue Administrateur !' : 'Inscription réussie !');
-                
-            } catch (error) {
-                showError(error.message);
-            }
-        });        // Connexion
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-
-            try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                
-                const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
-                if (userDoc.exists() && userDoc.data().isBanned) {
-                    await signOut(auth);
-                    showError('Votre compte a été banni. Contactez l\'administrateur.');
-                    return;
-                }
-                
-                authModal.classList.remove('active');
-                showSuccess('Connexion réussie !');
-            } catch (error) {
-                showError('Email ou mot de passe incorrect');
-            }
-        });
-
-        // Déconnexion
-        logoutBtn.addEventListener('click', async () => {
-            try {
-                await signOut(auth);
-                showSuccess('Déconnexion réussie');
-            } catch (error) {
-                showError(error.message);
-            }
-        });
-
-        // ============================================
-        // ÉTAT DE L'UTILISATEUR (VERSION AMÉLIORÉE)
-        // ============================================
-        onAuthStateChanged(auth, async (user) => {
-            console.log("Auth state changed:", user ? user.email : "déconnecté");
-            
-            if (user) {
-                currentUser = user;
-                
-                // Récupérer les infos utilisateur depuis Firestore
-                const userDoc = await getDoc(doc(db, 'users', user.uid));
-                if (userDoc.exists()) {
-                    currentUser = { ...user, ...userDoc.data() };
-                    isAdmin = (user.email === ADMIN_EMAIL) || (userDoc.data().role === 'admin');
-                } else {
-                    // Si l'utilisateur n'a pas de document, en créer un (cas admin)
-                    if (user.email === ADMIN_EMAIL) {
-                        await setDoc(doc(db, 'users', user.uid), {
-                            name: 'Administrateur',
-                            email: user.email,
-                            role: 'admin',
-                            isBanned: false,
-                            createdAt: new Date().toISOString()
-                        });
-                        isAdmin = true;
-                        currentUser = { ...user, name: 'Administrateur', role: 'admin' };
-                    }
-                }
-                
-                // Mise à jour de l'interface
-                loginBtn.style.display = 'none';
-                registerBtn.style.display = 'none';
-                logoutBtn.style.display = 'inline';
-                
-                if (isAdmin) {
-                    dashboardLink.style.display = 'inline';
-                    adminLink.style.display = 'inline';
-                    dashboardLink.innerHTML = 'Espace Artiste <span class="admin-badge">Admin</span>';
-                    console.log("👑 Administrateur connecté");
-                    
-                    // Précharger les données admin après connexion
-                    setTimeout(() => {
-                        loadAdminUsers();
-                        loadAdminSongs();
-                        loadAdminArticles();
-                    }, 1000);
-                } else {
-                    dashboardLink.style.display = 'inline';
-                    adminLink.style.display = 'none';
-                    dashboardLink.innerHTML = 'Espace Artiste';
-                }
-                
-                // Charger les données publiques
-                loadSongs();
-                loadRankings();
-                if (!isAdmin) loadMySongs();
-                loadArticles();
-                
-                // Forcer l'affichage de l'onglet accueil
-                window.showTab('home');
-                
-            } else {
-                // Utilisateur déconnecté
-                currentUser = null;
-                isAdmin = false;
-                loginBtn.style.display = 'inline';
-                registerBtn.style.display = 'inline';
-                logoutBtn.style.display = 'none';
-                dashboardLink.style.display = 'none';
-                adminLink.style.display = 'none';
-                
-                loadSongs();
-                loadRankings();
-                loadArticles();
-                window.showTab('home');
-            }
-        });
-
-        // ============================================
-        // UPLOAD DE FICHIERS (PREVIEW)
-        // ============================================
-        if (coverDropzone) {
-            coverDropzone.addEventListener('click', () => coverFile.click());
-
-            coverDropzone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                coverDropzone.style.borderColor = '#667eea';
-            });
-
-            coverDropzone.addEventListener('dragleave', () => {
-                coverDropzone.style.borderColor = '#ddd';
-            });
-
-            coverDropzone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                coverDropzone.style.borderColor = '#ddd';
-                const file = e.dataTransfer.files[0];
-                if (file && file.type.startsWith('image/')) {
-                    coverFile.files = e.dataTransfer.files;
-                    previewCover(file);
-                }
-            });
-        }
-
-        if (coverFile) {
-            coverFile.addEventListener('change', (e) => {
-                if (e.target.files[0]) {
-                    previewCover(e.target.files[0]);
-                }
-            });
-        }
-
-        function previewCover(file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                coverPreview.querySelector('img').src = e.target.result;
-                coverPreview.classList.add('active');
-            };
-            reader.readAsDataURL(file);
-        }
-
-        if (audioDropzone) {
-            audioDropzone.addEventListener('click', () => audioFile.click());
-
-            audioDropzone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                audioDropzone.style.borderColor = '#667eea';
-            });
-
-            audioDropzone.addEventListener('dragleave', () => {
-                audioDropzone.style.borderColor = '#ddd';
-            });
-
-            audioDropzone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                audioDropzone.style.borderColor = '#ddd';
-                const file = e.dataTransfer.files[0];
-                if (file && file.type === 'audio/mpeg') {
-                    audioFile.files = e.dataTransfer.files;
-                    audioFilename.textContent = file.name;
-                    audioPreview.classList.add('active');
-                }
-            });
-        }
-
-        if (audioFile) {
-            audioFile.addEventListener('change', (e) => {
-                if (e.target.files[0]) {
-                    const file = e.target.files[0];
-                    audioFilename.textContent = file.name;
-                    audioPreview.classList.add('active');
-                }
-            });
-        }
-
-        // ============================================
-        // FORMULAIRE D'UPLOAD (ESPACE ARTISTE)
-        // ============================================
-        if (uploadForm) {
-            uploadForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                if (!currentUser) {
-                    showError('Connecte-toi d\'abord !');
-                    showAuthModal('login');
-                    return;
-                }
-                
-                const title = document.getElementById('song-title').value;
-                const description = document.getElementById('song-description').value;
-                const genre = document.getElementById('song-genre').value;
-                const cover = coverFile.files[0];
-                const audio = audioFile.files[0];
-                
-                if (!title || !description || !genre || !cover || !audio) {
-                    showError('Tous les champs sont obligatoires');
-                    return;
-                }
-                
-                if (audio.size > 50 * 1024 * 1024) {
-                    showError('Le MP3 ne doit pas dépasser 50 MB');
-                    return;
-                }
-                
-                if (cover.size > 10 * 1024 * 1024) {
-                    showError('L\'image ne doit pas dépasser 10 MB');
-                    return;
-                }
-                
-                uploadBtn.disabled = true;
-                uploadBtn.querySelector('span').style.display = 'none';
-                uploadBtn.querySelector('.loading').style.display = 'inline-block';
-                
-                try {
-                    showSuccess('Upload en cours... Ne ferme pas la page');
-                    
-                    const coverUrl = await uploadToCatbox(cover);
-                    const audioUrl = await uploadToCatbox(audio);
-                    
-                    const songData = {
-                        title: title,
-                        description: description,
-                        genre: genre,
-                        artistId: currentUser.uid,
-                        artistName: currentUser.name || currentUser.email,
-                        artistEmail: currentUser.email,
-                        coverUrl: coverUrl,
-                        audioUrl: audioUrl,
-                        createdAt: new Date().toISOString(),
-                        likes: 0,
-                        downloads: 0,
-                        views: 0
-                    };
-                    
-                    await addDoc(collection(db, 'songs'), songData);
-                    
-                    uploadForm.reset();
-                    coverPreview.classList.remove('active');
-                    audioPreview.classList.remove('active');
-                    
-                    showSuccess('Son publié avec succès !');
-                    
-                    if (isAdmin) {
-                        loadAdminSongs();
-                    } else {
-                        loadMySongs();
-                    }
-                    loadSongs();
-                    loadRankings();
-                    
-                } catch (error) {
-                    console.error(error);
-                    showError('Erreur lors de l\'upload. Vérifie ta connexion.');
-                } finally {
-                    uploadBtn.disabled = false;
-                    uploadBtn.querySelector('span').style.display = 'inline';
-                    uploadBtn.querySelector('.loading').style.display = 'none';
-                }
-            });
-        }
-
-        // ============================================
-        // ARTICLES (pour admin)
-        // ============================================
-        if (articleForm) {
-            articleForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                if (!isAdmin) {
-                    showError("Seul l'admin peut publier des articles");
-                    return;
-                }
-                
-                const title = articleTitle.value;
-                const content = articleContent.value;
-                const imageFile = articleImage.files[0];
-                
-                if (!title || !content) {
-                    showError('Titre et contenu obligatoires');
-                    return;
-                }
-                
-                const submitBtn = articleForm.querySelector('button[type="submit"]');
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<span class="loading"></span> Publication...';
-                
-                try {
-                    let imageUrl = '';
-                    if (imageFile) {
-                        imageUrl = await uploadToCatbox(imageFile);
-                    }
-                    
-                    await addDoc(collection(db, 'articles'), {
-                        title: title,
-                        content: content,
-                        imageUrl: imageUrl,
-                        authorId: currentUser.uid,
-                        authorName: 'Administrateur',
-                        createdAt: new Date().toISOString()
-                    });
-                    
-                    articleForm.reset();
-                    showSuccess('Article publié !');
-                    loadAdminArticles();
-                    loadArticles();
-                    
-                } catch (error) {
-                    showError('Erreur lors de la publication');
-                } finally {
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = 'Publier l\'article';
-                }
-            });
-        }
-
-        // ============================================
-        // CHARGER LES ARTICLES (public)
-        // ============================================
-        async function loadArticles() {
-            if (!articlesContainer) return;
-            
-            try {
-                const q = query(collection(db, 'articles'), orderBy('createdAt', 'desc'), limit(10));
-                const querySnapshot = await getDocs(q);
-                
-                articlesContainer.innerHTML = '';
-                
-                if (querySnapshot.empty) {
-                    articlesContainer.innerHTML = '<p style="color: white; text-align: center;">Aucun article pour le moment.</p>';
-                    return;
-                }
-                
-                querySnapshot.forEach((doc) => {
-                    const article = { id: doc.id, ...doc.data() };
-                    articlesContainer.appendChild(createArticleCard(article));
-                });
-                
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        function createArticleCard(article) {
-            const card = document.createElement('div');
-            card.className = 'article-card';
-            
-            const date = new Date(article.createdAt).toLocaleDateString('fr-FR');
-            
-            card.innerHTML = `
-                ${article.imageUrl ? `<img src="${article.imageUrl}" alt="${article.title}" class="article-image">` : ''}
-                <div class="article-info">
-                    <div class="article-title">${article.title}</div>
-                    <div class="article-date">${date} • Par ${article.authorName}</div>
-                    <p style="margin-top: 1rem; color: #555;">${article.content.substring(0, 150)}...</p>
-                </div>
-            `;
-            
-            return card;
-    }        // ============================================
-        // ADMIN : GESTION DES UTILISATEURS
-        // ============================================
-        async function loadAdminUsers() {
-            if (!adminUsersContainer || !isAdmin) {
-                console.log("Impossible de charger les utilisateurs: conteneur ou admin manquant");
-                return;
-            }
-            
-            try {
-                console.log("Chargement des utilisateurs...");
-                const q = query(collection(db, 'users'), orderBy('createdAt', 'desc'));
-                const querySnapshot = await getDocs(q);
-                
-                adminUsersContainer.innerHTML = '';
-                
-                if (querySnapshot.empty) {
-                    adminUsersContainer.innerHTML = '<p>Aucun utilisateur trouvé.</p>';
-                    return;
-                }
-                
-                querySnapshot.forEach((doc) => {
-                    const user = { id: doc.id, ...doc.data() };
-                    adminUsersContainer.appendChild(createUserCard(user));
-                });
-                
-                console.log(`${querySnapshot.size} utilisateurs chargés`);
-                
-            } catch (error) {
-                console.error("Erreur chargement utilisateurs:", error);
-                adminUsersContainer.innerHTML = '<p>Erreur de chargement.</p>';
-            }
-        }
-
-        function createUserCard(user) {
-            const card = document.createElement('div');
-            card.className = 'user-card';
-            
-            const isUserAdmin = user.email === ADMIN_EMAIL || user.role === 'admin';
-            
-            card.innerHTML = `
-                <div class="user-info">
-                    <h3>${user.name || 'Sans nom'}</h3>
-                    <p><i class="fas fa-envelope"></i> ${user.email}</p>
-                    <p><i class="fas fa-phone"></i> ${user.whatsapp || 'Non renseigné'}</p>
-                    <p><i class="fas fa-tag"></i> ${user.role || 'Artiste'}</p>
-                    <p><i class="fas fa-clock"></i> ${new Date(user.createdAt).toLocaleDateString('fr-FR')}</p>
-                    <p><i class="fas fa-ban"></i> ${user.isBanned ? 'Banni' : 'Actif'}</p>
-                    
-                    ${!isUserAdmin ? `
-                        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-                            <button class="btn ban-user" data-user-id="${user.id}" data-ban="${!user.isBanned}" style="background: ${user.isBanned ? '#4CAF50' : '#f44336'};">
-                                ${user.isBanned ? 'Réactiver' : 'Bannir'}
-                            </button>
-                            <button class="btn delete-user" data-user-id="${user.id}" style="background: #f44336;">
-                                Supprimer
-                            </button>
-                        </div>
-                    ` : '<p style="color: gold; margin-top: 1rem;">👑 Administrateur</p>'}
-                </div>
-            `;
-            
-            if (!isUserAdmin) {
-                card.querySelector('.ban-user').addEventListener('click', () => toggleBanUser(user.id, !user.isBanned));
-                card.querySelector('.delete-user').addEventListener('click', () => deleteUser(user.id));
-            }
-            
-            return card;
-        }
-
-        async function toggleBanUser(userId, ban) {
-            if (!isAdmin) return;
-            
-            try {
-                await updateDoc(doc(db, 'users', userId), {
-                    isBanned: ban
-                });
-                showSuccess(ban ? 'Utilisateur banni' : 'Utilisateur réactivé');
-                loadAdminUsers();
-            } catch (error) {
-                showError('Erreur');
-            }
-        }
-
-        async function deleteUser(userId) {
-            if (!isAdmin) return;
-            
-            if (!confirm('⚠️ Supprimer cet utilisateur ? Tous ses morceaux seront aussi supprimés !')) {
-                return;
-            }
-            
-            try {
-                const songsQuery = query(collection(db, 'songs'), where('artistId', '==', userId));
-                const songsSnapshot = await getDocs(songsQuery);
-                
-                songsSnapshot.forEach(async (songDoc) => {
-                    await deleteDoc(doc(db, 'songs', songDoc.id));
-                });
-                
-                await deleteDoc(doc(db, 'users', userId));
-                
-                showSuccess('Utilisateur et ses morceaux supprimés');
-                loadAdminUsers();
-                loadAdminSongs();
-                loadSongs();
-                
-            } catch (error) {
-                showError('Erreur lors de la suppression');
-            }
-        }
-
-        // ============================================
-        // ADMIN : GESTION DES MORCEAUX
-        // ============================================
-        async function loadAdminSongs() {
-            if (!adminSongsContainer || !isAdmin) return;
-            
-            try {
-                console.log("Chargement des morceaux...");
-                const q = query(collection(db, 'songs'), orderBy('createdAt', 'desc'));
-                const querySnapshot = await getDocs(q);
-                
-                adminSongsContainer.innerHTML = '';
-                
-                if (querySnapshot.empty) {
-                    adminSongsContainer.innerHTML = '<p>Aucun morceau trouvé.</p>';
-                    return;
-                }
-                
-                querySnapshot.forEach((doc) => {
-                    const song = { id: doc.id, ...doc.data() };
-                    adminSongsContainer.appendChild(createAdminSongCard(song));
-                });
-                
-                console.log(`${querySnapshot.size} morceaux chargés`);
-                
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        function createAdminSongCard(song) {
-            const card = document.createElement('div');
-            card.className = 'song-card';
-            
-            card.innerHTML = `
-                <img src="${song.coverUrl || 'https://via.placeholder.com/300x200?text=No+Cover'}" alt="${song.title}" class="song-cover">
-                <div class="song-info">
-                    <div class="song-title">${song.title}</div>
-                    <div class="song-artist">${song.artistName}</div>
-                    <div class="song-stats">
-                        <span class="stat-item"><i class="fas fa-play"></i> ${song.views || 0}</span>
-                        <span class="stat-item"><i class="fas fa-heart"></i> ${song.likes || 0}</span>
-                        <span class="stat-item"><i class="fas fa-download"></i> ${song.downloads || 0}</span>
-                    </div>
-                    <button class="btn-delete" data-song-id="${song.id}" style="width: 100%;">
-                        <i class="fas fa-trash"></i> Supprimer
-                    </button>
-                </div>
-            `;
-            
-            card.querySelector('.btn-delete').addEventListener('click', () => deleteSong(song.id));
-            
-            return card;
-        }
-
-        async function deleteSong(songId) {
-            if (!isAdmin && !currentUser) return;
-            
-            if (!confirm('Supprimer ce morceau ?')) return;
-            
-            try {
-                await deleteDoc(doc(db, 'songs', songId));
-                showSuccess('Morceau supprimé');
-                loadAdminSongs();
-                loadSongs();
-                if (!isAdmin) loadMySongs();
-            } catch (error) {
-                showError('Erreur');
-            }
-        }
-
-        // ============================================
-        // ADMIN : GESTION DES ARTICLES
-        // ============================================
-        async function loadAdminArticles() {
-            if (!adminArticlesContainer || !isAdmin) return;
-            
-            try {
-                console.log("Chargement des articles...");
-                const q = query(collection(db, 'articles'), orderBy('createdAt', 'desc'));
-                const querySnapshot = await getDocs(q);
-                
-                adminArticlesContainer.innerHTML = '';
-                
-                if (querySnapshot.empty) {
-                    adminArticlesContainer.innerHTML = '<p>Aucun article trouvé.</p>';
-                    return;
-                }
-                
-                querySnapshot.forEach((doc) => {
-                    const article = { id: doc.id, ...doc.data() };
-                    adminArticlesContainer.appendChild(createAdminArticleCard(article));
-                });
-                
-                console.log(`${querySnapshot.size} articles chargés`);
-                
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        function createAdminArticleCard(article) {
-            const card = document.createElement('div');
-            card.className = 'article-card';
-            
-            const date = new Date(article.createdAt).toLocaleDateString('fr-FR');
-            
-            card.innerHTML = `
-                ${article.imageUrl ? `<img src="${article.imageUrl}" alt="${article.title}" class="article-image">` : ''}
-                <div class="article-info">
-                    <div class="article-title">${article.title}</div>
-                    <div class="article-date">${date}</div>
-                    <button class="btn-delete" data-article-id="${article.id}" style="margin-top: 1rem;">
-                        Supprimer
-                    </button>
-                </div>
-            `;
-            
-            card.querySelector('.btn-delete').addEventListener('click', () => deleteArticle(article.id));
-            
-            return card;
-        }
-
-        async function deleteArticle(articleId) {
-            if (!isAdmin) return;
-            
-            if (!confirm('Supprimer cet article ?')) return;
-            
-            try {
-                await deleteDoc(doc(db, 'articles', articleId));
-                showSuccess('Article supprimé');
-                loadAdminArticles();
-                loadArticles();
-            } catch (error) {
-                showError('Erreur');
-            }
-        }
-
-        // ============================================
-        // CHARGER LES SONS (public)
-        // ============================================
-        async function loadSongs() {
-            try {
-                const q = query(collection(db, 'songs'), orderBy('createdAt', 'desc'), limit(20));
-                const querySnapshot = await getDocs(q);
-                
-                songsContainer.innerHTML = '';
-                
-                if (querySnapshot.empty) {
-                    songsContainer.innerHTML = '<p style="color: white; text-align: center;">Aucun son pour le moment. Sois le premier à publier !</p>';
-                    return;
-                }
-                
-                querySnapshot.forEach((doc) => {
-                    const song = { id: doc.id, ...doc.data() };
-                    songsContainer.appendChild(createSongCard(song));
-                });
-                
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        async function loadMySongs() {
-            if (!currentUser) return;
-            
-            try {
-                const q = query(
-                    collection(db, 'songs'), 
-                    where('artistId', '==', currentUser.uid),
-                    orderBy('createdAt', 'desc')
-                );
-                const querySnapshot = await getDocs(q);
-                
-                mySongsContainer.innerHTML = '';
-                
-                if (querySnapshot.empty) {
-                    mySongsContainer.innerHTML = '<p style="text-align: center;">Tu n\'as pas encore publié de son.</p>';
-                    return;
-                }
-                
-                querySnapshot.forEach((doc) => {
-                    const song = { id: doc.id, ...doc.data() };
-                    mySongsContainer.appendChild(createSongCard(song, true));
-                });
-                
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        function createSongCard(song, isDashboard = false) {
-            const card = document.createElement('div');
-            card.className = 'song-card';
-            
-            card.innerHTML = `
-                <img src="${song.coverUrl || 'https://via.placeholder.com/300x200?text=No+Cover'}" alt="${song.title}" class="song-cover">
-                <div class="song-info">
-                    <div class="song-title">${song.title}</div>
-                    <div class="song-artist">${song.artistName}</div>
-                    <div class="song-stats">
-                        <span class="stat-item"><i class="fas fa-play"></i> ${song.views || 0}</span>
-                        <span class="stat-item"><i class="fas fa-heart"></i> ${song.likes || 0}</span>
-                        <span class="stat-item"><i class="fas fa-download"></i> ${song.downloads || 0}</span>
-                    </div>
-                    <div class="song-actions">
-                        <button class="btn-play" data-song-id="${song.id}">
-                            <i class="fas fa-play"></i>
-                        </button>
-                        <button class="btn-download" data-song-url="${song.audioUrl}" data-song-id="${song.id}">
-                            <i class="fas fa-download"></i>
-                        </button>
-                        <button class="btn-share" data-song-id="${song.id}">
-                            <i class="fas fa-share-alt"></i>
-                        </button>
-                        ${(isAdmin || (currentUser && currentUser.uid === song.artistId)) ? `
-                            <button class="btn-delete" data-song-id="${song.id}">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        ` : ''}
-                    </div>
-                </div>
-            `;
-            
-            card.querySelector('.btn-play').addEventListener('click', () => playSong(song));
-            
-            card.querySelector('.btn-download').addEventListener('click', async (e) => {
-                e.stopPropagation();
-                try {
-                    await updateDoc(doc(db, 'songs', song.id), {
-                        downloads: increment(1)
-                    });
-                    window.open(song.audioUrl, '_blank');
-                    loadRankings();
-                } catch (error) {
-                    console.error(error);
-                }
-            });
-            
-            card.querySelector('.btn-share').addEventListener('click', () => {
-                currentShareSong = song;
-                listenLink.value = window.location.origin + '/F2K-STREAM/?play=' + song.id;
-                downloadLink.value = song.audioUrl;
-                shareModal.classList.add('active');
-            });
-            
-            if (isAdmin || (currentUser && currentUser.uid === song.artistId)) {
-                card.querySelector('.btn-delete').addEventListener('click', () => deleteSong(song.id));
-            }
-            
-            return card;
-        }
-
-        // ============================================
-        // LECTEUR AUDIO
-        // ============================================
-        function playSong(song) {
-            currentSong = song;
-            
-            playerCover.src = song.coverUrl || 'https://via.placeholder.com/50x50';
-            playerTitle.textContent = song.title;
-            playerArtist.textContent = song.artistName;
-            
-            audioElement.src = song.audioUrl;
-            audioPlayer.classList.add('active');
-            audioElement.play();
-            playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            
-            incrementView(song.id);
-        }
-
-        playPauseBtn.addEventListener('click', () => {
-            if (audioElement.paused) {
-                audioElement.play();
-                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            } else {
-                audioElement.pause();
-                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-            }
-        });
-
-        stopBtn.addEventListener('click', () => {
-            audioElement.pause();
-            audioElement.currentTime = 0;
-            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-        });
-
-        audioElement.addEventListener('ended', () => {
-            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-        });
-
-        async function incrementView(songId) {
-            try {
-                const songRef = doc(db, 'songs', songId);
-                await updateDoc(songRef, {
-                    views: increment(1)
-                });
-                loadRankings();
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        // ============================================
-        // CLASSEMENTS
-        // ============================================
-        async function loadRankings() {
-            try {
-                const downloadsQ = query(collection(db, 'songs'), orderBy('downloads', 'desc'), limit(5));
-                const downloadsSnapshot = await getDocs(downloadsQ);
-                topDownloads.innerHTML = '';
-                downloadsSnapshot.forEach((doc) => {
-                    const song = doc.data();
-                    topDownloads.innerHTML += `
-                        <div class="ranking-item">
-                            <div class="ranking-icon">⬇️</div>
-                            <div class="ranking-info">
-                                <div class="ranking-title">${song.title}</div>
-                                <div class="ranking-artist">${song.artistName}</div>
-                            </div>
-                            <div>${song.downloads || 0}</div>
-                        </div>
-                    `;
-                });
-
-                const viewsQ = query(collection(db, 'songs'), orderBy('views', 'desc'), limit(5));
-                const viewsSnapshot = await getDocs(viewsQ);
-                topViews.innerHTML = '';
-                viewsSnapshot.forEach((doc) => {
-                    const song = doc.data();
-                    topViews.innerHTML += `
-                        <div class="ranking-item">
-                            <div class="ranking-icon">👁️</div>
-                            <div class="ranking-info">
-                                <div class="ranking-title">${song.title}</div>
-                                <div class="ranking-artist">${song.artistName}</div>
-                            </div>
-                            <div>${song.views || 0}</div>
-                        </div>
-                    `;
-                });
-
-                const likesQ = query(collection(db, 'songs'), orderBy('likes', 'desc'), limit(5));
-                const likesSnapshot = await getDocs(likesQ);
-                topLikes.innerHTML = '';
-                likesSnapshot.forEach((doc) => {
-                    const song = doc.data();
-                    topLikes.innerHTML += `
-                        <div class="ranking-item">
-                            <div class="ranking-icon">❤️</div>
-                            <div class="ranking-info">
-                                <div class="ranking-title">${song.title}</div>
-                                <div class="ranking-artist">${song.artistName}</div>
-                            </div>
-                            <div>${song.likes || 0}</div>
-                        </div>
-                    `;
-                });
-                
-            } catch (error) {                const likesQ = query(collection(db, 'songs'), orderBy('likes', 'desc'), limit(5));
-                const likesSnapshot = await getDocs(likesQ);
-                topLikes.innerHTML = '';
-                likesSnapshot.forEach((doc) => {
-                    const song = doc.data();
-                    topLikes.innerHTML += `
-                        <div class="ranking-item">
-                            <div class="ranking-icon">❤️</div>
-                            <div class="ranking-info">
-                                <div class="ranking-title">${song.title}</div>
-                                <div class="ranking-artist">${song.artistName}</div>
-                            </div>
-                            <div>${song.likes || 0}</div>
-                        </div>
-                    `;
-                });
-                
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        // ============================================
-        // GESTION DES PARAMÈTRES D'URL (liens partagés)
-        // ============================================
-        (function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const playId = urlParams.get('play');
-            
-            if (playId) {
-                setTimeout(async () => {
-                    try {
-                        const songDoc = await getDoc(doc(db, 'songs', playId));
-                        if (songDoc.exists()) {
-                            playSong({ id: songDoc.id, ...songDoc.data() });
-                        }
-                    } catch (error) {
-                        console.error('Erreur chargement:', error);
-                    }
-                }, 1500);
-            }
-        })();
-
-        // ============================================
-        // FONCTION DE DIAGNOSTIC (à utiliser dans la console)
-        // ============================================
-        window.diagnostic = function() {
-            console.log("=== DIAGNOSTIC F2K STREAM ===");
-            console.log("Utilisateur connecté:", currentUser?.email || "Non connecté");
-            console.log("Est admin:", isAdmin);
-            console.log("Formulaire upload trouvé:", !!document.getElementById('upload-form'));
-            console.log("Conteneur admin utilisateurs trouvé:", !!adminUsersContainer);
-            console.log("Conteneur admin morceaux trouvé:", !!adminSongsContainer);
-            console.log("Conteneur admin articles trouvé:", !!adminArticlesContainer);
-            console.log("Onglet dashboard trouvé:", !!document.getElementById('tab-dashboard'));
-            console.log("Onglet admin trouvé:", !!document.getElementById('tab-admin'));
-            console.log("==============================");
-        };
-
-        // Initialisation
-        console.log('✅ Site F2K STREAM chargé avec succès !');
-        console.log('👑 Admin email:', ADMIN_EMAIL);
-        console.log('📝 Tape "diagnostic()" dans la console pour vérifier l\'état du site');
-    </script>
+    <div class="dashboard-section">
+      <h3>Mes sons publiés</h3>
+      <div class="songs-grid" id="my-songs-container">
+        <div class="empty-state"><i class="fas fa-music"></i><p>Tu n'as pas encore publié de son.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ESPACE ADMIN -->
+  <div class="tab-content" id="tab-admin">
+    <div class="dashboard-section">
+      <h2>👑 Administration</h2>
+      <div class="admin-stats">
+        <div class="stat-card"><div class="stat-card-num" id="stat-users">-</div><div class="stat-card-label">Utilisateurs</div></div>
+        <div class="stat-card"><div class="stat-card-num" id="stat-songs">-</div><div class="stat-card-label">Sons publiés</div></div>
+        <div class="stat-card"><div class="stat-card-num" id="stat-pending">-</div><div class="stat-card-label">En attente</div></div>
+        <div class="stat-card"><div class="stat-card-num" id="stat-articles">-</div><div class="stat-card-label">Articles</div></div>
+      </div>
+      <div style="margin-bottom:2.5rem">
+        <h3>🎵 Publier un son directement</h3>
+        <form id="admin-upload-form" style="margin-top:1rem">
+          <div class="form-row">
+            <div class="form-group"><label>Titre *</label><input type="text" id="admin-song-title" required></div>
+            <div class="form-group"><label>Nom d'artiste *</label><input type="text" id="admin-song-artist-name" required></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Nom du label</label><input type="text" id="admin-song-label"></div>
+            <div class="form-group"><label>Année *</label><input type="number" id="admin-song-year" placeholder="2025" min="1900" max="2099" required></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Featuring</label><input type="text" id="admin-song-featuring" placeholder="Optionnel"></div>
+            <div class="form-group">
+              <label>Genre *</label>
+              <select id="admin-song-genre" required>
+                <option value="">Choisir</option>
+                <option value="Rap">Rap</option>
+                <option value="R&B">R&B</option>
+                <option value="Afrobeat">Afrobeat</option>
+                <option value="Coupé-Décalé">Coupé-Décalé</option>
+                <option value="Zouk">Zouk</option>
+                <option value="Gospel">Gospel</option>
+                <option value="Autre">Autre</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group"><label>Description</label><textarea id="admin-song-description" rows="2"></textarea></div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Pochette *</label>
+              <div class="file-input" id="admin-cover-dropzone">
+                <i class="fas fa-image"></i><p>Image ici</p><small>JPG/PNG Max 10MB</small>
+                <input type="file" id="admin-cover-file" accept="image/*" style="display:none" required>
+              </div>
+              <div class="file-preview" id="admin-cover-preview"><img src="" alt="" class="preview-image"></div>
+            </div>
+            <div class="form-group">
+              <label>Fichier MP3 *</label>
+              <div class="file-input" id="admin-audio-dropzone">
+                <i class="fas fa-music"></i><p>MP3 ici</p><small>Max 50MB</small>
+                <input type="file" id="admin-audio-file" accept="audio/mpeg" style="display:none" required>
+              </div>
+              <div class="file-preview" id="admin-audio-preview">
+                <p style="color:var(--green);font-size:.82rem"><i class="fas fa-check-circle"></i> <span id="admin-audio-filename"></span></p>
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn" id="admin-upload-btn">
+            <span id="admin-upload-btn-text">Publier le son</span>
+            <span class="loading" id="admin-upload-loading" style="display:none"></span>
+          </button>
+        </form>
+      </div><!-- PUBLIER UN ARTICLE -->
+      <div style="margin-bottom:2.5rem">
+        <h3>📰 Publier un article</h3>
+        <form id="article-form" style="max-width:600px;margin-top:1rem">
+          <div class="form-group"><label>Titre *</label><input type="text" id="article-title" required></div>
+          <div class="form-group"><label>Contenu *</label><textarea id="article-content" rows="5" required></textarea></div>
+          <div class="form-group"><label>Image (optionnelle)</label><input type="file" id="article-image" accept="image/*" style="color:var(--text2)"></div>
+          <button type="submit" class="btn" id="article-btn">
+            <span id="article-btn-text">Publier l'article</span>
+            <span class="loading" id="article-loading" style="display:none"></span>
+          </button>
+        </form>
+      </div>
+
+      <!-- SONS EN ATTENTE -->
+      <div style="margin-bottom:2.5rem">
+        <h3>⏳ Sons en attente de validation</h3>
+        <div class="songs-grid" id="admin-pending-container">
+          <div class="empty-state"><i class="fas fa-check-double"></i><p>Aucun son en attente.</p></div>
+        </div>
+      </div>
+
+      <!-- GESTION UTILISATEURS -->
+      <div style="margin-bottom:2.5rem">
+        <h3>👥 Gestion des utilisateurs</h3>
+        <div class="users-grid" id="admin-users-container">
+          <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>
+        </div>
+      </div>
+
+      <!-- TOUS LES MORCEAUX -->
+      <div style="margin-bottom:2.5rem">
+        <h3>🎵 Tous les morceaux</h3>
+        <div class="songs-grid" id="admin-songs-container">
+          <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>
+        </div>
+      </div>
+
+      <!-- ARTICLES PUBLIÉS -->
+      <div style="margin-bottom:2.5rem">
+        <h3>📰 Articles publiés</h3>
+        <div class="articles-grid" id="admin-articles-container">
+          <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- LECTEUR AUDIO -->
+<div class="audio-player" id="audio-player">
+  <div class="player-controls">
+    <div class="now-playing">
+      <img id="player-cover" src="" alt="Cover">
+      <div>
+        <div class="now-playing-title" id="player-title">-</div>
+        <div class="now-playing-artist" id="player-artist">-</div>
+      </div>
+    </div>
+    <div class="player-buttons">
+      <button id="play-pause-btn"><i class="fas fa-play"></i></button>
+      <button id="stop-btn"><i class="fas fa-stop"></i></button>
+    </div>
+    <div class="progress-bar" id="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    <audio id="audio-element"></audio>
+  </div>
+</div>
+
+<!-- MODAL AUTH -->
+<div class="modal" id="auth-modal">
+  <div class="modal-header">
+    <h2 id="auth-title">Connexion</h2>
+    <button class="close-modal" id="close-modal">&times;</button>
+  </div>
+  <form id="login-form">
+    <div class="form-group"><label>Email</label><input type="email" id="login-email" required></div>
+    <div class="form-group"><label>Mot de passe</label><input type="password" id="login-password" required></div>
+    <button type="submit" class="btn">Se connecter</button>
+    <div class="switch-auth" id="switch-to-register">Pas encore de compte ? Inscris-toi !</div>
+  </form>
+  <form id="register-form" style="display:none">
+    <div class="form-group"><label>Nom d'artiste / Producteur *</label><input type="text" id="register-name" required></div>
+    <div class="form-row">
+      <div class="form-group"><label>Email *</label><input type="email" id="register-email" required></div>
+      <div class="form-group"><label>WhatsApp *</label><input type="tel" id="register-whatsapp" placeholder="+229 XX XX XX" required></div>
+    </div>
+    <div class="form-group">
+      <label>Je suis *</label>
+      <select id="register-role" required>
+        <option value="artist">Artiste</option>
+        <option value="producer">Producteur</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Mot de passe *</label><input type="password" id="register-password" required></div>
+      <div class="form-group"><label>Confirmer *</label><input type="password" id="register-confirm" required></div>
+    </div>
+    <button type="submit" class="btn">S'inscrire</button>
+    <div class="switch-auth" id="switch-to-login">Déjà un compte ? Connecte-toi !</div>
+  </form>
+</div>
+
+<!-- MODAL PARTAGE -->
+<div class="modal" id="share-modal">
+  <div class="modal-header">
+    <h2>Partager ce morceau</h2>
+    <button class="close-modal" id="close-share">&times;</button>
+  </div>
+  <div style="margin:1.1rem 0">
+    <div class="share-link-item">
+      <label>🔗 Lien d'écoute</label>
+      <div class="share-url"><input type="text" id="listen-link" readonly><button class="copy-btn" onclick="copyLink('listen')">Copier</button></div>
+    </div>
+    <div class="share-link-item">
+      <label>⬇️ Lien de téléchargement</label>
+      <div class="share-url"><input type="text" id="download-link" readonly><button class="copy-btn" onclick="copyLink('download')">Copier</button></div>
+    </div>
+  </div>
+  <p style="text-align:center;color:var(--text2);font-size:.82rem"><i class="fas fa-info-circle"></i> Ces liens peuvent être partagés partout !</p>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p class="brand">F2K STREAM</p>
+  <p>La voix des artistes indépendants</p>
+  <p><i class="fas fa-phone"></i> +229 01 99 87 87 42 &nbsp;|&nbsp; <i class="fas fa-envelope"></i> f2kmultiservice@gmail.com</p>
+  <p class="copyright">© 2025 F2K MULTISERVICE. Tous droits réservés.</p>
+    </footer><script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, query, orderBy, limit, getDocs, where, updateDoc, doc, increment, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBTbU1ZNVCazGd08ItnVlfqQD99dL2XVqI",
+  authDomain: "f2k-stream.firebaseapp.com",
+  databaseURL: "https://f2k-stream-default-rtdb.firebaseio.com",
+  projectId: "f2k-stream",
+  storageBucket: "f2k-stream.firebasestorage.app",
+  messagingSenderId: "452692882656",
+  appId: "1:452692882656:web:675980ff4a20c40a4a0c85"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const ADMIN_EMAIL = "f2kmultiservice@gmail.com";
+
+const overlay = document.getElementById('overlay');
+const toast = document.getElementById('toast');
+const authModal = document.getElementById('auth-modal');
+const shareModal = document.getElementById('share-modal');
+const loginForm = document.getElementById('login-form');
+const registerForm = document.getElementById('register-form');
+const loginBtn = document.getElementById('login-btn');
+const registerBtn = document.getElementById('register-btn');
+const logoutBtn = document.getElementById('logout-btn');
+const dashboardLink = document.getElementById('dashboard-link');
+const adminLink = document.getElementById('admin-link');
+const uploadForm = document.getElementById('upload-form');
+const adminUploadForm = document.getElementById('admin-upload-form');
+const articleForm = document.getElementById('article-form');
+const coverFile = document.getElementById('cover-file');
+const audioFile = document.getElementById('audio-file');
+const adminCoverFile = document.getElementById('admin-cover-file');
+const adminAudioFile = document.getElementById('admin-audio-file');
+const coverPreview = document.getElementById('cover-preview');
+const audioPreview = document.getElementById('audio-preview');
+const adminCoverPreview = document.getElementById('admin-cover-preview');
+const adminAudioPreview = document.getElementById('admin-audio-preview');
+const audioPlayer = document.getElementById('audio-player');
+const audioElement = document.getElementById('audio-element');
+const playPauseBtn = document.getElementById('play-pause-btn');
+const stopBtn = document.getElementById('stop-btn');
+const progressFill = document.getElementById('progress-fill');
+const progressBar = document.getElementById('progress-bar');
+const listenLink = document.getElementById('listen-link');
+const downloadLink = document.getElementById('download-link');
+
+let currentUser = null;
+let isAdmin = false;
+let allSongs = [];
+let currentGenre = '';
+let currentSearch = '';
+
+function showToast(msg, type = 'success') {
+  toast.textContent = msg;
+  toast.className = `toast ${type} show`;
+  setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+function openModal(m) { m.classList.add('active'); overlay.classList.add('active'); }
+function closeAll() {
+  authModal.classList.remove('active');
+  shareModal.classList.remove('active');
+  overlay.classList.remove('active');
+}
+overlay.addEventListener('click', closeAll);
+document.getElementById('close-modal').addEventListener('click', closeAll);
+document.getElementById('close-share').addEventListener('click', closeAll);
+
+function showAuthModal(type) {
+  openModal(authModal);
+  if (type === 'register') {
+    loginForm.style.display = 'none';
+    registerForm.style.display = 'block';
+    document.getElementById('auth-title').textContent = 'Inscription';
+  } else {
+    loginForm.style.display = 'block';
+    registerForm.style.display = 'none';
+    document.getElementById('auth-title').textContent = 'Connexion';
+  }
+}
+
+window.copyLink = function(type) {
+  const el = type === 'listen' ? listenLink : downloadLink;
+  el.select(); document.execCommand('copy');
+  showToast('Lien copié !');
+};
+
+const tabButtons = document.querySelectorAll('.tab-button');
+const tabContents = document.querySelectorAll('.tab-content');
+const tabTriggers = document.querySelectorAll('.tab-trigger');
+
+window.showTab = function(tabId) {
+  tabButtons.forEach(b => b.classList.remove('active'));
+  tabContents.forEach(c => { c.classList.remove('active'); c.style.display = 'none'; });
+  const btn = Array.from(tabButtons).find(b => b.dataset.tab === tabId);
+  if (btn) btn.classList.add('active');
+  const target = document.getElementById('tab-' + tabId);
+  if (!target) return;
+  target.classList.add('active');
+  target.style.display = 'block';
+  if (tabId === 'admin' && isAdmin) loadAdminAll();
+  else if (tabId === 'articles') loadArticles();
+  else if (tabId === 'dashboard' && currentUser) loadMySongs();
+  else if (tabId === 'rankings') loadRankings();
+};
+
+tabButtons.forEach(b => b.addEventListener('click', () => window.showTab(b.dataset.tab)));
+tabTriggers.forEach(t => t.addEventListener('click', e => {
+  e.preventDefault();
+  const tabId = t.dataset.tab;
+  if (tabId === 'dashboard' && !currentUser) { showAuthModal('login'); return; }
+  if (tabId === 'admin' && !isAdmin) { showToast("Accès réservé à l'administrateur", 'error'); return; }
+  window.showTab(tabId);
+}));
+
+document.getElementById('search-input').addEventListener('input', e => {
+  currentSearch = e.target.value.toLowerCase();
+  renderSongs();
+});
+document.getElementById('genre-filters').addEventListener('click', e => {
+  const tab = e.target.closest('.filter-tab');
+  if (!tab) return;
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  currentGenre = tab.dataset.genre;
+  renderSongs();
+});
+
+function renderSongs() {
+  const container = document.getElementById('songs-container');
+  let list = allSongs.filter(s => s.approved === true);
+  if (currentGenre) list = list.filter(s => s.genre === currentGenre);
+  if (currentSearch) list = list.filter(s =>
+    (s.title||'').toLowerCase().includes(currentSearch) ||
+    (s.artistName||'').toLowerCase().includes(currentSearch) ||
+    (s.label||'').toLowerCase().includes(currentSearch) ||
+    (s.featuring||'').toLowerCase().includes(currentSearch) ||
+    (s.genre||'').toLowerCase().includes(currentSearch)
+  );
+  container.innerHTML = '';
+  if (!list.length) {
+    container.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><p>Aucun son trouvé.</p></div>';
+    return;
+  }
+  list.forEach(song => container.appendChild(buildSongCard(song, false, false)));
+}
+
+async function uploadToCatbox(file) {
+  const fd = new FormData();
+  fd.append('fileToUpload', file);
+  fd.append('reqtype', 'fileupload');
+  const res = await fetch('https://catbox.moe/user/api.php', { method:'POST', body:fd });
+  if (!res.ok) throw new Error('Erreur upload Catbox');
+  return (await res.text()).trim();
+}
+
+loginBtn.addEventListener('click', () => showAuthModal('login'));
+registerBtn.addEventListener('click', () => showAuthModal('register'));
+logoutBtn.addEventListener('click', async () => { await signOut(auth); showToast('Déconnexion réussie'); });
+document.getElementById('switch-to-register').addEventListener('click', () => showAuthModal('register'));
+document.getElementById('switch-to-login').addEventListener('click', () => showAuthModal('login'));
+
+registerForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  const name = document.getElementById('register-name').value;
+  const email = document.getElementById('register-email').value;
+  const whatsapp = document.getElementById('register-whatsapp').value;
+  const role = document.getElementById('register-role').value;
+  const password = document.getElementById('register-password').value;
+  const confirm = document.getElementById('register-confirm').value;
+  if (password !== confirm) { showToast('Les mots de passe ne correspondent pas', 'error'); return; }
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    const isUserAdmin = email === ADMIN_EMAIL;
+    await setDoc(doc(db, 'users', cred.user.uid), {
+      name, email, whatsapp,
+      role: isUserAdmin ? 'admin' : role,
+      isConfirmed: isUserAdmin,
+      isBanned: false,
+      createdAt: new Date().toISOString()
+    });
+    closeAll();
+    showToast(isUserAdmin ? 'Bienvenue Administrateur !' : 'Inscription réussie ! En attente de confirmation.');
+  } catch (err) { showToast(err.message, 'error'); }
+});
+
+loginForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+  try {
+    const cred = await signInWithEmailAndPassword(auth, email, password);
+    const uDoc = await getDoc(doc(db, 'users', cred.user.uid));
+    if (uDoc.exists() && uDoc.data().isBanned) {
+      await signOut(auth);
+      showToast("Votre compte a été banni. Contactez l'administrateur.", 'error');
+      return;
+    }
+    closeAll();
+    showToast('Connexion réussie !');
+  } catch (err) { showToast('Email ou mot de passe incorrect', 'error'); }
+});
+
+onAuthStateChanged(auth, async user => {
+  if (user) {
+    currentUser = user;
+    const uDoc = await getDoc(doc(db, 'users', user.uid));
+    if (uDoc.exists()) {
+      currentUser = { ...user, ...uDoc.data() };
+      isAdmin = user.email === ADMIN_EMAIL || uDoc.data().role === 'admin';
+    } else if (user.email === ADMIN_EMAIL) {
+      await setDoc(doc(db, 'users', user.uid), {
+        name:'Administrateur', email:user.email, role:'admin',
+        isConfirmed:true, isBanned:false, createdAt:new Date().toISOString()
+      });
+      isAdmin = true;
+      currentUser = { ...user, name:'Administrateur', role:'admin' };
+    }
+    loginBtn.style.display = 'none';
+    registerBtn.style.display = 'none';
+    logoutBtn.style.display = 'inline';
+    dashboardLink.style.display = 'inline';
+    if (isAdmin) {
+      adminLink.style.display = 'inline';
+      dashboardLink.innerHTML = 'Espace Artiste <span class="admin-badge">Admin</span>';
+    } else {
+      adminLink.style.display = 'none';
+      dashboardLink.innerHTML = 'Espace Artiste';
+    }
+  } else {
+    currentUser = null; isAdmin = false;
+    loginBtn.style.display = 'inline'; registerBtn.style.display = 'inline';
+    logoutBtn.style.display = 'none';
+    dashboardLink.style.display = 'none'; adminLink.style.display = 'none';
+  }
+  loadSongs(); loadRankings(); loadArticles();
+  window.showTab('home');
+});
+
+function setupDropzone(dzId, inputEl, previewEl, isImg, fnSpanId) {
+  const dz = document.getElementById(dzId);
+  dz.addEventListener('click', () => inputEl.click());
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.style.borderColor = 'var(--primary)'; });
+  dz.addEventListener('dragleave', () => { dz.style.borderColor = ''; });
+  dz.addEventListener('drop', e => {
+    e.preventDefault(); dz.style.borderColor = '';
+    const f = e.dataTransfer.files[0];
+    if (f) { inputEl.files = e.dataTransfer.files; handlePreview(f, previewEl, isImg, fnSpanId); }
+  });
+  inputEl.addEventListener('change', e => {
+    if (e.target.files[0]) handlePreview(e.target.files[0], previewEl, isImg, fnSpanId);
+  });
+}
+function handlePreview(file, previewEl, isImg, fnSpanId) {
+  previewEl.classList.add('active');
+  if (isImg) {
+    const r = new FileReader();
+    r.onload = e => previewEl.querySelector('img').src = e.target.result;
+    r.readAsDataURL(file);
+  } else if (fnSpanId) {
+    document.getElementById(fnSpanId).textContent = file.name;
+  }
+}
+setupDropzone('cover-dropzone', coverFile, coverPreview, true, null);
+setupDropzone('audio-dropzone', audioFile, audioPreview, false, 'audio-filename');
+setupDropzone('admin-cover-dropzone', adminCoverFile, adminCoverPreview, true, null);
+setupDropzone('admin-audio-dropzone', adminAudioFile, adminAudioPreview, false, 'admin-audio-filename');async function handleSongSubmit(e, isAdminForm) {
+  e.preventDefault();
+  if (!currentUser) { showAuthModal('login'); return; }
+  const p = isAdminForm ? 'admin-' : '';
+  const title       = document.getElementById(p+'song-title').value.trim();
+  const artistName  = document.getElementById(p+'song-artist-name').value.trim();
+  const label       = document.getElementById(p+'song-label').value.trim();
+  const year        = document.getElementById(p+'song-year').value;
+  const featuring   = document.getElementById(p+'song-featuring').value.trim();
+  const genre       = document.getElementById(p+'song-genre').value;
+  const description = document.getElementById(p+'song-description').value.trim();
+  const cover = isAdminForm ? adminCoverFile.files[0] : coverFile.files[0];
+  const audio = isAdminForm ? adminAudioFile.files[0] : audioFile.files[0];
+
+  if (!title || !artistName || !year || !genre || !cover || !audio) {
+    showToast('Remplis tous les champs obligatoires (*)', 'error'); return;
+  }
+  if (audio.size > 50*1024*1024) { showToast('MP3 max 50 MB', 'error'); return; }
+  if (cover.size > 10*1024*1024) { showToast('Image max 10 MB', 'error'); return; }
+
+  const btnText = document.getElementById(p+'upload-btn-text');
+  const btnLoad = document.getElementById(p+'upload-loading');
+  const btn = document.getElementById(p+'upload-btn');
+  btn.disabled = true; btnText.style.display = 'none'; btnLoad.style.display = 'inline-block';
+
+  try {
+    showToast('Upload en cours... Ne ferme pas la page');
+    const coverUrl = await uploadToCatbox(cover);
+    const audioUrl = await uploadToCatbox(audio);
+    await addDoc(collection(db, 'songs'), {
+      title, artistName, label, year: parseInt(year),
+      featuring, genre, description,
+      artistId: currentUser.uid,
+      artistEmail: currentUser.email,
+      uploadedBy: currentUser.name || currentUser.email,
+      coverUrl, audioUrl,
+      approved: !!isAdminForm,
+      likes:0, downloads:0, views:0,
+      createdAt: new Date().toISOString()
+    });
+    e.target.reset();
+    if (isAdminForm) {
+      adminCoverPreview.classList.remove('active');
+      adminAudioPreview.classList.remove('active');
+    } else {
+      coverPreview.classList.remove('active');
+      audioPreview.classList.remove('active');
+    }
+    showToast(isAdminForm ? 'Son publié avec succès !' : 'Son soumis ! En attente de validation admin.');
+    loadSongs();
+    if (isAdminForm) loadAdminAll(); else loadMySongs();
+  } catch (err) {
+    console.error(err);
+    showToast('Erreur upload. Vérifie ta connexion.', 'error');
+  } finally {
+    btn.disabled = false; btnText.style.display = 'inline'; btnLoad.style.display = 'none';
+  }
+}
+
+uploadForm.addEventListener('submit', e => handleSongSubmit(e, false));
+adminUploadForm.addEventListener('submit', e => handleSongSubmit(e, true));
+
+articleForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!isAdmin) { showToast("Seul l'admin peut publier des articles", 'error'); return; }
+  const title   = document.getElementById('article-title').value;
+  const content = document.getElementById('article-content').value;
+  const imgFile = document.getElementById('article-image').files[0];
+  const btnText = document.getElementById('article-btn-text');
+  const btnLoad = document.getElementById('article-loading');
+  const btn = document.getElementById('article-btn');
+  btn.disabled = true; btnText.style.display = 'none'; btnLoad.style.display = 'inline-block';
+  try {
+    let imageUrl = '';
+    if (imgFile) imageUrl = await uploadToCatbox(imgFile);
+    await addDoc(collection(db, 'articles'), {
+      title, content, imageUrl,
+      authorId: currentUser.uid, authorName: 'Administrateur',
+      createdAt: new Date().toISOString()
+    });
+    articleForm.reset();
+    showToast('Article publié !');
+    loadArticles(); loadAdminAll();
+  } catch (err) { showToast('Erreur publication article', 'error'); }
+  finally { btn.disabled = false; btnText.style.display = 'inline'; btnLoad.style.display = 'none'; }
+});
+
+async function loadSongs() {
+  try {
+    const snap = await getDocs(query(collection(db,'songs'), orderBy('createdAt','desc'), limit(60)));
+    allSongs = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+    renderSongs();
+  } catch (err) {
+    console.error(err);
+    document.getElementById('songs-container').innerHTML =
+      '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Erreur de chargement.</p></div>';
+  }
+}
+
+function buildSongCard(song, showDelete, showPending) {
+  const card = document.createElement('div');
+  card.className = 'song-card';
+  const ft = song.featuring ? ' ft. ' + song.featuring : '';
+  const meta = [];
+  if (song.label) meta.push('🏷️ ' + song.label);
+  if (song.year)  meta.push('📅 ' + song.year);
+  const sid = song.id;
+  const canDelete = showDelete || isAdmin || (currentUser && currentUser.uid === song.artistId);
+
+  card.innerHTML = `
+    <div class="song-cover-wrapper">
+      <img class="song-cover" src="${song.coverUrl}" alt="${escHtml(song.title)}" loading="lazy"
+           onerror="this.src='https://placehold.co/300x190/1e1540/7c3aed?text=F2K'">
+      <div class="song-cover-overlay"></div>
+      <span class="song-genre-badge">${escHtml(song.genre||'')}</span>
+      ${showPending ? '<span class="pending-badge">⏳ En attente</span>' : ''}
+    </div>
+    <div class="song-info">
+      <div class="song-title">${escHtml(song.title)}</div>
+      <div class="song-artist">${escHtml(song.artistName||song.uploadedBy)}${escHtml(ft)}</div>
+      ${meta.length ? `<div class="song-label">${meta.join(' · ')}</div>` : ''}
+      <div class="song-stats">
+        <span class="stat-item"><i class="fas fa-eye"></i> ${song.views||0}</span>
+        <span class="stat-item"><i class="fas fa-download"></i> ${song.downloads||0}</span>
+        <span class="stat-item"><i class="fas fa-heart"></i> ${song.likes||0}</span>
+      </div>
+      <div class="song-actions">
+        ${showPending ? `
+          <button class="btn-approve" onclick="approveSong('${sid}')"><i class="fas fa-check"></i> Valider</button>
+          <button class="btn-delete"  onclick="rejectSong('${sid}')"><i class="fas fa-times"></i> Rejeter</button>
+        ` : `
+          <button class="btn-play" onclick="playSong('${sid}')"><i class="fas fa-play"></i> Écouter</button>
+          <button class="btn-download" onclick="downloadSong('${sid}','${encodeURIComponent(song.audioUrl)}','${encodeURIComponent(song.title)}')" title="Télécharger"><i class="fas fa-download"></i></button>
+          <button class="btn-share" onclick="openShare('${sid}')" title="Partager"><i class="fas fa-share-alt"></i></button>
+          ${canDelete ? `<button class="btn-delete" onclick="deleteSong('${sid}')" title="Supprimer"><i class="fas fa-trash"></i></button>` : ''}
+        `}
+      </div>
+    </div>`;
+  return card;
+}
+
+function escHtml(str) {
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+const songCache = {};
+async function getSong(id) {
+  if (songCache[id]) return songCache[id];
+  const snap = await getDoc(doc(db,'songs',id));
+  if (snap.exists()) { songCache[id] = { id:snap.id, ...snap.data() }; return songCache[id]; }
+  return null;
+}
+
+window.playSong = async function(id) {
+  const song = allSongs.find(s => s.id === id) || await getSong(id);
+  if (!song) return;
+  audioElement.src = song.audioUrl;
+  document.getElementById('player-cover').src = song.coverUrl;
+  document.getElementById('player-title').textContent = song.title;
+  document.getElementById('player-artist').textContent =
+    (song.artistName||song.uploadedBy) + (song.featuring ? ' ft. '+song.featuring : '');
+  audioPlayer.classList.add('active');
+  audioElement.play();
+  playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+  updateDoc(doc(db,'songs',id), { views: increment(1) }).catch(()=>{});
+};
+
+playPauseBtn.addEventListener('click', () => {
+  if (audioElement.paused) {
+    audioElement.play();
+    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+  } else {
+    audioElement.pause();
+    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+  }
+});
+
+stopBtn.addEventListener('click', () => {
+  audioElement.pause(); audioElement.currentTime = 0;
+  playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+  audioPlayer.classList.remove('active');
+});
+
+audioElement.addEventListener('timeupdate', () => {
+  if (audioElement.duration)
+    progressFill.style.width = (audioElement.currentTime / audioElement.duration * 100) + '%';
+});
+
+progressBar.addEventListener('click', e => {
+  const r = progressBar.getBoundingClientRect();
+  audioElement.currentTime = ((e.clientX - r.left) / r.width) * audioElement.duration;
+});
+
+audioElement.addEventListener('ended', () => {
+  playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+  progressFill.style.width = '0%';
+});
+
+window.downloadSong = async function(id, encodedUrl, encodedTitle) {
+  const url = decodeURIComponent(encodedUrl);
+  const title = decodeURIComponent(encodedTitle);
+  const a = document.createElement('a');
+  a.href = url; a.download = title+'.mp3'; a.target = '_blank';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  updateDoc(doc(db,'songs',id), { downloads: increment(1) }).catch(()=>{});
+};
+
+window.openShare = async function(id) {
+  const song = allSongs.find(s => s.id === id) || await getSong(id);
+  if (!song) return;
+  listenLink.value = window.location.href.split('?')[0] + '?play=' + id;
+  downloadLink.value = song.audioUrl;
+  openModal(shareModal);
+};
+
+window.deleteSong = async function(id) {
+  if (!confirm('Supprimer ce son définitivement ?')) return;
+  try {
+    await deleteDoc(doc(db,'songs',id));
+    showToast('Son supprimé.');
+    loadSongs();
+    if (isAdmin) loadAdminAll(); else loadMySongs();
+  } catch { showToast('Erreur lors de la suppression.', 'error'); }
+};
+
+window.approveSong = async function(id) {
+  try {
+    await updateDoc(doc(db,'songs',id), { approved: true });
+    showToast('Son validé et publié !');
+    loadSongs(); loadAdminAll();
+  } catch { showToast('Erreur validation.', 'error'); }
+};
+
+window.rejectSong = async function(id) {
+  if (!confirm('Rejeter et supprimer ce son ?')) return;
+  try {
+    await deleteDoc(doc(db,'songs',id));
+    showToast('Son rejeté.');
+    loadAdminAll();
+  } catch { showToast('Erreur.', 'error'); }
+};
+
+async function loadMySongs() {
+  if (!currentUser) return;
+  const c = document.getElementById('my-songs-container');
+  c.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>';
+  try {
+    const snap = await getDocs(query(collection(db,'songs'), where('artistId','==',currentUser.uid), orderBy('createdAt','desc')));
+    c.innerHTML = '';
+    if (snap.empty) {
+      c.innerHTML = '<div class="empty-state"><i class="fas fa-music"></i><p>Tu n\'as pas encore publié de son.</p></div>';
+      return;
+    }
+    snap.docs.forEach(d => {
+      const s = { id:d.id, ...d.data() };
+      c.appendChild(buildSongCard(s, true, !s.approved));
+    });
+  } catch (err) { console.error(err); }
+    }async function loadArticles() {
+  const c = document.getElementById('articles-container');
+  try {
+    const snap = await getDocs(query(collection(db,'articles'), orderBy('createdAt','desc'), limit(12)));
+    c.innerHTML = '';
+    if (snap.empty) {
+      c.innerHTML = '<div class="empty-state"><i class="fas fa-newspaper"></i><p>Aucun article pour le moment.</p></div>';
+      return;
+    }
+    snap.docs.forEach(d => c.appendChild(buildArticleCard({ id:d.id, ...d.data() }, false)));
+  } catch (err) { console.error(err); }
+}
+
+function buildArticleCard(article, isAdminView) {
+  const card = document.createElement('div');
+  card.className = 'article-card';
+  const date = new Date(article.createdAt).toLocaleDateString('fr-FR');
+  card.innerHTML = `
+    ${article.imageUrl ? `<img src="${article.imageUrl}" alt="${escHtml(article.title)}" class="article-image">` : ''}
+    <div class="article-info">
+      <div class="article-title">${escHtml(article.title)}</div>
+      <div class="article-date">${date} · Par ${escHtml(article.authorName)}</div>
+      <div class="article-body">${escHtml(article.content.substring(0,180))}${article.content.length>180?'...':''}</div>
+      ${isAdminView ? `<div style="margin-top:.8rem"><button class="btn-sm btn-del-sm" onclick="deleteArticle('${article.id}')"><i class="fas fa-trash"></i> Supprimer</button></div>` : ''}
+    </div>`;
+  return card;
+}
+
+window.deleteArticle = async function(id) {
+  if (!confirm('Supprimer cet article ?')) return;
+  try {
+    await deleteDoc(doc(db,'articles',id));
+    showToast('Article supprimé.');
+    loadArticles(); loadAdminAll();
+  } catch { showToast('Erreur.', 'error'); }
+};
+
+async function loadRankings() {
+  try {
+    const [dS,vS,lS] = await Promise.all([
+      getDocs(query(collection(db,'songs'), where('approved','==',true), orderBy('downloads','desc'), limit(5))),
+      getDocs(query(collection(db,'songs'), where('approved','==',true), orderBy('views','desc'), limit(5))),
+      getDocs(query(collection(db,'songs'), where('approved','==',true), orderBy('likes','desc'), limit(5)))
+    ]);
+    function render(cId, snap, field, icon) {
+      const el = document.getElementById(cId);
+      el.innerHTML = '';
+      if (snap.empty) { el.innerHTML = '<p style="color:var(--text2);font-size:.82rem">Aucune donnée.</p>'; return; }
+      snap.docs.forEach((d,i) => {
+        const s = d.data();
+        el.innerHTML += `
+          <div class="ranking-item">
+            <div class="ranking-num">${i+1}</div>
+            <div class="ranking-info">
+              <div class="ranking-title">${escHtml(s.title)}</div>
+              <div class="ranking-artist">${escHtml(s.artistName||s.uploadedBy)}</div>
+            </div>
+            <div class="ranking-val">${icon} ${s[field]||0}</div>
+          </div>`;
+      });
+    }
+    render('top-downloads', dS, 'downloads', '⬇️');
+    render('top-views', vS, 'views', '👁️');
+    render('top-likes', lS, 'likes', '❤️');
+  } catch (err) { console.error('Rankings:', err); }
+}
+
+async function loadAdminAll() {
+  if (!isAdmin) return;
+  await Promise.all([
+    updateAdminStats(),
+    loadAdminPending(),
+    loadAdminUsers(),
+    loadAdminSongs(),
+    loadAdminArticles()
+  ]);
+}
+
+async function updateAdminStats() {
+  try {
+    const [u,s,p,a] = await Promise.all([
+      getDocs(collection(db,'users')),
+      getDocs(collection(db,'songs')),
+      getDocs(query(collection(db,'songs'), where('approved','==',false))),
+      getDocs(collection(db,'articles'))
+    ]);
+    document.getElementById('stat-users').textContent    = u.size;
+    document.getElementById('stat-songs').textContent    = s.size;
+    document.getElementById('stat-pending').textContent  = p.size;
+    document.getElementById('stat-articles').textContent = a.size;
+  } catch (err) { console.error(err); }
+}
+
+async function loadAdminPending() {
+  const c = document.getElementById('admin-pending-container');
+  c.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>';
+  try {
+    const snap = await getDocs(query(collection(db,'songs'), where('approved','==',false), orderBy('createdAt','desc')));
+    c.innerHTML = '';
+    if (snap.empty) {
+      c.innerHTML = '<div class="empty-state"><i class="fas fa-check-double"></i><p>Aucun son en attente.</p></div>';
+      return;
+    }
+    snap.docs.forEach(d => c.appendChild(buildSongCard({ id:d.id, ...d.data() }, false, true)));
+  } catch (err) { console.error(err); }
+}
+
+async function loadAdminUsers() {
+  const c = document.getElementById('admin-users-container');
+  c.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>';
+  try {
+    const snap = await getDocs(query(collection(db,'users'), orderBy('createdAt','desc')));
+    c.innerHTML = '';
+    if (snap.empty) {
+      c.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>Aucun utilisateur.</p></div>';
+      return;
+    }
+    snap.docs.forEach(d => c.appendChild(buildUserCard({ id:d.id, ...d.data() })));
+  } catch (err) {
+    console.error(err);
+    document.getElementById('admin-users-container').innerHTML =
+      '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Erreur chargement utilisateurs.</p></div>';
+  }
+}
+
+function buildUserCard(user) {
+  const card = document.createElement('div');
+  card.className = 'user-card';
+  const initial = (user.name||user.email||'?')[0].toUpperCase();
+  const roleClass = user.role === 'admin' ? 'role-admin' : user.role === 'producer' ? 'role-producer' : 'role-artist';
+  const roleName  = user.role === 'admin' ? 'Admin' : user.role === 'producer' ? 'Producteur' : 'Artiste';
+  const status = user.isBanned
+    ? '<span class="user-status-banned">🚫 Banni</span>'
+    : user.isConfirmed
+      ? '<span class="user-status-confirmed">✅ Confirmé</span>'
+      : '<span class="user-status-pending">⏳ En attente</span>';
+  const date = user.createdAt ? new Date(user.createdAt).toLocaleDateString('fr-FR') : '';
+  const uid = user.id;
+  card.innerHTML = `
+    <div class="user-card-header">
+      <div class="user-avatar">${initial}</div>
+      <div class="user-info">
+        <div class="user-name">${escHtml(user.name||'Sans nom')} <span class="role-badge ${roleClass}">${roleName}</span></div>
+        <div class="user-email">${escHtml(user.email)}</div>
+        ${user.whatsapp ? `<div class="user-meta">📱 ${escHtml(user.whatsapp)}</div>` : ''}
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;font-size:.78rem">
+      ${status}
+      <span style="color:var(--text2)">Inscrit le ${date}</span>
+    </div>
+    <div class="user-actions">
+      ${!user.isConfirmed && !user.isBanned && user.role !== 'admin'
+        ? `<button class="btn-sm btn-confirm" onclick="confirmUser('${uid}')"><i class="fas fa-check"></i> Confirmer</button>` : ''}
+      ${!user.isBanned && user.role !== 'admin'
+        ? `<button class="btn-sm btn-ban" onclick="banUser('${uid}')"><i class="fas fa-ban"></i> Bannir</button>`
+        : user.isBanned
+          ? `<button class="btn-sm btn-unban" onclick="unbanUser('${uid}')"><i class="fas fa-undo"></i> Réactiver</button>` : ''}
+      ${user.role !== 'admin'
+        ? `<button class="btn-sm btn-del-sm" onclick="deleteUser('${uid}')"><i class="fas fa-trash"></i> Supprimer</button>` : ''}
+    </div>`;
+  return card;
+}
+
+window.confirmUser = async function(uid) {
+  if (!confirm('Confirmer ce compte ?')) return;
+  try { await updateDoc(doc(db,'users',uid), { isConfirmed:true }); showToast('Compte confirmé !'); loadAdminUsers(); }
+  catch { showToast('Erreur.', 'error'); }
+};
+window.banUser = async function(uid) {
+  if (!confirm('Bannir cet utilisateur ?')) return;
+  try { await updateDoc(doc(db,'users',uid), { isBanned:true }); showToast('Utilisateur banni.'); loadAdminUsers(); }
+  catch { showToast('Erreur.', 'error'); }
+};
+window.unbanUser = async function(uid) {
+  if (!confirm('Réactiver ce compte ?')) return;
+  try { await updateDoc(doc(db,'users',uid), { isBanned:false, isConfirmed:true }); showToast('Compte réactivé !'); loadAdminUsers(); }
+  catch { showToast('Erreur.', 'error'); }
+};
+window.deleteUser = async function(uid) {
+  if (!confirm('Supprimer définitivement ce compte ? Action irréversible.')) return;
+  try { await deleteDoc(doc(db,'users',uid)); showToast('Compte supprimé.'); loadAdminUsers(); updateAdminStats(); }
+  catch { showToast('Erreur.', 'error'); }
+};
+
+async function loadAdminSongs() {
+  const c = document.getElementById('admin-songs-container');
+  c.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>';
+  try {
+    const snap = await getDocs(query(collection(db,'songs'), orderBy('createdAt','desc')));
+    c.innerHTML = '';
+    if (snap.empty) {
+      c.innerHTML = '<div class="empty-state"><i class="fas fa-music"></i><p>Aucun morceau.</p></div>';
+      return;
+    }
+    snap.docs.forEach(d => c.appendChild(buildSongCard({ id:d.id, ...d.data() }, true, false)));
+  } catch (err) { console.error(err); }
+}
+
+async function loadAdminArticles() {
+  const c = document.getElementById('admin-articles-container');
+  c.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>';
+  try {
+    const snap = await getDocs(query(collection(db,'articles'), orderBy('createdAt','desc')));
+    c.innerHTML = '';
+    if (snap.empty) {
+      c.innerHTML = '<div class="empty-state"><i class="fas fa-newspaper"></i><p>Aucun article.</p></div>';
+      return;
+    }
+    snap.docs.forEach(d => c.appendChild(buildArticleCard({ id:d.id, ...d.data() }, true)));
+  } catch (err) { console.error(err); }
+}
+
+(function() {
+  const pid = new URLSearchParams(window.location.search).get('play');
+  if (pid) setTimeout(() => window.playSong(pid), 2500);
+})();
+
+console.log('✅ F2K STREAM chargé avec succès !');
+</script>
 </body>
 </html>
