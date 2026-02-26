@@ -173,9 +173,7 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
 }
 </style>
 </head>
-<body>
-
-<nav class="navbar">
+<body><nav class="navbar">
   <div class="logo" onclick="window.location.reload()">F2K STREAM</div>
   <div class="nav-links">
     <a class="tab-trigger" data-tab="home">Accueil</a>
@@ -394,7 +392,7 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
             <span class="loading" id="admin-upload-loading" style="display:none"></span>
           </button>
         </form>
-      </div><!-- PUBLIER UN ARTICLE -->
+  </div><!-- PUBLIER UN ARTICLE -->
       <div style="margin-bottom:2.5rem">
         <h3>📰 Publier un article</h3>
         <form id="article-form" style="max-width:600px;margin-top:1rem">
@@ -678,18 +676,19 @@ const CLOUDINARY_CLOUD = 'di4byrrfv';
 const CLOUDINARY_PRESET = 'f2k_stream';
 
 async function uploadToCatbox(file) {
-  const isAudio = file.type.includes('audio') || file.name.endsWith('.mp3');
-  const resourceType = isAudio ? 'video' : 'image';
-  const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/${resourceType}/upload`;
+  const isAudio = file.type.includes('audio') || file.name.toLowerCase().endsWith('.mp3');
+  const resourceType = isAudio ? 'raw' : 'image';
+  const url = 'https://api.cloudinary.com/v1_1/' + CLOUDINARY_CLOUD + '/' + resourceType + '/upload';
   const fd = new FormData();
   fd.append('file', file);
   fd.append('upload_preset', CLOUDINARY_PRESET);
   const res = await fetch(url, { method: 'POST', body: fd });
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.error?.message || 'Erreur upload Cloudinary');
-  }
   const data = await res.json();
+  if (!res.ok || data.error) {
+    const msg = data.error?.message || ('Erreur upload ' + resourceType + ' (' + res.status + ')');
+    console.error('Cloudinary error:', data);
+    throw new Error(msg);
+  }
   return data.secure_url;
 }
 
@@ -740,6 +739,7 @@ loginForm.addEventListener('submit', async e => {
   } catch (err) { showToast('Email ou mot de passe incorrect', 'error'); }
 });
 
+let authInitialized = false;
 onAuthStateChanged(auth, async user => {
   if (user) {
     currentUser = user;
@@ -772,8 +772,11 @@ onAuthStateChanged(auth, async user => {
     logoutBtn.style.display = 'none';
     dashboardLink.style.display = 'none'; adminLink.style.display = 'none';
   }
-  loadSongs(); loadRankings(); loadArticles();
-  window.showTab('home');
+  if (!authInitialized) {
+    authInitialized = true;
+    loadSongs(); loadRankings(); loadArticles();
+    window.showTab('home');
+  }
 });
 
 function setupDropzone(dzId, inputEl, previewEl, isImg, fnSpanId) {
@@ -803,7 +806,266 @@ function handlePreview(file, previewEl, isImg, fnSpanId) {
 setupDropzone('cover-dropzone', coverFile, coverPreview, true, null);
 setupDropzone('audio-dropzone', audioFile, audioPreview, false, 'audio-filename');
 setupDropzone('admin-cover-dropzone', adminCoverFile, adminCoverPreview, true, null);
-setupDropzone('admin-audio-dropzone', adminAudioFile, adminAudioPreview, false, 'admin-audio-filename');async function loadArticles() {
+setupDropzone('admin-audio-dropzone', adminAudioFile, adminAudioPreview, false, 'admin-audio-filename');
+
+async function handleSongSubmit(e, isAdminForm) {
+  e.preventDefault();
+  if (!currentUser) { showAuthModal('login'); return; }
+  const p = isAdminForm ? 'admin-' : '';
+  const title       = document.getElementById(p+'song-title').value.trim();
+  const artistName  = document.getElementById(p+'song-artist-name').value.trim();
+  const label       = document.getElementById(p+'song-label').value.trim();
+  const year        = document.getElementById(p+'song-year').value;
+  const featuring   = document.getElementById(p+'song-featuring').value.trim();
+  const genre       = document.getElementById(p+'song-genre').value;
+  const description = document.getElementById(p+'song-description').value.trim();
+  const cover = isAdminForm ? adminCoverFile.files[0] : coverFile.files[0];
+  const audio = isAdminForm ? adminAudioFile.files[0] : audioFile.files[0];
+
+  if (!title || !artistName || !year || !genre || !cover || !audio) {
+    showToast('Remplis tous les champs obligatoires (*)', 'error'); return;
+  }
+  if (audio.size > 50*1024*1024) { showToast('MP3 max 50 MB', 'error'); return; }
+  if (cover.size > 10*1024*1024) { showToast('Image max 10 MB', 'error'); return; }
+
+  const btnText = document.getElementById(p+'upload-btn-text');
+  const btnLoad = document.getElementById(p+'upload-loading');
+  const btn = document.getElementById(p+'upload-btn');
+  btn.disabled = true; btnText.style.display = 'none'; btnLoad.style.display = 'inline-block';
+
+  try {
+    showToast('Upload en cours... Ne ferme pas la page');
+    const coverUrl = await uploadToCatbox(cover);
+    const audioUrl = await uploadToCatbox(audio);await addDoc(collection(db, 'songs'), {
+      title, artistName, label, year: parseInt(year),
+      featuring, genre, description,
+      artistId: currentUser.uid,
+      artistEmail: currentUser.email,
+      uploadedBy: currentUser.name || currentUser.email,
+      coverUrl, audioUrl,
+      approved: !!isAdminForm,
+      likes:0, downloads:0, views:0,
+      createdAt: new Date().toISOString()
+    });
+    e.target.reset();
+    if (isAdminForm) {
+      adminCoverPreview.classList.remove('active');
+      adminAudioPreview.classList.remove('active');
+    } else {
+      coverPreview.classList.remove('active');
+      audioPreview.classList.remove('active');
+    }
+    showToast(isAdminForm ? 'Son publié avec succès !' : 'Son soumis ! En attente de validation admin.');
+    loadSongs();
+    if (isAdminForm) loadAdminAll(); else loadMySongs();
+  } catch (err) {
+    console.error(err);
+    showToast('Erreur upload. Vérifie ta connexion.', 'error');
+  } finally {
+    btn.disabled = false; btnText.style.display = 'inline'; btnLoad.style.display = 'none';
+  }
+}
+
+uploadForm.addEventListener('submit', e => handleSongSubmit(e, false));
+adminUploadForm.addEventListener('submit', e => handleSongSubmit(e, true));
+
+articleForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!isAdmin) { showToast("Seul l'admin peut publier des articles", 'error'); return; }
+  const title   = document.getElementById('article-title').value;
+  const content = document.getElementById('article-content').value;
+  const imgFile = document.getElementById('article-image').files[0];
+  const btnText = document.getElementById('article-btn-text');
+  const btnLoad = document.getElementById('article-loading');
+  const btn = document.getElementById('article-btn');
+  btn.disabled = true; btnText.style.display = 'none'; btnLoad.style.display = 'inline-block';
+  try {
+    let imageUrl = '';
+    if (imgFile) imageUrl = await uploadToCatbox(imgFile);
+    await addDoc(collection(db, 'articles'), {
+      title, content, imageUrl,
+      authorId: currentUser.uid, authorName: 'Administrateur',
+      createdAt: new Date().toISOString()
+    });
+    articleForm.reset();
+    showToast('Article publié !');
+    loadArticles(); loadAdminAll();
+  } catch (err) { showToast('Erreur publication article', 'error'); }
+  finally { btn.disabled = false; btnText.style.display = 'inline'; btnLoad.style.display = 'none'; }
+});
+
+async function loadSongs() {
+  try {
+    const snap = await getDocs(query(collection(db,'songs'), orderBy('createdAt','desc'), limit(60)));
+    allSongs = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+    renderSongs();
+  } catch (err) {
+    console.error(err);
+    document.getElementById('songs-container').innerHTML =
+      '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Erreur de chargement.</p></div>';
+  }
+}
+
+function buildSongCard(song, showDelete, showPending) {
+  const card = document.createElement('div');
+  card.className = 'song-card';
+  const ft = song.featuring ? ' ft. ' + song.featuring : '';
+  const meta = [];
+  if (song.label) meta.push('🏷️ ' + song.label);
+  if (song.year)  meta.push('📅 ' + song.year);
+  const sid = song.id;
+  const canDelete = showDelete || isAdmin || (currentUser && currentUser.uid === song.artistId);
+
+  card.innerHTML = `
+    <div class="song-cover-wrapper">
+      <img class="song-cover" src="${song.coverUrl}" alt="${escHtml(song.title)}" loading="lazy"
+           onerror="this.src='https://placehold.co/300x190/1e1540/7c3aed?text=F2K'">
+      <div class="song-cover-overlay"></div>
+      <span class="song-genre-badge">${escHtml(song.genre||'')}</span>
+      ${showPending ? '<span class="pending-badge">⏳ En attente</span>' : ''}
+    </div>
+    <div class="song-info">
+      <div class="song-title">${escHtml(song.title)}</div>
+      <div class="song-artist">${escHtml(song.artistName||song.uploadedBy)}${escHtml(ft)}</div>
+      ${meta.length ? `<div class="song-label">${meta.join(' · ')}</div>` : ''}
+      <div class="song-stats">
+        <span class="stat-item"><i class="fas fa-eye"></i> ${song.views||0}</span>
+        <span class="stat-item"><i class="fas fa-download"></i> ${song.downloads||0}</span>
+        <span class="stat-item"><i class="fas fa-heart"></i> ${song.likes||0}</span>
+      </div>
+      <div class="song-actions">
+        ${showPending ? `
+          <button class="btn-approve" onclick="approveSong('${sid}')"><i class="fas fa-check"></i> Valider</button>
+          <button class="btn-delete" onclick="rejectSong('${sid}')"><i class="fas fa-times"></i> Rejeter</button>
+        ` : `
+          <button class="btn-play" onclick="playSong('${sid}')"><i class="fas fa-play"></i> Écouter</button>
+          <button class="btn-download" onclick="downloadSong('${sid}','${encodeURIComponent(song.audioUrl)}','${encodeURIComponent(song.title)}')" title="Télécharger"><i class="fas fa-download"></i></button>
+          <button class="btn-share" onclick="openShare('${sid}')" title="Partager"><i class="fas fa-share-alt"></i></button>
+          ${canDelete ? `<button class="btn-delete" onclick="deleteSong('${sid}')" title="Supprimer"><i class="fas fa-trash"></i></button>` : ''}
+        `}
+      </div>
+    </div>`;
+  return card;
+}
+
+function escHtml(str) {
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+const songCache = {};
+async function getSong(id) {
+  if (songCache[id]) return songCache[id];
+  const snap = await getDoc(doc(db,'songs',id));
+  if (snap.exists()) { songCache[id] = { id:snap.id, ...snap.data() }; return songCache[id]; }
+  return null;
+}
+
+window.playSong = async function(id) {
+  const song = allSongs.find(s => s.id === id) || await getSong(id);
+  if (!song) return;
+  audioElement.src = song.audioUrl;
+  document.getElementById('player-cover').src = song.coverUrl;
+  document.getElementById('player-title').textContent = song.title;
+  document.getElementById('player-artist').textContent =
+    (song.artistName||song.uploadedBy) + (song.featuring ? ' ft. '+song.featuring : '');
+  audioPlayer.classList.add('active');
+  audioElement.play();
+  playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+  updateDoc(doc(db,'songs',id), { views: increment(1) }).catch(()=>{});
+};
+
+playPauseBtn.addEventListener('click', () => {
+  if (audioElement.paused) {
+    audioElement.play();
+    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+  } else {
+    audioElement.pause();
+    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+  }
+});
+
+stopBtn.addEventListener('click', () => {
+  audioElement.pause(); audioElement.currentTime = 0;
+  playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+  audioPlayer.classList.remove('active');
+});
+
+audioElement.addEventListener('timeupdate', () => {
+  if (audioElement.duration)
+    progressFill.style.width = (audioElement.currentTime / audioElement.duration * 100) + '%';
+});
+
+progressBar.addEventListener('click', e => {
+  const r = progressBar.getBoundingClientRect();
+  audioElement.currentTime = ((e.clientX - r.left) / r.width) * audioElement.duration;
+});
+
+audioElement.addEventListener('ended', () => {
+  playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+  progressFill.style.width = '0%';
+});
+
+window.downloadSong = async function(id, encodedUrl, encodedTitle) {
+  const url = decodeURIComponent(encodedUrl);
+  const title = decodeURIComponent(encodedTitle);
+  const a = document.createElement('a');
+  a.href = url; a.download = title+'.mp3'; a.target = '_blank';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  updateDoc(doc(db,'songs',id), { downloads: increment(1) }).catch(()=>{});
+};
+
+window.openShare = async function(id) {
+  const song = allSongs.find(s => s.id === id) || await getSong(id);
+  if (!song) return;
+  listenLink.value = window.location.href.split('?')[0] + '?play=' + id;
+  downloadLink.value = song.audioUrl;
+  openModal(shareModal);
+};
+
+window.deleteSong = async function(id) {
+  if (!confirm('Supprimer ce son définitivement ?')) return;
+  try {
+    await deleteDoc(doc(db,'songs',id));
+    showToast('Son supprimé.');
+    loadSongs();
+    if (isAdmin) loadAdminAll(); else loadMySongs();
+  } catch { showToast('Erreur lors de la suppression.', 'error'); }
+};
+
+window.approveSong = async function(id) {
+  try {
+    await updateDoc(doc(db,'songs',id), { approved: true });
+    showToast('Son validé et publié !');
+    loadSongs(); loadAdminAll();
+  } catch { showToast('Erreur validation.', 'error'); }
+};
+
+window.rejectSong = async function(id) {
+  if (!confirm('Rejeter et supprimer ce son ?')) return;
+  try {
+    await deleteDoc(doc(db,'songs',id));
+    showToast('Son rejeté.');
+    loadAdminAll();
+  } catch { showToast('Erreur.', 'error'); }
+};
+
+async function loadMySongs() {
+  if (!currentUser) return;
+  const c = document.getElementById('my-songs-container');
+  c.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>';
+  try {
+    const snap = await getDocs(query(collection(db,'songs'), where('artistId','==',currentUser.uid), orderBy('createdAt','desc')));
+    c.innerHTML = '';
+    if (snap.empty) {
+      c.innerHTML = '<div class="empty-state"><i class="fas fa-music"></i><p>Tu n\'as pas encore publié de son.</p></div>';
+      return;
+    }
+    snap.docs.forEach(d => {
+      const s = { id:d.id, ...d.data() };
+      c.appendChild(buildSongCard(s, true, !s.approved));
+    });
+  } catch (err) { console.error(err); }
+  }async function loadArticles() {
   const c = document.getElementById('articles-container');
   try {
     const snap = await getDocs(query(collection(db,'articles'), orderBy('createdAt','desc'), limit(12)));
@@ -844,8 +1106,8 @@ async function loadRankings() {
   try {
     const [dS,vS,lS] = await Promise.all([
       getDocs(query(collection(db,'songs'), where('approved','==',true), orderBy('downloads','desc'), limit(5))),
-      getDocs(query(collection(db,'songs'), where('approved','==',true), orderBy('views','desc'), limit(5))),
-      getDocs(query(collection(db,'songs'), where('approved','==',true), orderBy('likes','desc'), limit(5)))
+      getDocs(query(collection(db,'songs'), where('approved','==',true), orderBy('views','desc'),     limit(5))),
+      getDocs(query(collection(db,'songs'), where('approved','==',true), orderBy('likes','desc'),     limit(5)))
     ]);
     function render(cId, snap, field, icon) {
       const el = document.getElementById(cId);
@@ -865,8 +1127,8 @@ async function loadRankings() {
       });
     }
     render('top-downloads', dS, 'downloads', '⬇️');
-    render('top-views', vS, 'views', '👁️');
-    render('top-likes', lS, 'likes', '❤️');
+    render('top-views',     vS, 'views',     '👁️');
+    render('top-likes',     lS, 'likes',     '❤️');
   } catch (err) { console.error('Rankings:', err); }
 }
 
