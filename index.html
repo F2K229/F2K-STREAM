@@ -16,6 +16,8 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; }
 body::before { content:''; position:fixed; inset:0; background:radial-gradient(ellipse at 20% 20%,rgba(124,58,237,.12) 0%,transparent 55%),radial-gradient(ellipse at 80% 80%,rgba(245,158,11,.07) 0%,transparent 55%); pointer-events:none; z-index:0; }
+
+/* NAVBAR */
 .navbar { background:rgba(15,10,30,.97); backdrop-filter:blur(20px); padding:.9rem 2rem; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; position:fixed; width:100%; top:0; z-index:1000; flex-wrap:wrap; gap:.7rem; }
 .logo { font-family:'Syne',sans-serif; font-size:1.6rem; font-weight:800; background:linear-gradient(135deg,#a78bfa,#f59e0b); -webkit-background-clip:text; -webkit-text-fill-color:transparent; cursor:pointer; }
 .nav-links { display:flex; gap:1.1rem; align-items:center; flex-wrap:wrap; }
@@ -24,10 +26,16 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
 .nav-btn { background:var(--primary)!important; color:#fff!important; padding:.42rem 1.1rem; border-radius:6px; font-weight:600!important; }
 .nav-btn:hover { background:var(--primary-dark)!important; }
 .admin-badge { background:var(--accent); color:#000; padding:.12rem .5rem; border-radius:20px; font-size:.68rem; font-weight:700; margin-left:.3rem; }
+
+/* LAYOUT */
 .container { max-width:1400px; margin:0 auto; padding:5.5rem 2rem 7rem; position:relative; z-index:1; }
+
+/* HERO */
 .hero { text-align:center; padding:3.5rem 2rem 2.5rem; margin-bottom:2rem; }
 .hero h1 { font-family:'Syne',sans-serif; font-size:clamp(2.5rem,6vw,5rem); font-weight:800; background:linear-gradient(135deg,#fff 0%,#c4b5fd 50%,#f59e0b 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; letter-spacing:-2px; line-height:1; margin-bottom:.8rem; }
 .hero p { font-size:1.05rem; color:var(--text2); }
+
+/* TABS */
 .tab-buttons { display:flex; gap:.4rem; margin-bottom:2rem; flex-wrap:wrap; justify-content:center; background:var(--card); padding:.4rem; border-radius:12px; border:1px solid var(--border); width:fit-content; margin-left:auto; margin-right:auto; }
 .tab-button { padding:.55rem 1.3rem; border:none; border-radius:8px; background:transparent; color:var(--text2); cursor:pointer; font-weight:600; font-size:.88rem; transition:all .3s; font-family:'DM Sans',sans-serif; }
 .tab-button:hover { color:#fff; background:rgba(124,58,237,.2); }
@@ -35,7 +43,11 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
 .tab-content { display:none; }
 .tab-content.active { display:block; }
 .section-title { font-family:'Syne',sans-serif; font-size:1.5rem; font-weight:700; color:#fff; margin-bottom:1.2rem; }
+
+/* GRIDS */
 .songs-grid,.users-grid,.articles-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:1.5rem; margin:1rem 0; }
+
+/* SONG CARD */
 .song-card { background:var(--card); border-radius:16px; overflow:hidden; border:1px solid var(--border); transition:transform .3s,box-shadow .3s; }
 .song-card:hover { transform:translateY(-4px); box-shadow:0 16px 40px rgba(124,58,237,.2); }
 .song-cover-wrapper { position:relative; height:190px; overflow:hidden; }
@@ -57,7 +69,13 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
 .btn-share { background:#0ea5e9; color:#fff; }
 .btn-delete { background:var(--danger); color:#fff; }
 .btn-approve { background:var(--green); color:#fff; flex:2; }
+.btn-like { background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); padding:.5rem .7rem; border-radius:8px; cursor:pointer; font-weight:600; font-size:.78rem; transition:all .2s; display:flex; align-items:center; justify-content:center; gap:.25rem; font-family:'DM Sans',sans-serif; }
+.btn-like:hover { background:#ef4444; color:#fff; }
+.btn-like.liked { background:#ef4444; color:#fff; border-color:#ef4444; }
 .btn-play:hover,.btn-download:hover,.btn-share:hover,.btn-delete:hover,.btn-approve:hover { opacity:.82; transform:scale(.97); }
+.article-body { color:var(--text2); font-size:.85rem; line-height:1.7; white-space:pre-wrap; }
+
+/* AUDIO PLAYER */
 .audio-player { position:fixed; bottom:0; left:0; right:0; background:rgba(15,10,30,.97); backdrop-filter:blur(20px); padding:.75rem 2rem; border-top:1px solid var(--border); display:none; z-index:1500; }
 .audio-player.active { display:block; }
 .player-controls { display:flex; align-items:center; gap:1.5rem; max-width:900px; margin:0 auto; flex-wrap:wrap; }
@@ -70,6 +88,8 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
 .player-buttons button:hover { color:var(--accent); }
 .progress-bar { flex:2; min-width:120px; height:4px; background:var(--card2); border-radius:2px; cursor:pointer; }
 .progress-fill { height:100%; background:linear-gradient(90deg,var(--primary),var(--accent)); border-radius:2px; width:0%; transition:width .1s; }
+
+/* MODALS */
 .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:1900; backdrop-filter:blur(4px); }
 .overlay.active { display:block; }
 .modal { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--card); padding:2rem; border-radius:20px; border:1px solid var(--border); box-shadow:0 30px 60px rgba(0,0,0,.5); z-index:2000; width:90%; max-width:430px; max-height:90vh; overflow-y:auto; }
@@ -78,6 +98,8 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
 .modal-header h2 { font-family:'Syne',sans-serif; font-size:1.2rem; color:#fff; }
 .close-modal { cursor:pointer; font-size:1.5rem; color:var(--text2); background:none; border:none; line-height:1; }
 .close-modal:hover { color:#fff; }
+
+/* FORMS */
 .form-group { margin-bottom:1rem; }
 .form-group label { display:block; margin-bottom:.35rem; font-weight:500; font-size:.85rem; color:var(--text2); }
 .form-group input,.form-group textarea,.form-group select { width:100%; padding:.72rem 1rem; background:var(--bg2); border:1px solid var(--border); border-radius:10px; font-size:.88rem; color:var(--text); font-family:'DM Sans',sans-serif; transition:border-color .3s; }
@@ -88,6 +110,8 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
 .btn:hover { background:var(--primary-dark); }
 .btn:disabled { opacity:.5; cursor:not-allowed; }
 .switch-auth { text-align:center; margin-top:1rem; color:var(--primary); cursor:pointer; font-size:.88rem; }
+
+/* FILE INPUT */
 .file-input { border:2px dashed var(--border); padding:1.3rem; text-align:center; border-radius:10px; cursor:pointer; transition:border-color .3s,background .3s; background:var(--bg2); }
 .file-input:hover { border-color:var(--primary); background:rgba(124,58,237,.05); }
 .file-input i { font-size:1.8rem; color:var(--primary); margin-bottom:.4rem; display:block; }
@@ -96,10 +120,14 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
 .file-preview { display:none; margin-top:.7rem; }
 .file-preview.active { display:block; }
 .preview-image { max-width:130px; max-height:130px; border-radius:8px; margin-top:.4rem; border:2px solid var(--border); }
+
+/* DASHBOARD SECTIONS */
 .dashboard-section { background:var(--card); border-radius:16px; padding:1.8rem; margin:1.2rem 0; border:1px solid var(--border); }
 .dashboard-section h2 { font-family:'Syne',sans-serif; font-size:1.4rem; color:#fff; margin-bottom:1.5rem; }
 .dashboard-section h3 { font-family:'Syne',sans-serif; font-size:1.05rem; color:var(--text); margin-bottom:1rem; padding-bottom:.5rem; border-bottom:1px solid var(--border); }
 .upload-form { max-width:640px; margin:0 auto; }
+
+/* USER CARDS */
 .user-card { background:var(--card2); border-radius:12px; padding:1.1rem; border:1px solid var(--border); display:flex; flex-direction:column; gap:.7rem; }
 .user-card-header { display:flex; align-items:center; gap:.75rem; }
 .user-avatar { width:42px; height:42px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--accent)); display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:700; color:#fff; font-size:1rem; flex-shrink:0; }
@@ -121,13 +149,16 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
 .btn-ban { background:var(--danger); color:#fff; }
 .btn-unban { background:var(--accent); color:#000; }
 .btn-del-sm { background:rgba(239,68,68,.15); color:var(--danger); border:1px solid rgba(239,68,68,.3); }
+
+/* ARTICLE CARDS */
 .article-card { background:var(--card); border-radius:16px; overflow:hidden; border:1px solid var(--border); transition:transform .3s; }
 .article-card:hover { transform:translateY(-3px); }
 .article-image { width:100%; height:170px; object-fit:cover; }
 .article-info { padding:1.1rem; }
 .article-title { font-family:'Syne',sans-serif; font-size:.98rem; font-weight:700; color:#fff; margin-bottom:.35rem; }
 .article-date { color:var(--text2); font-size:.78rem; margin-bottom:.7rem; }
-.article-body { color:var(--text2); font-size:.83rem; line-height:1.5; }
+
+/* RANKINGS */
 .ranking-section { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1.5rem; margin-top:1.2rem; }
 .ranking-card { background:var(--card); border-radius:16px; padding:1.4rem; border:1px solid var(--border); }
 .ranking-card h3 { font-family:'Syne',sans-serif; color:#fff; margin-bottom:1rem; font-size:.98rem; }
@@ -138,33 +169,48 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
 .ranking-title { font-weight:600; color:#fff; font-size:.85rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .ranking-artist { color:var(--text2); font-size:.76rem; }
 .ranking-val { color:var(--accent); font-weight:700; font-size:.82rem; }
+
+/* SHARE MODAL */
 .share-link-item { background:var(--bg2); padding:.9rem; border-radius:10px; margin-bottom:.7rem; border:1px solid var(--border); }
 .share-link-item label { display:block; font-weight:600; margin-bottom:.4rem; font-size:.85rem; color:var(--text); }
 .share-url { display:flex; gap:.4rem; }
 .share-url input { flex:1; padding:.45rem .7rem; background:var(--card); border:1px solid var(--border); border-radius:6px; color:var(--text2); font-size:.78rem; }
 .copy-btn { padding:.45rem .9rem; background:var(--primary); color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:.78rem; font-weight:600; }
+
+/* MESSAGES */
 .toast { position:fixed; top:76px; right:18px; padding:.85rem 1.4rem; border-radius:10px; color:#fff; z-index:3000; display:none; font-weight:500; font-size:.88rem; box-shadow:0 10px 30px rgba(0,0,0,.3); max-width:340px; }
 .toast.success { background:var(--green); }
 .toast.error { background:var(--danger); }
 .toast.show { display:block; }
+
+/* LOADING */
 .loading { display:inline-block; width:16px; height:16px; border:2px solid rgba(255,255,255,.3); border-top:2px solid #fff; border-radius:50%; animation:spin .8s linear infinite; }
 @keyframes spin { to { transform:rotate(360deg); } }
+
+/* ADMIN STATS */
 .admin-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:1rem; margin-bottom:2rem; }
 .stat-card { background:var(--card2); border-radius:12px; padding:1.1rem; text-align:center; border:1px solid var(--border); }
 .stat-card-num { font-family:'Syne',sans-serif; font-size:1.8rem; font-weight:800; color:var(--primary); }
 .stat-card-label { color:var(--text2); font-size:.76rem; margin-top:.2rem; }
+
+/* SEARCH */
 .search-bar { margin-bottom:1.1rem; }
 .search-bar input { width:100%; padding:.72rem 1rem; background:var(--card); border:1px solid var(--border); border-radius:10px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:.9rem; }
 .search-bar input:focus { outline:none; border-color:var(--primary); }
 .filter-tabs { display:flex; gap:.5rem; margin-bottom:1.2rem; flex-wrap:wrap; }
 .filter-tab { padding:.35rem .9rem; background:var(--card); border:1px solid var(--border); border-radius:20px; color:var(--text2); cursor:pointer; font-size:.82rem; transition:all .3s; }
 .filter-tab.active,.filter-tab:hover { background:var(--primary); color:#fff; border-color:var(--primary); }
+
+/* EMPTY STATE */
 .empty-state { text-align:center; padding:2.5rem; color:var(--text2); grid-column:1/-1; }
 .empty-state i { font-size:2.5rem; margin-bottom:.8rem; color:var(--border); display:block; }
+
+/* FOOTER */
 .footer { text-align:center; padding:2rem; color:var(--text2); margin-top:3rem; border-top:1px solid var(--border); font-size:.88rem; }
 .footer p { margin:.35rem 0; }
 .footer .brand { font-family:'Syne',sans-serif; font-weight:800; color:#fff; font-size:1.05rem; }
 .footer .copyright { font-size:.78rem; opacity:.6; margin-top:.7rem; }
+
 @media(max-width:768px) {
   .navbar { flex-direction:column; gap:.7rem; padding:.7rem 1rem; }
   .form-row { grid-template-columns:1fr; }
@@ -173,7 +219,10 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
 }
 </style>
 </head>
-<body><nav class="navbar">
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
   <div class="logo" onclick="window.location.reload()">F2K STREAM</div>
   <div class="nav-links">
     <a class="tab-trigger" data-tab="home">Accueil</a>
@@ -202,7 +251,7 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
     <button class="tab-button" data-tab="articles">📰 Actualités</button>
   </div>
 
-  <!-- ACCUEIL -->
+  <!-- ===== ACCUEIL ===== -->
   <div class="tab-content active" id="tab-home">
     <div class="search-bar">
       <input type="text" id="search-input" placeholder="🔍 Rechercher un son, artiste, label, genre...">
@@ -223,7 +272,7 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
     </div>
   </div>
 
-  <!-- CLASSEMENTS -->
+  <!-- ===== CLASSEMENTS ===== -->
   <div class="tab-content" id="tab-rankings">
     <p class="section-title">🏆 Classements</p>
     <div class="ranking-section">
@@ -233,7 +282,7 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
     </div>
   </div>
 
-  <!-- ACTUALITÉS -->
+  <!-- ===== ACTUALITÉS ===== -->
   <div class="tab-content" id="tab-articles">
     <p class="section-title">📰 Actualités musicales</p>
     <div class="articles-grid" id="articles-container">
@@ -241,12 +290,13 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
     </div>
   </div>
 
-  <!-- ESPACE ARTISTE -->
+  <!-- ===== ESPACE ARTISTE ===== -->
   <div class="tab-content" id="tab-dashboard">
     <div class="dashboard-section">
       <h2>🎤 Espace Artiste / Producteur</h2>
       <form id="upload-form" class="upload-form">
         <h3>Publier un nouveau son</h3>
+
         <div class="form-row">
           <div class="form-group">
             <label>Titre du morceau *</label>
@@ -257,6 +307,7 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
             <input type="text" id="song-artist-name" placeholder="Ex: MC Kalif" required>
           </div>
         </div>
+
         <div class="form-row">
           <div class="form-group">
             <label>Nom du label</label>
@@ -267,10 +318,12 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
             <input type="number" id="song-year" placeholder="2025" min="1900" max="2099" required>
           </div>
         </div>
+
         <div class="form-group">
           <label>Featuring (artistes invités)</label>
           <input type="text" id="song-featuring" placeholder="Ex: Artiste1, Artiste2 (optionnel)">
         </div>
+
         <div class="form-group">
           <label>Genre musical *</label>
           <select id="song-genre" required>
@@ -284,10 +337,12 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
             <option value="Autre">Autre</option>
           </select>
         </div>
+
         <div class="form-group">
           <label>Description</label>
           <textarea id="song-description" rows="3" placeholder="Parle de ton son..."></textarea>
         </div>
+
         <div class="form-group">
           <label>Pochette (image) *</label>
           <div class="file-input" id="cover-dropzone">
@@ -300,6 +355,7 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
             <img src="" alt="Aperçu" class="preview-image">
           </div>
         </div>
+
         <div class="form-group">
           <label>Fichier audio (MP3) *</label>
           <div class="file-input" id="audio-dropzone">
@@ -312,6 +368,7 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
             <p style="color:var(--green);font-size:.85rem"><i class="fas fa-check-circle"></i> Fichier : <span id="audio-filename"></span></p>
           </div>
         </div>
+
         <button type="submit" class="btn" id="upload-btn">
           <span id="upload-btn-text">Publier mon son</span>
           <span class="loading" id="upload-loading" style="display:none"></span>
@@ -321,6 +378,7 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
         </p>
       </form>
     </div>
+
     <div class="dashboard-section">
       <h3>Mes sons publiés</h3>
       <div class="songs-grid" id="my-songs-container">
@@ -329,29 +387,48 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
     </div>
   </div>
 
-  <!-- ESPACE ADMIN -->
+  <!-- ===== ESPACE ADMIN ===== -->
   <div class="tab-content" id="tab-admin">
     <div class="dashboard-section">
       <h2>👑 Administration</h2>
+
+      <!-- STATS RAPIDES -->
       <div class="admin-stats">
         <div class="stat-card"><div class="stat-card-num" id="stat-users">-</div><div class="stat-card-label">Utilisateurs</div></div>
         <div class="stat-card"><div class="stat-card-num" id="stat-songs">-</div><div class="stat-card-label">Sons publiés</div></div>
         <div class="stat-card"><div class="stat-card-num" id="stat-pending">-</div><div class="stat-card-label">En attente</div></div>
         <div class="stat-card"><div class="stat-card-num" id="stat-articles">-</div><div class="stat-card-label">Articles</div></div>
       </div>
+
+      <!-- PUBLIER UN SON (ADMIN) -->
       <div style="margin-bottom:2.5rem">
         <h3>🎵 Publier un son directement</h3>
         <form id="admin-upload-form" style="margin-top:1rem">
           <div class="form-row">
-            <div class="form-group"><label>Titre *</label><input type="text" id="admin-song-title" required></div>
-            <div class="form-group"><label>Nom d'artiste *</label><input type="text" id="admin-song-artist-name" required></div>
+            <div class="form-group">
+              <label>Titre *</label>
+              <input type="text" id="admin-song-title" required>
+            </div>
+            <div class="form-group">
+              <label>Nom d'artiste *</label>
+              <input type="text" id="admin-song-artist-name" required>
+            </div>
           </div>
           <div class="form-row">
-            <div class="form-group"><label>Nom du label</label><input type="text" id="admin-song-label"></div>
-            <div class="form-group"><label>Année *</label><input type="number" id="admin-song-year" placeholder="2025" min="1900" max="2099" required></div>
+            <div class="form-group">
+              <label>Nom du label</label>
+              <input type="text" id="admin-song-label">
+            </div>
+            <div class="form-group">
+              <label>Année *</label>
+              <input type="number" id="admin-song-year" placeholder="2025" min="1900" max="2099" required>
+            </div>
           </div>
           <div class="form-row">
-            <div class="form-group"><label>Featuring</label><input type="text" id="admin-song-featuring" placeholder="Optionnel"></div>
+            <div class="form-group">
+              <label>Featuring</label>
+              <input type="text" id="admin-song-featuring" placeholder="Optionnel">
+            </div>
             <div class="form-group">
               <label>Genre *</label>
               <select id="admin-song-genre" required>
@@ -366,7 +443,10 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
               </select>
             </div>
           </div>
-          <div class="form-group"><label>Description</label><textarea id="admin-song-description" rows="2"></textarea></div>
+          <div class="form-group">
+            <label>Description</label>
+            <textarea id="admin-song-description" rows="2"></textarea>
+          </div>
           <div class="form-row">
             <div class="form-group">
               <label>Pochette *</label>
@@ -377,8 +457,7 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
               <div class="file-preview" id="admin-cover-preview"><img src="" alt="" class="preview-image"></div>
             </div>
             <div class="form-group">
-              <label>Fichier MP3 *</label>
-              <div class="file-input" id="admin-audio-dropzone">
+              <label>Fichier MP3 *</label><div class="file-input" id="admin-audio-dropzone">
                 <i class="fas fa-music"></i><p>MP3 ici</p><small>Max 50MB</small>
                 <input type="file" id="admin-audio-file" accept="audio/mpeg" style="display:none" required>
               </div>
@@ -392,7 +471,9 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
             <span class="loading" id="admin-upload-loading" style="display:none"></span>
           </button>
         </form>
-  </div><!-- PUBLIER UN ARTICLE -->
+      </div>
+
+      <!-- PUBLIER UN ARTICLE -->
       <div style="margin-bottom:2.5rem">
         <h3>📰 Publier un article</h3>
         <form id="article-form" style="max-width:600px;margin-top:1rem">
@@ -495,7 +576,7 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
   </form>
 </div>
 
-<!-- MODAL PARTAGE -->
+<!-- MODAL PARTAGE SON -->
 <div class="modal" id="share-modal">
   <div class="modal-header">
     <h2>Partager ce morceau</h2>
@@ -512,6 +593,21 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
     </div>
   </div>
   <p style="text-align:center;color:var(--text2);font-size:.82rem"><i class="fas fa-info-circle"></i> Ces liens peuvent être partagés partout !</p>
+</div>
+
+<!-- MODAL PARTAGE ARTICLE -->
+<div class="modal" id="article-share-modal">
+  <div class="modal-header">
+    <h2>Partager cet article</h2>
+    <button class="close-modal" id="close-article-share">&times;</button>
+  </div>
+  <div style="margin:1.1rem 0">
+    <div class="share-link-item">
+      <label>🔗 Lien de l'article</label>
+      <div class="share-url"><input type="text" id="article-share-link" readonly><button class="copy-btn" onclick="copyArticleLink()">Copier</button></div>
+    </div>
+  </div>
+  <p style="text-align:center;color:var(--text2);font-size:.82rem"><i class="fas fa-info-circle"></i> Ce lien peut être partagé partout !</p>
 </div>
 
 <!-- FOOTER -->
@@ -542,6 +638,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const ADMIN_EMAIL = "f2kmultiservice@gmail.com";
 
+// ── DOM ──────────────────────────────────────────────
 const overlay = document.getElementById('overlay');
 const toast = document.getElementById('toast');
 const authModal = document.getElementById('auth-modal');
@@ -579,16 +676,19 @@ let allSongs = [];
 let currentGenre = '';
 let currentSearch = '';
 
+// ── TOAST ────────────────────────────────────────────
 function showToast(msg, type = 'success') {
   toast.textContent = msg;
   toast.className = `toast ${type} show`;
   setTimeout(() => toast.classList.remove('show'), 3500);
 }
 
+// ── MODALS ────────────────────────────────────────────
 function openModal(m) { m.classList.add('active'); overlay.classList.add('active'); }
 function closeAll() {
   authModal.classList.remove('active');
   shareModal.classList.remove('active');
+  articleShareModal && articleShareModal.classList.remove('active');
   overlay.classList.remove('active');
 }
 overlay.addEventListener('click', closeAll);
@@ -596,8 +696,7 @@ document.getElementById('close-modal').addEventListener('click', closeAll);
 document.getElementById('close-share').addEventListener('click', closeAll);
 
 function showAuthModal(type) {
-  openModal(authModal);
-  if (type === 'register') {
+  openModal(authModal);if (type === 'register') {
     loginForm.style.display = 'none';
     registerForm.style.display = 'block';
     document.getElementById('auth-title').textContent = 'Inscription';
@@ -606,12 +705,15 @@ function showAuthModal(type) {
     registerForm.style.display = 'none';
     document.getElementById('auth-title').textContent = 'Connexion';
   }
-}window.copyLink = function(type) {
+}
+
+window.copyLink = function(type) {
   const el = type === 'listen' ? listenLink : downloadLink;
   el.select(); document.execCommand('copy');
   showToast('Lien copié !');
 };
 
+// ── TABS ─────────────────────────────────────────────
 const tabButtons = document.querySelectorAll('.tab-button');
 const tabContents = document.querySelectorAll('.tab-content');
 const tabTriggers = document.querySelectorAll('.tab-trigger');
@@ -640,6 +742,7 @@ tabTriggers.forEach(t => t.addEventListener('click', e => {
   window.showTab(tabId);
 }));
 
+// ── SEARCH & FILTER ───────────────────────────────────
 document.getElementById('search-input').addEventListener('input', e => {
   currentSearch = e.target.value.toLowerCase();
   renderSongs();
@@ -669,9 +772,17 @@ function renderSongs() {
     container.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><p>Aucun son trouvé.</p></div>';
     return;
   }
-  list.forEach(song => container.appendChild(buildSongCard(song, false, false)));
+  list.forEach(song => {
+    container.appendChild(buildSongCard(song, false, false));
+    // Marquer si déjà liké
+    if (likedSongs.includes(song.id)) {
+      const btn = document.getElementById('btn-like-' + song.id);
+      if (btn) btn.classList.add('liked');
+    }
+  });
 }
 
+// ── CLOUDINARY UPLOAD ─────────────────────────────────
 const CLOUDINARY_CLOUD = 'di4byrrfv';
 const CLOUDINARY_PRESET = 'f2k_stream';
 
@@ -692,6 +803,7 @@ async function uploadToCatbox(file) {
   return data.secure_url;
 }
 
+// ── AUTH ─────────────────────────────────────────────
 loginBtn.addEventListener('click', () => showAuthModal('login'));
 registerBtn.addEventListener('click', () => showAuthModal('register'));
 logoutBtn.addEventListener('click', async () => { await signOut(auth); showToast('Déconnexion réussie'); });
@@ -779,6 +891,7 @@ onAuthStateChanged(auth, async user => {
   }
 });
 
+// ── FILE DROPZONES ────────────────────────────────────
 function setupDropzone(dzId, inputEl, previewEl, isImg, fnSpanId) {
   const dz = document.getElementById(dzId);
   dz.addEventListener('click', () => inputEl.click());
@@ -808,6 +921,7 @@ setupDropzone('audio-dropzone', audioFile, audioPreview, false, 'audio-filename'
 setupDropzone('admin-cover-dropzone', adminCoverFile, adminCoverPreview, true, null);
 setupDropzone('admin-audio-dropzone', adminAudioFile, adminAudioPreview, false, 'admin-audio-filename');
 
+// ── SUBMIT SONG ───────────────────────────────────────
 async function handleSongSubmit(e, isAdminForm) {
   e.preventDefault();
   if (!currentUser) { showAuthModal('login'); return; }
@@ -820,9 +934,7 @@ async function handleSongSubmit(e, isAdminForm) {
   const genre       = document.getElementById(p+'song-genre').value;
   const description = document.getElementById(p+'song-description').value.trim();
   const cover = isAdminForm ? adminCoverFile.files[0] : coverFile.files[0];
-  const audio = isAdminForm ? adminAudioFile.files[0] : audioFile.files[0];
-
-  if (!title || !artistName || !year || !genre || !cover || !audio) {
+  const audio = isAdminForm ? adminAudioFile.files[0] : audioFile.files[0];if (!title || !artistName || !year || !genre || !cover || !audio) {
     showToast('Remplis tous les champs obligatoires (*)', 'error'); return;
   }
   if (audio.size > 50*1024*1024) { showToast('MP3 max 50 MB', 'error'); return; }
@@ -836,7 +948,8 @@ async function handleSongSubmit(e, isAdminForm) {
   try {
     showToast('Upload en cours... Ne ferme pas la page');
     const coverUrl = await uploadToCatbox(cover);
-    const audioUrl = await uploadToCatbox(audio);await addDoc(collection(db, 'songs'), {
+    const audioUrl = await uploadToCatbox(audio);
+    await addDoc(collection(db, 'songs'), {
       title, artistName, label, year: parseInt(year),
       featuring, genre, description,
       artistId: currentUser.uid,
@@ -869,6 +982,7 @@ async function handleSongSubmit(e, isAdminForm) {
 uploadForm.addEventListener('submit', e => handleSongSubmit(e, false));
 adminUploadForm.addEventListener('submit', e => handleSongSubmit(e, true));
 
+// ── ARTICLE FORM ──────────────────────────────────────
 articleForm.addEventListener('submit', async e => {
   e.preventDefault();
   if (!isAdmin) { showToast("Seul l'admin peut publier des articles", 'error'); return; }
@@ -894,6 +1008,7 @@ articleForm.addEventListener('submit', async e => {
   finally { btn.disabled = false; btnText.style.display = 'inline'; btnLoad.style.display = 'none'; }
 });
 
+// ── LOAD SONGS ────────────────────────────────────────
 async function loadSongs() {
   try {
     const snap = await getDocs(query(collection(db,'songs'), orderBy('createdAt','desc'), limit(60)));
@@ -906,6 +1021,7 @@ async function loadSongs() {
   }
 }
 
+// ── BUILD SONG CARD ───────────────────────────────────
 function buildSongCard(song, showDelete, showPending) {
   const card = document.createElement('div');
   card.className = 'song-card';
@@ -931,16 +1047,17 @@ function buildSongCard(song, showDelete, showPending) {
       <div class="song-stats">
         <span class="stat-item"><i class="fas fa-eye"></i> ${song.views||0}</span>
         <span class="stat-item"><i class="fas fa-download"></i> ${song.downloads||0}</span>
-        <span class="stat-item"><i class="fas fa-heart"></i> ${song.likes||0}</span>
+        <span class="stat-item like-stat" id="likes-${sid}"><i class="fas fa-heart"></i> ${song.likes||0}</span>
       </div>
       <div class="song-actions">
         ${showPending ? `
           <button class="btn-approve" onclick="approveSong('${sid}')"><i class="fas fa-check"></i> Valider</button>
-          <button class="btn-delete" onclick="rejectSong('${sid}')"><i class="fas fa-times"></i> Rejeter</button>
+          <button class="btn-delete"  onclick="rejectSong('${sid}')"><i class="fas fa-times"></i> Rejeter</button>
         ` : `
-          <button class="btn-play" onclick="playSong('${sid}')"><i class="fas fa-play"></i> Écouter</button>
+          <button class="btn-play"     onclick="playSong('${sid}')"><i class="fas fa-play"></i> Écouter</button>
+          <button class="btn-like"     onclick="likeSong('${sid}')" id="btn-like-${sid}" title="J'aime"><i class="fas fa-heart"></i></button>
           <button class="btn-download" onclick="downloadSong('${sid}','${encodeURIComponent(song.audioUrl)}','${encodeURIComponent(song.title)}')" title="Télécharger"><i class="fas fa-download"></i></button>
-          <button class="btn-share" onclick="openShare('${sid}')" title="Partager"><i class="fas fa-share-alt"></i></button>
+          <button class="btn-share"    onclick="openShare('${sid}')" title="Partager"><i class="fas fa-share-alt"></i></button>
           ${canDelete ? `<button class="btn-delete" onclick="deleteSong('${sid}')" title="Supprimer"><i class="fas fa-trash"></i></button>` : ''}
         `}
       </div>
@@ -952,7 +1069,9 @@ function escHtml(str) {
   return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
+// ── SONG STORE (lookup by id) ─────────────────────────
 const songCache = {};
+
 async function getSong(id) {
   if (songCache[id]) return songCache[id];
   const snap = await getDoc(doc(db,'songs',id));
@@ -960,6 +1079,7 @@ async function getSong(id) {
   return null;
 }
 
+// ── PLAYER ────────────────────────────────────────────
 window.playSong = async function(id) {
   const song = allSongs.find(s => s.id === id) || await getSong(id);
   if (!song) return;
@@ -1005,6 +1125,7 @@ audioElement.addEventListener('ended', () => {
   progressFill.style.width = '0%';
 });
 
+// ── DOWNLOAD ──────────────────────────────────────────
 window.downloadSong = async function(id, encodedUrl, encodedTitle) {
   const url = decodeURIComponent(encodedUrl);
   const title = decodeURIComponent(encodedTitle);
@@ -1014,6 +1135,7 @@ window.downloadSong = async function(id, encodedUrl, encodedTitle) {
   updateDoc(doc(db,'songs',id), { downloads: increment(1) }).catch(()=>{});
 };
 
+// ── SHARE ─────────────────────────────────────────────
 window.openShare = async function(id) {
   const song = allSongs.find(s => s.id === id) || await getSong(id);
   if (!song) return;
@@ -1021,269 +1143,3 @@ window.openShare = async function(id) {
   downloadLink.value = song.audioUrl;
   openModal(shareModal);
 };
-
-window.deleteSong = async function(id) {
-  if (!confirm('Supprimer ce son définitivement ?')) return;
-  try {
-    await deleteDoc(doc(db,'songs',id));
-    showToast('Son supprimé.');
-    loadSongs();
-    if (isAdmin) loadAdminAll(); else loadMySongs();
-  } catch { showToast('Erreur lors de la suppression.', 'error'); }
-};
-
-window.approveSong = async function(id) {
-  try {
-    await updateDoc(doc(db,'songs',id), { approved: true });
-    showToast('Son validé et publié !');
-    loadSongs(); loadAdminAll();
-  } catch { showToast('Erreur validation.', 'error'); }
-};
-
-window.rejectSong = async function(id) {
-  if (!confirm('Rejeter et supprimer ce son ?')) return;
-  try {
-    await deleteDoc(doc(db,'songs',id));
-    showToast('Son rejeté.');
-    loadAdminAll();
-  } catch { showToast('Erreur.', 'error'); }
-};
-
-async function loadMySongs() {
-  if (!currentUser) return;
-  const c = document.getElementById('my-songs-container');
-  c.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>';
-  try {
-    const snap = await getDocs(query(collection(db,'songs'), where('artistId','==',currentUser.uid), orderBy('createdAt','desc')));
-    c.innerHTML = '';
-    if (snap.empty) {
-      c.innerHTML = '<div class="empty-state"><i class="fas fa-music"></i><p>Tu n\'as pas encore publié de son.</p></div>';
-      return;
-    }
-    snap.docs.forEach(d => {
-      const s = { id:d.id, ...d.data() };
-      c.appendChild(buildSongCard(s, true, !s.approved));
-    });
-  } catch (err) { console.error(err); }
-  }async function loadArticles() {
-  const c = document.getElementById('articles-container');
-  try {
-    const snap = await getDocs(query(collection(db,'articles'), orderBy('createdAt','desc'), limit(12)));
-    c.innerHTML = '';
-    if (snap.empty) {
-      c.innerHTML = '<div class="empty-state"><i class="fas fa-newspaper"></i><p>Aucun article pour le moment.</p></div>';
-      return;
-    }
-    snap.docs.forEach(d => c.appendChild(buildArticleCard({ id:d.id, ...d.data() }, false)));
-  } catch (err) { console.error(err); }
-}
-
-function buildArticleCard(article, isAdminView) {
-  const card = document.createElement('div');
-  card.className = 'article-card';
-  const date = new Date(article.createdAt).toLocaleDateString('fr-FR');
-  card.innerHTML = `
-    ${article.imageUrl ? `<img src="${article.imageUrl}" alt="${escHtml(article.title)}" class="article-image">` : ''}
-    <div class="article-info">
-      <div class="article-title">${escHtml(article.title)}</div>
-      <div class="article-date">${date} · Par ${escHtml(article.authorName)}</div>
-      <div class="article-body">${escHtml(article.content.substring(0,180))}${article.content.length>180?'...':''}</div>
-      ${isAdminView ? `<div style="margin-top:.8rem"><button class="btn-sm btn-del-sm" onclick="deleteArticle('${article.id}')"><i class="fas fa-trash"></i> Supprimer</button></div>` : ''}
-    </div>`;
-  return card;
-}
-
-window.deleteArticle = async function(id) {
-  if (!confirm('Supprimer cet article ?')) return;
-  try {
-    await deleteDoc(doc(db,'articles',id));
-    showToast('Article supprimé.');
-    loadArticles(); loadAdminAll();
-  } catch { showToast('Erreur.', 'error'); }
-};
-
-async function loadRankings() {
-  try {
-    const [dS,vS,lS] = await Promise.all([
-      getDocs(query(collection(db,'songs'), where('approved','==',true), orderBy('downloads','desc'), limit(5))),
-      getDocs(query(collection(db,'songs'), where('approved','==',true), orderBy('views','desc'),     limit(5))),
-      getDocs(query(collection(db,'songs'), where('approved','==',true), orderBy('likes','desc'),     limit(5)))
-    ]);
-    function render(cId, snap, field, icon) {
-      const el = document.getElementById(cId);
-      el.innerHTML = '';
-      if (snap.empty) { el.innerHTML = '<p style="color:var(--text2);font-size:.82rem">Aucune donnée.</p>'; return; }
-      snap.docs.forEach((d,i) => {
-        const s = d.data();
-        el.innerHTML += `
-          <div class="ranking-item">
-            <div class="ranking-num">${i+1}</div>
-            <div class="ranking-info">
-              <div class="ranking-title">${escHtml(s.title)}</div>
-              <div class="ranking-artist">${escHtml(s.artistName||s.uploadedBy)}</div>
-            </div>
-            <div class="ranking-val">${icon} ${s[field]||0}</div>
-          </div>`;
-      });
-    }
-    render('top-downloads', dS, 'downloads', '⬇️');
-    render('top-views',     vS, 'views',     '👁️');
-    render('top-likes',     lS, 'likes',     '❤️');
-  } catch (err) { console.error('Rankings:', err); }
-}
-
-async function loadAdminAll() {
-  if (!isAdmin) return;
-  await Promise.all([
-    updateAdminStats(),
-    loadAdminPending(),
-    loadAdminUsers(),
-    loadAdminSongs(),
-    loadAdminArticles()
-  ]);
-}
-
-async function updateAdminStats() {
-  try {
-    const [u,s,p,a] = await Promise.all([
-      getDocs(collection(db,'users')),
-      getDocs(collection(db,'songs')),
-      getDocs(query(collection(db,'songs'), where('approved','==',false))),
-      getDocs(collection(db,'articles'))
-    ]);
-    document.getElementById('stat-users').textContent    = u.size;
-    document.getElementById('stat-songs').textContent    = s.size;
-    document.getElementById('stat-pending').textContent  = p.size;
-    document.getElementById('stat-articles').textContent = a.size;
-  } catch (err) { console.error(err); }
-}
-
-async function loadAdminPending() {
-  const c = document.getElementById('admin-pending-container');
-  c.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>';
-  try {
-    const snap = await getDocs(query(collection(db,'songs'), where('approved','==',false), orderBy('createdAt','desc')));
-    c.innerHTML = '';
-    if (snap.empty) {
-      c.innerHTML = '<div class="empty-state"><i class="fas fa-check-double"></i><p>Aucun son en attente.</p></div>';
-      return;
-    }
-    snap.docs.forEach(d => c.appendChild(buildSongCard({ id:d.id, ...d.data() }, false, true)));
-  } catch (err) { console.error(err); }
-}
-
-async function loadAdminUsers() {
-  const c = document.getElementById('admin-users-container');
-  c.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>';
-  try {
-    const snap = await getDocs(query(collection(db,'users'), orderBy('createdAt','desc')));
-    c.innerHTML = '';
-    if (snap.empty) {
-      c.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>Aucun utilisateur.</p></div>';
-      return;
-    }
-    snap.docs.forEach(d => c.appendChild(buildUserCard({ id:d.id, ...d.data() })));
-  } catch (err) {
-    console.error(err);
-    document.getElementById('admin-users-container').innerHTML =
-      '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Erreur chargement utilisateurs.</p></div>';
-  }
-}
-
-function buildUserCard(user) {
-  const card = document.createElement('div');
-  card.className = 'user-card';
-  const initial = (user.name||user.email||'?')[0].toUpperCase();
-  const roleClass = user.role === 'admin' ? 'role-admin' : user.role === 'producer' ? 'role-producer' : 'role-artist';
-  const roleName  = user.role === 'admin' ? 'Admin' : user.role === 'producer' ? 'Producteur' : 'Artiste';
-  const status = user.isBanned
-    ? '<span class="user-status-banned">🚫 Banni</span>'
-    : user.isConfirmed
-      ? '<span class="user-status-confirmed">✅ Confirmé</span>'
-      : '<span class="user-status-pending">⏳ En attente</span>';
-  const date = user.createdAt ? new Date(user.createdAt).toLocaleDateString('fr-FR') : '';
-  const uid = user.id;
-  card.innerHTML = `
-    <div class="user-card-header">
-      <div class="user-avatar">${initial}</div>
-      <div class="user-info">
-        <div class="user-name">${escHtml(user.name||'Sans nom')} <span class="role-badge ${roleClass}">${roleName}</span></div>
-        <div class="user-email">${escHtml(user.email)}</div>
-        ${user.whatsapp ? `<div class="user-meta">📱 ${escHtml(user.whatsapp)}</div>` : ''}
-      </div>
-    </div>
-    <div style="display:flex;justify-content:space-between;align-items:center;font-size:.78rem">
-      ${status}
-      <span style="color:var(--text2)">Inscrit le ${date}</span>
-    </div>
-    <div class="user-actions">
-      ${!user.isConfirmed && !user.isBanned && user.role !== 'admin'
-        ? `<button class="btn-sm btn-confirm" onclick="confirmUser('${uid}')"><i class="fas fa-check"></i> Confirmer</button>` : ''}
-      ${!user.isBanned && user.role !== 'admin'
-        ? `<button class="btn-sm btn-ban" onclick="banUser('${uid}')"><i class="fas fa-ban"></i> Bannir</button>`
-        : user.isBanned
-          ? `<button class="btn-sm btn-unban" onclick="unbanUser('${uid}')"><i class="fas fa-undo"></i> Réactiver</button>` : ''}
-      ${user.role !== 'admin'
-        ? `<button class="btn-sm btn-del-sm" onclick="deleteUser('${uid}')"><i class="fas fa-trash"></i> Supprimer</button>` : ''}
-    </div>`;
-  return card;
-}
-
-window.confirmUser = async function(uid) {
-  if (!confirm('Confirmer ce compte ?')) return;
-  try { await updateDoc(doc(db,'users',uid), { isConfirmed:true }); showToast('Compte confirmé !'); loadAdminUsers(); }
-  catch { showToast('Erreur.', 'error'); }
-};
-window.banUser = async function(uid) {
-  if (!confirm('Bannir cet utilisateur ?')) return;
-  try { await updateDoc(doc(db,'users',uid), { isBanned:true }); showToast('Utilisateur banni.'); loadAdminUsers(); }
-  catch { showToast('Erreur.', 'error'); }
-};
-window.unbanUser = async function(uid) {
-  if (!confirm('Réactiver ce compte ?')) return;
-  try { await updateDoc(doc(db,'users',uid), { isBanned:false, isConfirmed:true }); showToast('Compte réactivé !'); loadAdminUsers(); }
-  catch { showToast('Erreur.', 'error'); }
-};
-window.deleteUser = async function(uid) {
-  if (!confirm('Supprimer définitivement ce compte ? Action irréversible.')) return;
-  try { await deleteDoc(doc(db,'users',uid)); showToast('Compte supprimé.'); loadAdminUsers(); updateAdminStats(); }
-  catch { showToast('Erreur.', 'error'); }
-};
-
-async function loadAdminSongs() {
-  const c = document.getElementById('admin-songs-container');
-  c.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>';
-  try {
-    const snap = await getDocs(query(collection(db,'songs'), orderBy('createdAt','desc')));
-    c.innerHTML = '';
-    if (snap.empty) {
-      c.innerHTML = '<div class="empty-state"><i class="fas fa-music"></i><p>Aucun morceau.</p></div>';
-      return;
-    }
-    snap.docs.forEach(d => c.appendChild(buildSongCard({ id:d.id, ...d.data() }, true, false)));
-  } catch (err) { console.error(err); }
-}
-
-async function loadAdminArticles() {
-  const c = document.getElementById('admin-articles-container');
-  c.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>';
-  try {
-    const snap = await getDocs(query(collection(db,'articles'), orderBy('createdAt','desc')));
-    c.innerHTML = '';
-    if (snap.empty) {
-      c.innerHTML = '<div class="empty-state"><i class="fas fa-newspaper"></i><p>Aucun article.</p></div>';
-      return;
-    }
-    snap.docs.forEach(d => c.appendChild(buildArticleCard({ id:d.id, ...d.data() }, true)));
-  } catch (err) { console.error(err); }
-}
-
-(function() {
-  const pid = new URLSearchParams(window.location.search).get('play');
-  if (pid) setTimeout(() => window.playSong(pid), 2500);
-})();
-
-console.log('✅ F2K STREAM chargé avec succès !');
-</script>
-</body>
-</html>
