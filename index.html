@@ -1143,3 +1143,332 @@ window.openShare = async function(id) {
   downloadLink.value = song.audioUrl;
   openModal(shareModal);
 };
+// ── DELETE / APPROVE / REJECT ─────────────────────────
+// ── LIKE ─────────────────────────────────────────────
+const likedSongs = JSON.parse(localStorage.getItem('f2k_liked') || '[]');
+
+window.likeSong = async function(id) {
+  if (likedSongs.includes(id)) {
+    showToast('Tu as déjà liké ce son !', 'error');
+    return;
+  }
+  try {
+    await updateDoc(doc(db,'songs',id), { likes: increment(1) });
+    likedSongs.push(id);
+    localStorage.setItem('f2k_liked', JSON.stringify(likedSongs));
+    // Mettre à jour compteur dans allSongs
+    const song = allSongs.find(s => s.id === id);
+    if (song) song.likes = (song.likes||0) + 1;
+    // Mettre à jour l'affichage
+    const statEl = document.getElementById('likes-' + id);
+    if (statEl) statEl.innerHTML = '<i class="fas fa-heart"></i> ' + ((song ? song.likes : 0));
+    const btnEl = document.getElementById('btn-like-' + id);
+    if (btnEl) btnEl.classList.add('liked');
+    showToast('❤️ Merci pour ton like !');
+  } catch { showToast('Erreur.', 'error'); }
+};
+
+window.deleteSong = async function(id) {
+  if (!confirm('Supprimer ce son définitivement ?')) return;
+  try {
+    await deleteDoc(doc(db,'songs',id));
+    showToast('Son supprimé.');
+    loadSongs();
+    if (isAdmin) loadAdminAll(); else loadMySongs();
+  } catch { showToast('Erreur lors de la suppression.', 'error'); }
+};
+
+window.approveSong = async function(id) {
+  try {
+    await updateDoc(doc(db,'songs',id), { approved: true });
+    showToast('Son validé et publié !');
+    loadSongs(); loadAdminAll();
+  } catch { showToast('Erreur validation.', 'error'); }
+};
+
+window.rejectSong = async function(id) {
+  if (!confirm('Rejeter et supprimer ce son ?')) return;
+  try {
+    await deleteDoc(doc(db,'songs',id));
+    showToast('Son rejeté.');
+    loadAdminAll();
+  } catch { showToast('Erreur.', 'error'); }
+};
+
+// ── MY SONGS ──────────────────────────────────────────
+async function loadMySongs() {
+  if (!currentUser) return;
+  const c = document.getElementById('my-songs-container');
+  c.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>';
+  try {
+    const snap = await getDocs(query(collection(db,'songs'), where('artistId','==',currentUser.uid)));
+    c.innerHTML = '';
+    if (snap.empty) {
+      c.innerHTML = '<div class="empty-state"><i class="fas fa-music"></i><p>Tu n\'as pas encore publié de son.</p></div>';
+      return;
+    }
+    const docs = snap.docs
+      .map(d => ({ id:d.id, ...d.data() }))
+      .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+    docs.forEach(s => c.appendChild(buildSongCard(s, true, !s.approved)));
+  } catch (err) { console.error(err); }
+}
+
+// ── ARTICLES ──────────────────────────────────────────
+async function loadArticles() {
+  const c = document.getElementById('articles-container');
+  try {
+    const snap = await getDocs(query(collection(db,'articles'), orderBy('createdAt','desc'), limit(12)));
+    c.innerHTML = '';
+    if (snap.empty) {
+      c.innerHTML = '<div class="empty-state"><i class="fas fa-newspaper"></i><p>Aucun article pour le moment.</p></div>';
+      return;
+    }
+    snap.docs.forEach(d => c.appendChild(buildArticleCard({ id:d.id, ...d.data() }, false)));
+  } catch (err) { console.error(err); }
+}
+
+function buildArticleCard(article, isAdminView) {
+  const card = document.createElement('div');
+  card.className = 'article-card';
+  const date = new Date(article.createdAt).toLocaleDateString('fr-FR');
+  const aid = article.id;
+  card.innerHTML = `
+    ${article.imageUrl ? `<img src="${article.imageUrl}" alt="${escHtml(article.title)}" class="article-image">` : ''}
+    <div class="article-info">
+      <div class="article-title">${escHtml(article.title)}</div>
+      <div class="article-date">${date} · Par ${escHtml(article.authorName)}</div>
+      <div class="article-body">${escHtml(article.content)}</div>
+      <div style="margin-top:.9rem;display:flex;gap:.5rem;flex-wrap:wrap;">
+        <button class="btn-share" style="padding:.45rem .9rem;font-size:.8rem;border:none;border-radius:8px;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:.3rem;" onclick="openArticleShare('${aid}')">
+          <i class="fas fa-share-alt"></i> Partager
+        </button>
+        ${isAdminView ? `<button class="btn-sm btn-del-sm" onclick="deleteArticle('${aid}')"><i class="fas fa-trash"></i> Supprimer</button>` : ''}
+      </div>
+    </div>`;
+  return card;
+}
+
+// ── PARTAGE ARTICLE ──────────────────────────────────
+const articleShareModal = document.getElementById('article-share-modal');
+document.getElementById('close-article-share').addEventListener('click', closeAll);
+
+window.openArticleShare = function(id) {
+  const link = window.location.href.split('?')[0] + '?article=' + id;
+  document.getElementById('article-share-link').value = link;
+  openModal(articleShareModal);
+};
+
+window.copyArticleLink = function() {
+  const input = document.getElementById('article-share-link');
+  input.select();
+  document.execCommand('copy');
+  showToast('Lien article copié !');
+};
+
+window.deleteArticle = async function(id) {
+  if (!confirm('Supprimer cet article ?')) return;
+  try {
+    await deleteDoc(doc(db,'articles',id));
+    showToast('Article supprimé.');
+    loadArticles(); loadAdminAll();
+  } catch { showToast('Erreur.', 'error'); }
+};
+
+// ── RANKINGS ─────────────────────────────────────────
+async function loadRankings() {
+  try {
+    // Une seule requête sans orderBy pour éviter les index composites — tri côté JS
+    const snap = await getDocs(query(collection(db,'songs'), where('approved','==',true)));
+    const songs = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+
+    function topBy(field) {
+      return [...songs].sort((a,b) => (b[field]||0) - (a[field]||0)).slice(0,5);
+    }
+    function render(cId, list, field, icon) {
+      const el = document.getElementById(cId);
+      el.innerHTML = '';
+      if (!list.length) { el.innerHTML = '<p style="color:var(--text2);font-size:.82rem">Aucune donnée.</p>'; return; }
+      list.forEach((s,i) => {
+        el.innerHTML += `
+          <div class="ranking-item">
+            <div class="ranking-num">${i+1}</div>
+            <div class="ranking-info">
+              <div class="ranking-title">${escHtml(s.title)}</div>
+              <div class="ranking-artist">${escHtml(s.artistName||s.uploadedBy)}</div>
+            </div>
+            <div class="ranking-val">${icon} ${s[field]||0}</div>
+          </div>`;
+      });
+    }
+    render('top-downloads', topBy('downloads'), 'downloads', '⬇️');
+    render('top-views',     topBy('views'),     'views',     '👁️');
+    render('top-likes',     topBy('likes'),     'likes',     '❤️');
+  } catch (err) { console.error('Rankings:', err); }
+}
+
+// ── ADMIN ─────────────────────────────────────────────
+async function loadAdminAll() {
+  if (!isAdmin) return;
+  await Promise.all([
+    updateAdminStats(),
+    loadAdminPending(),
+    loadAdminUsers(),
+    loadAdminSongs(),
+    loadAdminArticles()
+  ]);
+}
+
+async function updateAdminStats() {
+  try {
+    const [u,s,p,a] = await Promise.all([
+      getDocs(collection(db,'users')),
+      getDocs(collection(db,'songs')),
+      getDocs(query(collection(db,'songs'), where('approved','==',false))),
+      getDocs(collection(db,'articles'))
+    ]);
+    document.getElementById('stat-users').textContent    = u.size;
+    document.getElementById('stat-songs').textContent    = s.size;
+    document.getElementById('stat-pending').textContent  = p.size;
+    document.getElementById('stat-articles').textContent = a.size;
+  } catch (err) { console.error(err); }
+}
+
+async function loadAdminPending() {
+  const c = document.getElementById('admin-pending-container');
+  c.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>';
+  try {
+    // Pas d'orderBy pour éviter l'index composite Firestore — tri côté JS
+    const snap = await getDocs(query(collection(db,'songs'), where('approved','==',false)));
+    c.innerHTML = '';
+    if (snap.empty) {
+      c.innerHTML = '<div class="empty-state"><i class="fas fa-check-double"></i><p>Aucun son en attente.</p></div>';
+      return;
+    }
+    // Tri par date décroissante côté JS
+    const docs = snap.docs
+      .map(d => ({ id:d.id, ...d.data() }))
+      .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+    docs.forEach(s => c.appendChild(buildSongCard(s, false, true)));
+  } catch (err) {
+    console.error('loadAdminPending error:', err);
+    c.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Erreur chargement. Réessaie.</p></div>';
+  }
+}
+
+async function loadAdminUsers() {
+  const c = document.getElementById('admin-users-container');
+  c.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>';
+  try {
+    const snap = await getDocs(query(collection(db,'users'), orderBy('createdAt','desc')));
+    c.innerHTML = '';
+    if (snap.empty) {
+      c.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>Aucun utilisateur.</p></div>';
+      return;
+    }
+    snap.docs.forEach(d => c.appendChild(buildUserCard({ id:d.id, ...d.data() })));
+  } catch (err) {
+    console.error(err);
+    document.getElementById('admin-users-container').innerHTML =
+      '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Erreur chargement utilisateurs.</p></div>';
+  }
+}
+
+function buildUserCard(user) {
+  const card = document.createElement('div');
+  card.className = 'user-card';
+  const initial = (user.name||user.email||'?')[0].toUpperCase();
+  const roleClass = user.role === 'admin' ? 'role-admin' : user.role === 'producer' ? 'role-producer' : 'role-artist';
+  const roleName  = user.role === 'admin' ? 'Admin' : user.role === 'producer' ? 'Producteur' : 'Artiste';
+  const status = user.isBanned
+    ? '<span class="user-status-banned">🚫 Banni</span>'
+    : user.isConfirmed
+      ? '<span class="user-status-confirmed">✅ Confirmé</span>'
+      : '<span class="user-status-pending">⏳ En attente</span>';
+  const date = user.createdAt ? new Date(user.createdAt).toLocaleDateString('fr-FR') : '';
+  const uid = user.id;
+  card.innerHTML = `
+    <div class="user-card-header">
+      <div class="user-avatar">${initial}</div>
+      <div class="user-info">
+        <div class="user-name">${escHtml(user.name||'Sans nom')} <span class="role-badge ${roleClass}">${roleName}</span></div>
+        <div class="user-email">${escHtml(user.email)}</div>
+        ${user.whatsapp ? `<div class="user-meta">📱 ${escHtml(user.whatsapp)}</div>` : ''}
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;font-size:.78rem">
+      ${status}
+      <span style="color:var(--text2)">Inscrit le ${date}</span>
+    </div>
+    <div class="user-actions">
+      ${!user.isConfirmed && !user.isBanned && user.role !== 'admin'
+        ? `<button class="btn-sm btn-confirm" onclick="confirmUser('${uid}')"><i class="fas fa-check"></i> Confirmer</button>` : ''}
+      ${!user.isBanned && user.role !== 'admin'
+        ? `<button class="btn-sm btn-ban" onclick="banUser('${uid}')"><i class="fas fa-ban"></i> Bannir</button>`
+        : user.isBanned
+          ? `<button class="btn-sm btn-unban" onclick="unbanUser('${uid}')"><i class="fas fa-undo"></i> Réactiver</button>` : ''}
+      ${user.role !== 'admin'
+        ? `<button class="btn-sm btn-del-sm" onclick="deleteUser('${uid}')"><i class="fas fa-trash"></i> Supprimer</button>` : ''}
+    </div>`;
+  return card;
+}
+
+window.confirmUser = async function(uid) {
+  if (!confirm('Confirmer ce compte ?')) return;
+  try { await updateDoc(doc(db,'users',uid), { isConfirmed:true }); showToast('Compte confirmé !'); loadAdminUsers(); }
+  catch { showToast('Erreur.', 'error'); }
+};
+window.banUser = async function(uid) {
+  if (!confirm('Bannir cet utilisateur ?')) return;
+  try { await updateDoc(doc(db,'users',uid), { isBanned:true }); showToast('Utilisateur banni.'); loadAdminUsers(); }
+  catch { showToast('Erreur.', 'error'); }
+};
+window.unbanUser = async function(uid) {
+  if (!confirm('Réactiver ce compte ?')) return;
+  try { await updateDoc(doc(db,'users',uid), { isBanned:false, isConfirmed:true }); showToast('Compte réactivé !'); loadAdminUsers(); }
+  catch { showToast('Erreur.', 'error'); }
+};
+window.deleteUser = async function(uid) {
+  if (!confirm('Supprimer définitivement ce compte ? Action irréversible.')) return;
+  try { await deleteDoc(doc(db,'users',uid)); showToast('Compte supprimé.'); loadAdminUsers(); updateAdminStats(); }
+  catch { showToast('Erreur.', 'error'); }
+};
+
+async function loadAdminSongs() {
+  const c = document.getElementById('admin-songs-container');
+  c.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>';
+  try {
+    const snap = await getDocs(query(collection(db,'songs'), orderBy('createdAt','desc')));
+    c.innerHTML = '';
+    if (snap.empty) {
+      c.innerHTML = '<div class="empty-state"><i class="fas fa-music"></i><p>Aucun morceau.</p></div>';
+      return;
+    }
+    snap.docs.forEach(d => c.appendChild(buildSongCard({ id:d.id, ...d.data() }, true, false)));
+  } catch (err) { console.error(err); }
+}
+
+async function loadAdminArticles() {
+  const c = document.getElementById('admin-articles-container');
+  c.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>';
+  try {
+    const snap = await getDocs(query(collection(db,'articles'), orderBy('createdAt','desc')));
+    c.innerHTML = '';
+    if (snap.empty) {
+      c.innerHTML = '<div class="empty-state"><i class="fas fa-newspaper"></i><p>Aucun article.</p></div>';
+      return;
+    }
+    snap.docs.forEach(d => c.appendChild(buildArticleCard({ id:d.id, ...d.data() }, true)));
+  } catch (err) { console.error(err); }
+}
+
+// ── URL PARAMS ──────────────────────────────────────
+(function() {
+  const pid = new URLSearchParams(window.location.search).get('play');
+  if (pid) setTimeout(() => window.playSong(pid), 2500);
+})();
+
+console.log('✅ F2K STREAM chargé avec succès !');
+</script>
+</body>
+</html>
