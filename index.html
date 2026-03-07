@@ -26,6 +26,10 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
 .nav-btn { background:var(--primary)!important; color:#fff!important; padding:.42rem 1.1rem; border-radius:6px; font-weight:600!important; }
 .nav-btn:hover { background:var(--primary-dark)!important; }
 .admin-badge { background:var(--accent); color:#000; padding:.12rem .5rem; border-radius:20px; font-size:.68rem; font-weight:700; margin-left:.3rem; }
+.notif-btn { position:relative; cursor:pointer; color:var(--text2); font-size:1.1rem; transition:color .3s; }
+.notif-btn:hover { color:#fff; }
+.notif-dot { position:absolute; top:-4px; right:-4px; width:10px; height:10px; background:var(--danger); border-radius:50%; display:none; }
+.notif-dot.show { display:block; }
 
 /* LAYOUT */
 .container { max-width:1400px; margin:0 auto; padding:5.5rem 2rem 7rem; position:relative; z-index:1; }
@@ -50,11 +54,13 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
 /* SONG CARD */
 .song-card { background:var(--card); border-radius:16px; overflow:hidden; border:1px solid var(--border); transition:transform .3s,box-shadow .3s; }
 .song-card:hover { transform:translateY(-4px); box-shadow:0 16px 40px rgba(124,58,237,.2); }
+.song-card.hidden-song { opacity:.5; border:1px dashed var(--danger); }
 .song-cover-wrapper { position:relative; height:190px; overflow:hidden; }
 .song-cover { width:100%; height:100%; object-fit:cover; transition:transform .4s; }
 .song-card:hover .song-cover { transform:scale(1.05); }
 .song-cover-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(15,10,30,.8) 0%,transparent 60%); }
 .pending-badge { position:absolute; top:8px; right:8px; background:var(--accent); color:#000; font-size:.68rem; font-weight:700; padding:.2rem .5rem; border-radius:20px; }
+.hidden-badge { position:absolute; top:8px; right:8px; background:var(--danger); color:#fff; font-size:.68rem; font-weight:700; padding:.2rem .5rem; border-radius:20px; }
 .song-genre-badge { position:absolute; top:8px; left:8px; background:rgba(124,58,237,.85); color:#fff; font-size:.68rem; font-weight:600; padding:.2rem .5rem; border-radius:20px; }
 .song-info { padding:1.1rem; }
 .song-title { font-family:'Syne',sans-serif; font-size:.98rem; font-weight:700; color:#fff; margin-bottom:.25rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -63,12 +69,16 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
 .song-stats { display:flex; gap:.8rem; color:var(--text2); font-size:.8rem; margin-bottom:.8rem; }
 .stat-item { display:flex; align-items:center; gap:.25rem; }
 .song-actions { display:flex; gap:.4rem; flex-wrap:wrap; }
-.btn-play,.btn-download,.btn-share,.btn-delete,.btn-approve { padding:.5rem .7rem; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-size:.78rem; transition:opacity .3s,transform .2s; display:flex; align-items:center; justify-content:center; gap:.25rem; font-family:'DM Sans',sans-serif; }
+.btn-play,.btn-download,.btn-share,.btn-delete,.btn-approve,.btn-hide,.btn-unhide { padding:.5rem .7rem; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-size:.78rem; transition:opacity .3s,transform .2s; display:flex; align-items:center; justify-content:center; gap:.25rem; font-family:'DM Sans',sans-serif; }
 .btn-play { background:var(--primary); color:#fff; flex:2; }
 .btn-download { background:var(--green); color:#fff; }
 .btn-share { background:#0ea5e9; color:#fff; }
 .btn-delete { background:var(--danger); color:#fff; }
 .btn-approve { background:var(--green); color:#fff; flex:2; }
+.btn-hide { background:rgba(245,158,11,.2); color:var(--accent); border:1px solid rgba(245,158,11,.3); }
+.btn-hide:hover { background:var(--accent); color:#000; }
+.btn-unhide { background:rgba(16,185,129,.2); color:var(--green); border:1px solid rgba(16,185,129,.3); }
+.btn-unhide:hover { background:var(--green); color:#fff; }
 .btn-like { background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); padding:.5rem .7rem; border-radius:8px; cursor:pointer; font-weight:600; font-size:.78rem; transition:all .2s; display:flex; align-items:center; justify-content:center; gap:.25rem; font-family:'DM Sans',sans-serif; }
 .btn-like:hover { background:#ef4444; color:#fff; }
 .btn-like.liked { background:#ef4444; color:#fff; border-color:#ef4444; }
@@ -149,6 +159,8 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
 .btn-ban { background:var(--danger); color:#fff; }
 .btn-unban { background:var(--accent); color:#000; }
 .btn-del-sm { background:rgba(239,68,68,.15); color:var(--danger); border:1px solid rgba(239,68,68,.3); }
+.btn-msg { background:rgba(124,58,237,.2); color:#c4b5fd; border:1px solid rgba(124,58,237,.3); }
+.btn-msg:hover { background:var(--primary); color:#fff; }
 
 /* ARTICLE CARDS */
 .article-card { background:var(--card); border-radius:16px; overflow:hidden; border:1px solid var(--border); transition:transform .3s; }
@@ -177,7 +189,7 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
 .share-url input { flex:1; padding:.45rem .7rem; background:var(--card); border:1px solid var(--border); border-radius:6px; color:var(--text2); font-size:.78rem; }
 .copy-btn { padding:.45rem .9rem; background:var(--primary); color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:.78rem; font-weight:600; }
 
-/* MESSAGES */
+/* TOAST */
 .toast { position:fixed; top:76px; right:18px; padding:.85rem 1.4rem; border-radius:10px; color:#fff; z-index:3000; display:none; font-weight:500; font-size:.88rem; box-shadow:0 10px 30px rgba(0,0,0,.3); max-width:340px; }
 .toast.success { background:var(--green); }
 .toast.error { background:var(--danger); }
@@ -211,6 +223,33 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
 .footer .brand { font-family:'Syne',sans-serif; font-weight:800; color:#fff; font-size:1.05rem; }
 .footer .copyright { font-size:.78rem; opacity:.6; margin-top:.7rem; }
 
+/* MESSAGERIE */
+.msg-bubble { background:var(--card2); border-radius:12px; padding:.9rem 1.1rem; margin-bottom:.7rem; border:1px solid var(--border); }
+.msg-bubble.from-admin { border-left:3px solid var(--primary); }
+.msg-bubble.from-user { border-left:3px solid var(--green); }
+.msg-meta { font-size:.72rem; color:var(--text2); margin-bottom:.35rem; }
+.msg-text { font-size:.88rem; color:var(--text); line-height:1.6; }
+.msg-reply-box { display:flex; gap:.5rem; margin-top:.7rem; }
+.msg-reply-box input { flex:1; padding:.5rem .8rem; background:var(--bg2); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:.85rem; font-family:'DM Sans',sans-serif; }
+.msg-reply-box button { padding:.5rem 1rem; background:var(--primary); color:#fff; border:none; border-radius:8px; cursor:pointer; font-size:.82rem; font-weight:600; }
+
+/* WHATSAPP FLOTANT */
+.whatsapp-float { position:fixed; bottom:90px; right:20px; width:56px; height:56px; background:#25D366; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.6rem; color:#fff; box-shadow:0 4px 20px rgba(37,211,102,.4); z-index:1400; cursor:pointer; transition:transform .3s,box-shadow .3s; text-decoration:none; }
+.whatsapp-float:hover { transform:scale(1.1); box-shadow:0 6px 28px rgba(37,211,102,.6); }
+.whatsapp-tooltip { position:absolute; right:66px; background:#1a1033; color:#fff; padding:.4rem .8rem; border-radius:8px; font-size:.78rem; white-space:nowrap; font-family:'DM Sans',sans-serif; opacity:0; pointer-events:none; transition:opacity .3s; }
+.whatsapp-float:hover .whatsapp-tooltip { opacity:1; }
+
+/* HOME ARTICLES SECTION */
+.home-articles { margin-top:2.5rem; }
+.home-articles-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.2rem; margin-top:1rem; }
+.home-article-card { background:var(--card); border-radius:14px; overflow:hidden; border:1px solid var(--border); display:flex; gap:1rem; padding:.9rem; align-items:flex-start; transition:transform .3s; }
+.home-article-card:hover { transform:translateY(-2px); }
+.home-article-img { width:80px; height:80px; object-fit:cover; border-radius:10px; flex-shrink:0; }
+.home-article-info { flex:1; min-width:0; }
+.home-article-title { font-family:'Syne',sans-serif; font-size:.9rem; font-weight:700; color:#fff; margin-bottom:.25rem; }
+.home-article-date { color:var(--text2); font-size:.75rem; margin-bottom:.4rem; }
+.home-article-excerpt { color:var(--text2); font-size:.8rem; line-height:1.5; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+
 @media(max-width:768px) {
   .navbar { flex-direction:column; gap:.7rem; padding:.7rem 1rem; }
   .form-row { grid-template-columns:1fr; }
@@ -230,6 +269,10 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
     <a class="tab-trigger" data-tab="articles">Actualités</a>
     <a class="tab-trigger" data-tab="dashboard" id="dashboard-link" style="display:none">Espace Artiste</a>
     <a class="tab-trigger" data-tab="admin" id="admin-link" style="display:none">Admin</a>
+    <a id="notif-btn" class="notif-btn" style="display:none" onclick="openMessages()">
+      <i class="fas fa-bell"></i>
+      <span class="notif-dot" id="notif-dot"></span>
+    </a>
     <a id="login-btn" class="nav-btn">Connexion</a>
     <a id="register-btn">Inscription</a>
     <a id="logout-btn" style="display:none">Déconnexion</a>
@@ -238,6 +281,12 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
 
 <div class="overlay" id="overlay"></div>
 <div class="toast" id="toast"></div>
+
+<!-- BOUTON WHATSAPP FLOTTANT -->
+<a class="whatsapp-float" href="https://wa.me/22901998787 42?text=Bonjour%20F2K%20STREAM%2C%20je%20vous%20contacte%20depuis%20le%20site." target="_blank">
+  <i class="fab fa-whatsapp"></i>
+  <span class="whatsapp-tooltip">Contacter l'admin</span>
+</a>
 
 <div class="container">
   <div class="hero">
@@ -270,6 +319,14 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
     <div class="songs-grid" id="songs-container">
       <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>
     </div>
+
+    <!-- ACTUALITÉS EN PAGE D'ACCUEIL -->
+    <div class="home-articles">
+      <p class="section-title">📰 Dernières actualités</p>
+      <div class="home-articles-grid" id="home-articles-container">
+        <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>
+      </div>
+    </div>
   </div>
 
   <!-- ===== CLASSEMENTS ===== -->
@@ -296,7 +353,6 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
       <h2>🎤 Espace Artiste / Producteur</h2>
       <form id="upload-form" class="upload-form">
         <h3>Publier un nouveau son</h3>
-
         <div class="form-row">
           <div class="form-group">
             <label>Titre du morceau *</label>
@@ -307,7 +363,6 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
             <input type="text" id="song-artist-name" placeholder="Ex: MC Kalif" required>
           </div>
         </div>
-
         <div class="form-row">
           <div class="form-group">
             <label>Nom du label</label>
@@ -318,12 +373,10 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
             <input type="number" id="song-year" placeholder="2025" min="1900" max="2099" required>
           </div>
         </div>
-
         <div class="form-group">
           <label>Featuring (artistes invités)</label>
           <input type="text" id="song-featuring" placeholder="Ex: Artiste1, Artiste2 (optionnel)">
         </div>
-
         <div class="form-group">
           <label>Genre musical *</label>
           <select id="song-genre" required>
@@ -337,12 +390,10 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
             <option value="Autre">Autre</option>
           </select>
         </div>
-
         <div class="form-group">
           <label>Description</label>
           <textarea id="song-description" rows="3" placeholder="Parle de ton son..."></textarea>
         </div>
-
         <div class="form-group">
           <label>Pochette (image) *</label>
           <div class="file-input" id="cover-dropzone">
@@ -355,7 +406,6 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
             <img src="" alt="Aperçu" class="preview-image">
           </div>
         </div>
-
         <div class="form-group">
           <label>Fichier audio (MP3) *</label>
           <div class="file-input" id="audio-dropzone">
@@ -368,7 +418,6 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
             <p style="color:var(--green);font-size:.85rem"><i class="fas fa-check-circle"></i> Fichier : <span id="audio-filename"></span></p>
           </div>
         </div>
-
         <button type="submit" class="btn" id="upload-btn">
           <span id="upload-btn-text">Publier mon son</span>
           <span class="loading" id="upload-loading" style="display:none"></span>
@@ -385,6 +434,14 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
         <div class="empty-state"><i class="fas fa-music"></i><p>Tu n'as pas encore publié de son.</p></div>
       </div>
     </div>
+
+    <!-- MESSAGERIE ARTISTE -->
+    <div class="dashboard-section">
+      <h3>💬 Mes messages avec l'Admin</h3>
+      <div id="my-messages-container" style="margin-bottom:1rem;">
+        <div class="empty-state"><i class="fas fa-envelope-open"></i><p>Aucun message.</p></div>
+      </div>
+    </div>
   </div>
 
   <!-- ===== ESPACE ADMIN ===== -->
@@ -392,7 +449,6 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
     <div class="dashboard-section">
       <h2>👑 Administration</h2>
 
-      <!-- STATS RAPIDES -->
       <div class="admin-stats">
         <div class="stat-card"><div class="stat-card-num" id="stat-users">-</div><div class="stat-card-label">Utilisateurs</div></div>
         <div class="stat-card"><div class="stat-card-num" id="stat-songs">-</div><div class="stat-card-label">Sons publiés</div></div>
@@ -405,30 +461,15 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
         <h3>🎵 Publier un son directement</h3>
         <form id="admin-upload-form" style="margin-top:1rem">
           <div class="form-row">
-            <div class="form-group">
-              <label>Titre *</label>
-              <input type="text" id="admin-song-title" required>
-            </div>
-            <div class="form-group">
-              <label>Nom d'artiste *</label>
-              <input type="text" id="admin-song-artist-name" required>
-            </div>
+            <div class="form-group"><label>Titre *</label><input type="text" id="admin-song-title" required></div>
+            <div class="form-group"><label>Nom d'artiste *</label><input type="text" id="admin-song-artist-name" required></div>
           </div>
           <div class="form-row">
-            <div class="form-group">
-              <label>Nom du label</label>
-              <input type="text" id="admin-song-label">
-            </div>
-            <div class="form-group">
-              <label>Année *</label>
-              <input type="number" id="admin-song-year" placeholder="2025" min="1900" max="2099" required>
-            </div>
+            <div class="form-group"><label>Nom du label</label><input type="text" id="admin-song-label"></div>
+            <div class="form-group"><label>Année *</label><input type="number" id="admin-song-year" placeholder="2025" min="1900" max="2099" required></div>
           </div>
           <div class="form-row">
-            <div class="form-group">
-              <label>Featuring</label>
-              <input type="text" id="admin-song-featuring" placeholder="Optionnel">
-            </div>
+            <div class="form-group"><label>Featuring</label><input type="text" id="admin-song-featuring" placeholder="Optionnel"></div>
             <div class="form-group">
               <label>Genre *</label>
               <select id="admin-song-genre" required>
@@ -443,10 +484,7 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
               </select>
             </div>
           </div>
-          <div class="form-group">
-            <label>Description</label>
-            <textarea id="admin-song-description" rows="2"></textarea>
-          </div>
+          <div class="form-group"><label>Description</label><textarea id="admin-song-description" rows="2"></textarea></div>
           <div class="form-row">
             <div class="form-group">
               <label>Pochette *</label>
@@ -457,7 +495,8 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
               <div class="file-preview" id="admin-cover-preview"><img src="" alt="" class="preview-image"></div>
             </div>
             <div class="form-group">
-              <label>Fichier MP3 *</label><div class="file-input" id="admin-audio-dropzone">
+              <label>Fichier MP3 *</label>
+              <div class="file-input" id="admin-audio-dropzone">
                 <i class="fas fa-music"></i><p>MP3 ici</p><small>Max 50MB</small>
                 <input type="file" id="admin-audio-file" accept="audio/mpeg" style="display:none" required>
               </div>
@@ -610,18 +649,45 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
   <p style="text-align:center;color:var(--text2);font-size:.82rem"><i class="fas fa-info-circle"></i> Ce lien peut être partagé partout !</p>
 </div>
 
+<!-- MODAL MESSAGERIE -->
+<div class="modal" id="messages-modal" style="max-width:520px">
+  <div class="modal-header">
+    <h2>💬 Messages</h2>
+    <button class="close-modal" id="close-messages">&times;</button>
+  </div>
+  <div id="messages-thread" style="max-height:350px;overflow-y:auto;margin-bottom:1rem;"></div>
+  <div id="send-msg-box" style="display:flex;gap:.5rem;">
+    <input type="text" id="msg-input" placeholder="Écrire un message..." style="flex:1;padding:.6rem .9rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.88rem;">
+    <button onclick="sendMessage()" style="padding:.6rem 1.1rem;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;">Envoyer</button>
+  </div>
+</div>
+
+<!-- MODAL MSG ADMIN -> USER -->
+<div class="modal" id="admin-msg-modal" style="max-width:500px">
+  <div class="modal-header">
+    <h2>✉️ Envoyer un message</h2>
+    <button class="close-modal" id="close-admin-msg">&times;</button>
+  </div>
+  <p id="admin-msg-target-name" style="color:var(--text2);font-size:.88rem;margin-bottom:1rem;"></p>
+  <div id="admin-msg-thread" style="max-height:250px;overflow-y:auto;margin-bottom:1rem;"></div>
+  <div style="display:flex;gap:.5rem;">
+    <input type="text" id="admin-msg-input" placeholder="Votre message..." style="flex:1;padding:.6rem .9rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.88rem;">
+    <button onclick="sendAdminMessage()" style="padding:.6rem 1.1rem;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;">Envoyer</button>
+  </div>
+</div>
+
 <!-- FOOTER -->
 <footer class="footer">
   <p class="brand">F2K STREAM</p>
   <p>La voix des artistes indépendants</p>
-  <p><i class="fas fa-phone"></i> +229 01 99 87 87 42 &nbsp;|&nbsp; <i class="fas fa-envelope"></i> f2kmultiservice@gmail.com</p>
+  <p><i class="fas fa-phone"></i> +229 01 99 87 87 42 &nbsp;|&nbsp; <i class="fas fa-envelope"></i> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="bed88cd5d3cbd2cad7cddbccc8d7dddbfed9d3dfd7d290ddd1d3">[email&#160;protected]</a></p>
   <p class="copyright">© 2025 F2K MULTISERVICE. Tous droits réservés.</p>
 </footer>
 
-<script type="module">
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, query, orderBy, limit, getDocs, where, updateDoc, doc, increment, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, query, orderBy, limit, getDocs, where, updateDoc, doc, increment, getDoc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBTbU1ZNVCazGd08ItnVlfqQD99dL2XVqI",
@@ -637,12 +703,18 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const ADMIN_EMAIL = "f2kmultiservice@gmail.com";
+const CLOUDINARY_CLOUD = 'di4byrrfv';
+const CLOUDINARY_PRESET = 'f2k_stream';
+const CLOUDINARY_API_KEY = '682489431741992';
+const CLOUDINARY_API_SECRET = 'm5kn8KaRV7xUWF7MlU7rkIcMjBU';
 
 // ── DOM ──────────────────────────────────────────────
 const overlay = document.getElementById('overlay');
 const toast = document.getElementById('toast');
 const authModal = document.getElementById('auth-modal');
 const shareModal = document.getElementById('share-modal');
+const messagesModal = document.getElementById('messages-modal');
+const adminMsgModal = document.getElementById('admin-msg-modal');
 const loginForm = document.getElementById('login-form');
 const registerForm = document.getElementById('register-form');
 const loginBtn = document.getElementById('login-btn');
@@ -650,6 +722,8 @@ const registerBtn = document.getElementById('register-btn');
 const logoutBtn = document.getElementById('logout-btn');
 const dashboardLink = document.getElementById('dashboard-link');
 const adminLink = document.getElementById('admin-link');
+const notifBtn = document.getElementById('notif-btn');
+const notifDot = document.getElementById('notif-dot');
 const uploadForm = document.getElementById('upload-form');
 const adminUploadForm = document.getElementById('admin-upload-form');
 const articleForm = document.getElementById('article-form');
@@ -675,6 +749,9 @@ let isAdmin = false;
 let allSongs = [];
 let currentGenre = '';
 let currentSearch = '';
+let currentMsgUserId = null;
+let currentMsgUserName = null;
+let msgUnsubscribe = null;
 
 // ── TOAST ────────────────────────────────────────────
 function showToast(msg, type = 'success') {
@@ -686,17 +763,20 @@ function showToast(msg, type = 'success') {
 // ── MODALS ────────────────────────────────────────────
 function openModal(m) { m.classList.add('active'); overlay.classList.add('active'); }
 function closeAll() {
-  authModal.classList.remove('active');
-  shareModal.classList.remove('active');
-  articleShareModal && articleShareModal.classList.remove('active');
+  [authModal, shareModal, messagesModal, adminMsgModal,
+   document.getElementById('article-share-modal')].forEach(m => m && m.classList.remove('active'));
   overlay.classList.remove('active');
+  if (msgUnsubscribe) { msgUnsubscribe(); msgUnsubscribe = null; }
 }
 overlay.addEventListener('click', closeAll);
 document.getElementById('close-modal').addEventListener('click', closeAll);
 document.getElementById('close-share').addEventListener('click', closeAll);
+document.getElementById('close-messages').addEventListener('click', closeAll);
+document.getElementById('close-admin-msg').addEventListener('click', closeAll);
 
 function showAuthModal(type) {
-  openModal(authModal);if (type === 'register') {
+  openModal(authModal);
+  if (type === 'register') {
     loginForm.style.display = 'none';
     registerForm.style.display = 'block';
     document.getElementById('auth-title').textContent = 'Inscription';
@@ -729,7 +809,7 @@ window.showTab = function(tabId) {
   target.style.display = 'block';
   if (tabId === 'admin' && isAdmin) loadAdminAll();
   else if (tabId === 'articles') loadArticles();
-  else if (tabId === 'dashboard' && currentUser) loadMySongs();
+  else if (tabId === 'dashboard' && currentUser) { loadMySongs(); loadMyMessages(); }
   else if (tabId === 'rankings') loadRankings();
 };
 
@@ -758,7 +838,7 @@ document.getElementById('genre-filters').addEventListener('click', e => {
 
 function renderSongs() {
   const container = document.getElementById('songs-container');
-  let list = allSongs.filter(s => s.approved === true);
+  let list = allSongs.filter(s => s.approved === true && !s.hidden);
   if (currentGenre) list = list.filter(s => s.genre === currentGenre);
   if (currentSearch) list = list.filter(s =>
     (s.title||'').toLowerCase().includes(currentSearch) ||
@@ -774,7 +854,6 @@ function renderSongs() {
   }
   list.forEach(song => {
     container.appendChild(buildSongCard(song, false, false));
-    // Marquer si déjà liké
     if (likedSongs.includes(song.id)) {
       const btn = document.getElementById('btn-like-' + song.id);
       if (btn) btn.classList.add('liked');
@@ -783,9 +862,6 @@ function renderSongs() {
 }
 
 // ── CLOUDINARY UPLOAD ─────────────────────────────────
-const CLOUDINARY_CLOUD = 'di4byrrfv';
-const CLOUDINARY_PRESET = 'f2k_stream';
-
 async function uploadToCatbox(file) {
   const isAudio = file.type.includes('audio') || file.name.toLowerCase().endsWith('.mp3');
   const resourceType = isAudio ? 'raw' : 'image';
@@ -795,12 +871,29 @@ async function uploadToCatbox(file) {
   fd.append('upload_preset', CLOUDINARY_PRESET);
   const res = await fetch(url, { method: 'POST', body: fd });
   const data = await res.json();
-  if (!res.ok || data.error) {
-    const msg = data.error?.message || ('Erreur upload ' + resourceType + ' (' + res.status + ')');
-    console.error('Cloudinary error:', data);
-    throw new Error(msg);
-  }
-  return data.secure_url;
+  if (!res.ok || data.error) throw new Error(data.error?.message || 'Erreur upload');
+  return { url: data.secure_url, publicId: data.public_id, resourceType };
+}
+
+// ── CLOUDINARY DELETE ─────────────────────────────────
+async function deleteFromCloudinary(publicId, resourceType) {
+  if (!publicId) return;
+  try {
+    const timestamp = Math.floor(Date.now() / 1000);
+    const strToSign = `public_id=${publicId}&timestamp=${timestamp}${CLOUDINARY_API_SECRET}`;
+    // Génération SHA1 via SubtleCrypto
+    const msgBuffer = new TextEncoder().encode(strToSign);
+    const hashBuffer = await crypto.subtle.digest('SHA-1', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const signature = hashArray.map(b => b.toString(16).padStart(2,'0')).join('');
+    const fd = new FormData();
+    fd.append('public_id', publicId);
+    fd.append('signature', signature);
+    fd.append('api_key', CLOUDINARY_API_KEY);
+    fd.append('timestamp', timestamp);
+    const rType = resourceType === 'raw' ? 'raw' : 'image';
+    await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/${rType}/destroy`, { method:'POST', body:fd });
+  } catch(e) { console.warn('Cloudinary delete warn:', e); }
 }
 
 // ── AUTH ─────────────────────────────────────────────
@@ -871,6 +964,7 @@ onAuthStateChanged(auth, async user => {
     registerBtn.style.display = 'none';
     logoutBtn.style.display = 'inline';
     dashboardLink.style.display = 'inline';
+    notifBtn.style.display = 'inline';
     if (isAdmin) {
       adminLink.style.display = 'inline';
       dashboardLink.innerHTML = 'Espace Artiste <span class="admin-badge">Admin</span>';
@@ -878,15 +972,17 @@ onAuthStateChanged(auth, async user => {
       adminLink.style.display = 'none';
       dashboardLink.innerHTML = 'Espace Artiste';
     }
+    listenForNotifications();
   } else {
     currentUser = null; isAdmin = false;
     loginBtn.style.display = 'inline'; registerBtn.style.display = 'inline';
     logoutBtn.style.display = 'none';
     dashboardLink.style.display = 'none'; adminLink.style.display = 'none';
+    notifBtn.style.display = 'none';
   }
   if (!authInitialized) {
     authInitialized = true;
-    loadSongs(); loadRankings(); loadArticles();
+    loadSongs(); loadRankings(); loadArticles(); loadHomeArticles();
     window.showTab('home');
   }
 });
@@ -934,7 +1030,9 @@ async function handleSongSubmit(e, isAdminForm) {
   const genre       = document.getElementById(p+'song-genre').value;
   const description = document.getElementById(p+'song-description').value.trim();
   const cover = isAdminForm ? adminCoverFile.files[0] : coverFile.files[0];
-  const audio = isAdminForm ? adminAudioFile.files[0] : audioFile.files[0];if (!title || !artistName || !year || !genre || !cover || !audio) {
+  const audio = isAdminForm ? adminAudioFile.files[0] : audioFile.files[0];
+
+  if (!title || !artistName || !year || !genre || !cover || !audio) {
     showToast('Remplis tous les champs obligatoires (*)', 'error'); return;
   }
   if (audio.size > 50*1024*1024) { showToast('MP3 max 50 MB', 'error'); return; }
@@ -947,16 +1045,18 @@ async function handleSongSubmit(e, isAdminForm) {
 
   try {
     showToast('Upload en cours... Ne ferme pas la page');
-    const coverUrl = await uploadToCatbox(cover);
-    const audioUrl = await uploadToCatbox(audio);
+    const coverResult = await uploadToCatbox(cover);
+    const audioResult = await uploadToCatbox(audio);
     await addDoc(collection(db, 'songs'), {
       title, artistName, label, year: parseInt(year),
       featuring, genre, description,
       artistId: currentUser.uid,
       artistEmail: currentUser.email,
       uploadedBy: currentUser.name || currentUser.email,
-      coverUrl, audioUrl,
+      coverUrl: coverResult.url, coverPublicId: coverResult.publicId,
+      audioUrl: audioResult.url, audioPublicId: audioResult.publicId,
       approved: !!isAdminForm,
+      hidden: false,
       likes:0, downloads:0, views:0,
       createdAt: new Date().toISOString()
     });
@@ -994,16 +1094,19 @@ articleForm.addEventListener('submit', async e => {
   const btn = document.getElementById('article-btn');
   btn.disabled = true; btnText.style.display = 'none'; btnLoad.style.display = 'inline-block';
   try {
-    let imageUrl = '';
-    if (imgFile) imageUrl = await uploadToCatbox(imgFile);
+    let imageUrl = ''; let imagePublicId = '';
+    if (imgFile) {
+      const r = await uploadToCatbox(imgFile);
+      imageUrl = r.url; imagePublicId = r.publicId;
+    }
     await addDoc(collection(db, 'articles'), {
-      title, content, imageUrl,
+      title, content, imageUrl, imagePublicId,
       authorId: currentUser.uid, authorName: 'Administrateur',
       createdAt: new Date().toISOString()
     });
     articleForm.reset();
     showToast('Article publié !');
-    loadArticles(); loadAdminAll();
+    loadArticles(); loadHomeArticles(); loadAdminAll();
   } catch (err) { showToast('Erreur publication article', 'error'); }
   finally { btn.disabled = false; btnText.style.display = 'inline'; btnLoad.style.display = 'none'; }
 });
@@ -1024,13 +1127,15 @@ async function loadSongs() {
 // ── BUILD SONG CARD ───────────────────────────────────
 function buildSongCard(song, showDelete, showPending) {
   const card = document.createElement('div');
-  card.className = 'song-card';
+  card.className = 'song-card' + (song.hidden ? ' hidden-song' : '');
   const ft = song.featuring ? ' ft. ' + song.featuring : '';
   const meta = [];
   if (song.label) meta.push('🏷️ ' + song.label);
   if (song.year)  meta.push('📅 ' + song.year);
   const sid = song.id;
-  const canDelete = showDelete || isAdmin || (currentUser && currentUser.uid === song.artistId);
+  const isOwner = currentUser && currentUser.uid === song.artistId;
+  const canDelete = showDelete || isAdmin || isOwner;
+  const canHide = isOwner || isAdmin;
 
   card.innerHTML = `
     <div class="song-cover-wrapper">
@@ -1039,6 +1144,7 @@ function buildSongCard(song, showDelete, showPending) {
       <div class="song-cover-overlay"></div>
       <span class="song-genre-badge">${escHtml(song.genre||'')}</span>
       ${showPending ? '<span class="pending-badge">⏳ En attente</span>' : ''}
+      ${song.hidden && !showPending ? '<span class="hidden-badge">🙈 Masqué</span>' : ''}
     </div>
     <div class="song-info">
       <div class="song-title">${escHtml(song.title)}</div>
@@ -1056,8 +1162,10 @@ function buildSongCard(song, showDelete, showPending) {
         ` : `
           <button class="btn-play"     onclick="playSong('${sid}')"><i class="fas fa-play"></i> Écouter</button>
           <button class="btn-like"     onclick="likeSong('${sid}')" id="btn-like-${sid}" title="J'aime"><i class="fas fa-heart"></i></button>
-          <button class="btn-download" onclick="downloadSong('${sid}','${encodeURIComponent(song.audioUrl)}','${encodeURIComponent(song.title)}')" title="Télécharger"><i class="fas fa-download"></i></button>
+          <button class="btn-download" onclick="downloadSong('${sid}','${encodeURIComponent(song.audioUrl)}','${encodeURIComponent(song.title)}','${encodeURIComponent(song.artistName||'')}','${encodeURIComponent(song.coverUrl||'')}')" title="Télécharger"><i class="fas fa-download"></i></button>
           <button class="btn-share"    onclick="openShare('${sid}')" title="Partager"><i class="fas fa-share-alt"></i></button>
+          ${canHide && !song.hidden ? `<button class="btn-hide" onclick="hideSong('${sid}')" title="Masquer"><i class="fas fa-eye-slash"></i></button>` : ''}
+          ${canHide && song.hidden  ? `<button class="btn-unhide" onclick="unhideSong('${sid}')" title="Rendre visible"><i class="fas fa-eye"></i></button>` : ''}
           ${canDelete ? `<button class="btn-delete" onclick="deleteSong('${sid}')" title="Supprimer"><i class="fas fa-trash"></i></button>` : ''}
         `}
       </div>
@@ -1069,9 +1177,7 @@ function escHtml(str) {
   return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
-// ── SONG STORE (lookup by id) ─────────────────────────
 const songCache = {};
-
 async function getSong(id) {
   if (songCache[id]) return songCache[id];
   const snap = await getDoc(doc(db,'songs',id));
@@ -1095,44 +1201,78 @@ window.playSong = async function(id) {
 };
 
 playPauseBtn.addEventListener('click', () => {
-  if (audioElement.paused) {
-    audioElement.play();
-    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-  } else {
-    audioElement.pause();
-    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-  }
+  if (audioElement.paused) { audioElement.play(); playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>'; }
+  else { audioElement.pause(); playPauseBtn.innerHTML = '<i class="fas fa-play"></i>'; }
 });
-
 stopBtn.addEventListener('click', () => {
   audioElement.pause(); audioElement.currentTime = 0;
   playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
   audioPlayer.classList.remove('active');
 });
-
 audioElement.addEventListener('timeupdate', () => {
-  if (audioElement.duration)
-    progressFill.style.width = (audioElement.currentTime / audioElement.duration * 100) + '%';
+  if (audioElement.duration) progressFill.style.width = (audioElement.currentTime / audioElement.duration * 100) + '%';
 });
-
 progressBar.addEventListener('click', e => {
   const r = progressBar.getBoundingClientRect();
   audioElement.currentTime = ((e.clientX - r.left) / r.width) * audioElement.duration;
 });
-
 audioElement.addEventListener('ended', () => {
   playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
   progressFill.style.width = '0%';
 });
 
-// ── DOWNLOAD ──────────────────────────────────────────
-window.downloadSong = async function(id, encodedUrl, encodedTitle) {
+// ── DOWNLOAD AVEC TAGS ID3 ────────────────────────────
+window.downloadSong = async function(id, encodedUrl, encodedTitle, encodedArtist, encodedCover) {
   const url = decodeURIComponent(encodedUrl);
   const title = decodeURIComponent(encodedTitle);
-  const a = document.createElement('a');
-  a.href = url; a.download = title+'.mp3'; a.target = '_blank';
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  const artist = decodeURIComponent(encodedArtist);
+  const coverUrl = decodeURIComponent(encodedCover);
+
+  showToast('Préparation du téléchargement...');
   updateDoc(doc(db,'songs',id), { downloads: increment(1) }).catch(()=>{});
+
+  try {
+    // Télécharger le MP3
+    const audioResp = await fetch(url);
+    const audioBuffer = await audioResp.arrayBuffer();
+
+    // Télécharger la pochette
+    let coverData = null;
+    if (coverUrl) {
+      try {
+        const coverResp = await fetch(coverUrl);
+        coverData = await coverResp.arrayBuffer();
+      } catch(e) { console.warn('Cover fetch failed', e); }
+    }
+
+    // Écrire les tags ID3 avec browser-id3-writer
+    const writer = new ID3Writer(audioBuffer);
+    writer.setFrame('TIT2', title)
+          .setFrame('TPE1', [artist])
+          .setFrame('TALB', 'F2K STREAM')
+          .setFrame('TPUB', 'F2K STREAM - f2k229.github.io/F2K-STREAM');
+    if (coverData) {
+      writer.setFrame('APIC', {
+        type: 3,
+        data: coverData,
+        description: 'Cover'
+      });
+    }
+    writer.addTag();
+    const taggedBlob = writer.getBlob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(taggedBlob);
+    a.download = `${artist} - ${title} [F2K STREAM].mp3`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    showToast('✅ Téléchargement démarré avec tags !');
+  } catch(err) {
+    console.error('ID3 tag error:', err);
+    // Fallback sans tags
+    const a = document.createElement('a');
+    a.href = url; a.download = `${title}.mp3`; a.target = '_blank';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  }
 };
 
 // ── SHARE ─────────────────────────────────────────────
@@ -1143,39 +1283,60 @@ window.openShare = async function(id) {
   downloadLink.value = song.audioUrl;
   openModal(shareModal);
 };
-// ── DELETE / APPROVE / REJECT ─────────────────────────
+
 // ── LIKE ─────────────────────────────────────────────
 const likedSongs = JSON.parse(localStorage.getItem('f2k_liked') || '[]');
 
 window.likeSong = async function(id) {
-  if (likedSongs.includes(id)) {
-    showToast('Tu as déjà liké ce son !', 'error');
-    return;
-  }
+  if (likedSongs.includes(id)) { showToast('Tu as déjà liké ce son !', 'error'); return; }
   try {
     await updateDoc(doc(db,'songs',id), { likes: increment(1) });
     likedSongs.push(id);
     localStorage.setItem('f2k_liked', JSON.stringify(likedSongs));
-    // Mettre à jour compteur dans allSongs
     const song = allSongs.find(s => s.id === id);
     if (song) song.likes = (song.likes||0) + 1;
-    // Mettre à jour l'affichage
     const statEl = document.getElementById('likes-' + id);
-    if (statEl) statEl.innerHTML = '<i class="fas fa-heart"></i> ' + ((song ? song.likes : 0));
+    if (statEl) statEl.innerHTML = '<i class="fas fa-heart"></i> ' + (song ? song.likes : 0);
     const btnEl = document.getElementById('btn-like-' + id);
     if (btnEl) btnEl.classList.add('liked');
     showToast('❤️ Merci pour ton like !');
   } catch { showToast('Erreur.', 'error'); }
 };
 
-window.deleteSong = async function(id) {
-  if (!confirm('Supprimer ce son définitivement ?')) return;
+// ── HIDE / UNHIDE ─────────────────────────────────────
+window.hideSong = async function(id) {
+  if (!confirm('Masquer ce son ? Il ne sera plus visible publiquement.')) return;
   try {
-    await deleteDoc(doc(db,'songs',id));
-    showToast('Son supprimé.');
+    await updateDoc(doc(db,'songs',id), { hidden: true });
+    showToast('Son masqué.');
+    loadSongs(); loadMySongs(); if (isAdmin) loadAdminAll();
+  } catch { showToast('Erreur.', 'error'); }
+};
+
+window.unhideSong = async function(id) {
+  try {
+    await updateDoc(doc(db,'songs',id), { hidden: false });
+    showToast('Son rendu visible !');
+    loadSongs(); loadMySongs(); if (isAdmin) loadAdminAll();
+  } catch { showToast('Erreur.', 'error'); }
+};
+
+// ── DELETE SONG (Firebase + Cloudinary) ───────────────
+window.deleteSong = async function(id) {
+  if (!confirm('Supprimer ce son définitivement ? (Firebase + Cloudinary)')) return;
+  try {
+    const songDoc = await getDoc(doc(db,'songs',id));
+    if (songDoc.exists()) {
+      const data = songDoc.data();
+      await deleteDoc(doc(db,'songs',id));
+      // Supprimer sur Cloudinary
+      if (data.coverPublicId) await deleteFromCloudinary(data.coverPublicId, 'image');
+      if (data.audioPublicId) await deleteFromCloudinary(data.audioPublicId, 'raw');
+    }
+    showToast('Son supprimé définitivement.');
     loadSongs();
     if (isAdmin) loadAdminAll(); else loadMySongs();
-  } catch { showToast('Erreur lors de la suppression.', 'error'); }
+  } catch (err) { console.error(err); showToast('Erreur lors de la suppression.', 'error'); }
 };
 
 window.approveSong = async function(id) {
@@ -1189,8 +1350,14 @@ window.approveSong = async function(id) {
 window.rejectSong = async function(id) {
   if (!confirm('Rejeter et supprimer ce son ?')) return;
   try {
-    await deleteDoc(doc(db,'songs',id));
-    showToast('Son rejeté.');
+    const songDoc = await getDoc(doc(db,'songs',id));
+    if (songDoc.exists()) {
+      const data = songDoc.data();
+      await deleteDoc(doc(db,'songs',id));
+      if (data.coverPublicId) await deleteFromCloudinary(data.coverPublicId, 'image');
+      if (data.audioPublicId) await deleteFromCloudinary(data.audioPublicId, 'raw');
+    }
+    showToast('Son rejeté et supprimé.');
     loadAdminAll();
   } catch { showToast('Erreur.', 'error'); }
 };
@@ -1207,8 +1374,7 @@ async function loadMySongs() {
       c.innerHTML = '<div class="empty-state"><i class="fas fa-music"></i><p>Tu n\'as pas encore publié de son.</p></div>';
       return;
     }
-    const docs = snap.docs
-      .map(d => ({ id:d.id, ...d.data() }))
+    const docs = snap.docs.map(d => ({ id:d.id, ...d.data() }))
       .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
     docs.forEach(s => c.appendChild(buildSongCard(s, true, !s.approved)));
   } catch (err) { console.error(err); }
@@ -1225,6 +1391,34 @@ async function loadArticles() {
       return;
     }
     snap.docs.forEach(d => c.appendChild(buildArticleCard({ id:d.id, ...d.data() }, false)));
+  } catch (err) { console.error(err); }
+}
+
+async function loadHomeArticles() {
+  const c = document.getElementById('home-articles-container');
+  try {
+    const snap = await getDocs(query(collection(db,'articles'), orderBy('createdAt','desc'), limit(3)));
+    c.innerHTML = '';
+    if (snap.empty) {
+      c.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-newspaper"></i><p>Aucune actualité.</p></div>';
+      return;
+    }
+    snap.docs.forEach(d => {
+      const a = { id:d.id, ...d.data() };
+      const date = new Date(a.createdAt).toLocaleDateString('fr-FR');
+      const excerpt = a.content ? a.content.substring(0, 100) + '...' : '';
+      const card = document.createElement('div');
+      card.className = 'home-article-card';
+      card.innerHTML = `
+        ${a.imageUrl ? `<img src="${a.imageUrl}" alt="${escHtml(a.title)}" class="home-article-img">` : `<div class="home-article-img" style="background:var(--card2);display:flex;align-items:center;justify-content:center;"><i class="fas fa-newspaper" style="color:var(--primary);font-size:1.5rem"></i></div>`}
+        <div class="home-article-info">
+          <div class="home-article-title">${escHtml(a.title)}</div>
+          <div class="home-article-date">${date}</div>
+          <div class="home-article-excerpt">${escHtml(excerpt)}</div>
+          <button onclick="window.showTab('articles')" style="margin-top:.5rem;background:none;border:none;color:var(--primary);cursor:pointer;font-size:.78rem;font-weight:600;padding:0;">Lire la suite →</button>
+        </div>`;
+      c.appendChild(card);
+    });
   } catch (err) { console.error(err); }
 }
 
@@ -1258,33 +1452,33 @@ window.openArticleShare = function(id) {
   document.getElementById('article-share-link').value = link;
   openModal(articleShareModal);
 };
-
 window.copyArticleLink = function() {
   const input = document.getElementById('article-share-link');
-  input.select();
-  document.execCommand('copy');
+  input.select(); document.execCommand('copy');
   showToast('Lien article copié !');
 };
 
+// ── DELETE ARTICLE (Firebase + Cloudinary) ────────────
 window.deleteArticle = async function(id) {
-  if (!confirm('Supprimer cet article ?')) return;
+  if (!confirm('Supprimer cet article définitivement ?')) return;
   try {
-    await deleteDoc(doc(db,'articles',id));
-    showToast('Article supprimé.');
-    loadArticles(); loadAdminAll();
+    const artDoc = await getDoc(doc(db,'articles',id));
+    if (artDoc.exists()) {
+      const data = artDoc.data();
+      await deleteDoc(doc(db,'articles',id));
+      if (data.imagePublicId) await deleteFromCloudinary(data.imagePublicId, 'image');
+    }
+    showToast('Article supprimé définitivement.');
+    loadArticles(); loadHomeArticles(); loadAdminAll();
   } catch { showToast('Erreur.', 'error'); }
 };
 
 // ── RANKINGS ─────────────────────────────────────────
 async function loadRankings() {
   try {
-    // Une seule requête sans orderBy pour éviter les index composites — tri côté JS
     const snap = await getDocs(query(collection(db,'songs'), where('approved','==',true)));
-    const songs = snap.docs.map(d => ({ id:d.id, ...d.data() }));
-
-    function topBy(field) {
-      return [...songs].sort((a,b) => (b[field]||0) - (a[field]||0)).slice(0,5);
-    }
+    const songs = snap.docs.map(d => ({ id:d.id, ...d.data() })).filter(s => !s.hidden);
+    function topBy(field) { return [...songs].sort((a,b) => (b[field]||0) - (a[field]||0)).slice(0,5); }
     function render(cId, list, field, icon) {
       const el = document.getElementById(cId);
       el.innerHTML = '';
@@ -1307,16 +1501,160 @@ async function loadRankings() {
   } catch (err) { console.error('Rankings:', err); }
 }
 
+// ── MESSAGERIE ────────────────────────────────────────
+function listenForNotifications() {
+  if (!currentUser) return;
+  const q = query(collection(db,'messages'), where('toId','==',currentUser.uid), where('read','==',false));
+  onSnapshot(q, snap => {
+    notifDot.classList.toggle('show', !snap.empty);
+  });
+}
+
+window.openMessages = function() {
+  if (!currentUser) return;
+  if (isAdmin) return; // admin utilise le panneau admin
+  openModal(messagesModal);
+  loadMessagesThread(currentUser.uid);
+};
+
+async function loadMessagesThread(userId) {
+  const thread = document.getElementById('messages-thread');
+  thread.innerHTML = '<p style="color:var(--text2);font-size:.85rem">Chargement...</p>';
+  // Marquer comme lus
+  const unread = await getDocs(query(collection(db,'messages'), where('toId','==',userId), where('read','==',false)));
+  for (const d of unread.docs) await updateDoc(doc(db,'messages',d.id), { read: true });
+  notifDot.classList.remove('show');
+
+  const q = query(collection(db,'messages'), where('threadId','==',userId), orderBy('createdAt','asc'));
+  if (msgUnsubscribe) msgUnsubscribe();
+  msgUnsubscribe = onSnapshot(q, snap => {
+    thread.innerHTML = '';
+    if (snap.empty) { thread.innerHTML = '<p style="color:var(--text2);font-size:.85rem;text-align:center">Aucun message pour le moment.</p>'; return; }
+    snap.docs.forEach(d => {
+      const m = d.data();
+      const isFromAdmin = m.fromId !== userId;
+      const div = document.createElement('div');
+      div.className = 'msg-bubble ' + (isFromAdmin ? 'from-admin' : 'from-user');
+      div.innerHTML = `
+        <div class="msg-meta">${isFromAdmin ? '👑 Admin' : '🎤 Toi'} · ${new Date(m.createdAt).toLocaleString('fr-FR')}</div>
+        <div class="msg-text">${escHtml(m.text)}</div>`;
+      thread.appendChild(div);
+    });
+    thread.scrollTop = thread.scrollHeight;
+  });
+}
+
+async function loadMyMessages() {
+  if (!currentUser || isAdmin) return;
+  const c = document.getElementById('my-messages-container');
+  c.innerHTML = '';
+  const q = query(collection(db,'messages'), where('threadId','==',currentUser.uid), orderBy('createdAt','desc'), limit(5));
+  const snap = await getDocs(q);
+  if (snap.empty) {
+    c.innerHTML = '<div class="empty-state"><i class="fas fa-envelope-open"></i><p>Aucun message de l\'admin.</p></div>';
+    return;
+  }
+  snap.docs.forEach(d => {
+    const m = d.data();
+    const isFromAdmin = m.fromId !== currentUser.uid;
+    const div = document.createElement('div');
+    div.className = 'msg-bubble ' + (isFromAdmin ? 'from-admin' : 'from-user');
+    div.innerHTML = `
+      <div class="msg-meta">${isFromAdmin ? '👑 Admin' : '🎤 Toi'} · ${new Date(m.createdAt).toLocaleString('fr-FR')}</div>
+      <div class="msg-text">${escHtml(m.text)}</div>`;
+    c.appendChild(div);
+  });
+  const replyDiv = document.createElement('div');
+  replyDiv.className = 'msg-reply-box';
+  replyDiv.innerHTML = `
+    <input type="text" id="quick-reply-input" placeholder="Répondre à l'admin...">
+    <button onclick="sendQuickReply()">Envoyer</button>`;
+  c.appendChild(replyDiv);
+}
+
+window.sendMessage = async function() {
+  if (!currentUser) return;
+  const input = document.getElementById('msg-input');
+  const text = input.value.trim();
+  if (!text) return;
+  await addDoc(collection(db,'messages'), {
+    threadId: currentUser.uid,
+    fromId: currentUser.uid,
+    fromName: currentUser.name || currentUser.email,
+    toId: 'admin',
+    text, read: false,
+    createdAt: new Date().toISOString()
+  });
+  input.value = '';
+};
+
+window.sendQuickReply = async function() {
+  if (!currentUser) return;
+  const input = document.getElementById('quick-reply-input');
+  const text = input.value.trim();
+  if (!text) return;
+  await addDoc(collection(db,'messages'), {
+    threadId: currentUser.uid,
+    fromId: currentUser.uid,
+    fromName: currentUser.name || currentUser.email,
+    toId: 'admin',
+    text, read: false,
+    createdAt: new Date().toISOString()
+  });
+  input.value = '';
+  showToast('Message envoyé !');
+  loadMyMessages();
+};
+
+// ── MESSAGERIE ADMIN ──────────────────────────────────
+let adminMsgTargetId = null;
+
+window.openAdminMessage = function(userId, userName) {
+  adminMsgTargetId = userId;
+  currentMsgUserId = userId;
+  currentMsgUserName = userName;
+  document.getElementById('admin-msg-target-name').textContent = `À : ${userName}`;
+  openModal(adminMsgModal);
+  const thread = document.getElementById('admin-msg-thread');
+  thread.innerHTML = '';
+  const q = query(collection(db,'messages'), where('threadId','==',userId), orderBy('createdAt','asc'));
+  if (msgUnsubscribe) msgUnsubscribe();
+  msgUnsubscribe = onSnapshot(q, snap => {
+    thread.innerHTML = '';
+    snap.docs.forEach(d => {
+      const m = d.data();
+      const isAdmin2 = m.fromId !== userId;
+      const div = document.createElement('div');
+      div.className = 'msg-bubble ' + (isAdmin2 ? 'from-admin' : 'from-user');
+      div.innerHTML = `
+        <div class="msg-meta">${isAdmin2 ? '👑 Admin' : `🎤 ${escHtml(m.fromName)}`} · ${new Date(m.createdAt).toLocaleString('fr-FR')}</div>
+        <div class="msg-text">${escHtml(m.text)}</div>`;
+      thread.appendChild(div);
+    });
+    thread.scrollTop = thread.scrollHeight;
+  });
+};
+
+window.sendAdminMessage = async function() {
+  if (!adminMsgTargetId) return;
+  const input = document.getElementById('admin-msg-input');
+  const text = input.value.trim();
+  if (!text) return;
+  await addDoc(collection(db,'messages'), {
+    threadId: adminMsgTargetId,
+    fromId: currentUser.uid,
+    fromName: 'Administrateur',
+    toId: adminMsgTargetId,
+    text, read: false,
+    createdAt: new Date().toISOString()
+  });
+  input.value = '';
+};
+
 // ── ADMIN ─────────────────────────────────────────────
 async function loadAdminAll() {
   if (!isAdmin) return;
-  await Promise.all([
-    updateAdminStats(),
-    loadAdminPending(),
-    loadAdminUsers(),
-    loadAdminSongs(),
-    loadAdminArticles()
-  ]);
+  await Promise.all([updateAdminStats(), loadAdminPending(), loadAdminUsers(), loadAdminSongs(), loadAdminArticles()]);
 }
 
 async function updateAdminStats() {
@@ -1338,21 +1676,14 @@ async function loadAdminPending() {
   const c = document.getElementById('admin-pending-container');
   c.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>';
   try {
-    // Pas d'orderBy pour éviter l'index composite Firestore — tri côté JS
     const snap = await getDocs(query(collection(db,'songs'), where('approved','==',false)));
     c.innerHTML = '';
-    if (snap.empty) {
-      c.innerHTML = '<div class="empty-state"><i class="fas fa-check-double"></i><p>Aucun son en attente.</p></div>';
-      return;
-    }
-    // Tri par date décroissante côté JS
-    const docs = snap.docs
-      .map(d => ({ id:d.id, ...d.data() }))
+    if (snap.empty) { c.innerHTML = '<div class="empty-state"><i class="fas fa-check-double"></i><p>Aucun son en attente.</p></div>'; return; }
+    const docs = snap.docs.map(d => ({ id:d.id, ...d.data() }))
       .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
     docs.forEach(s => c.appendChild(buildSongCard(s, false, true)));
   } catch (err) {
-    console.error('loadAdminPending error:', err);
-    c.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Erreur chargement. Réessaie.</p></div>';
+    c.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Erreur chargement.</p></div>';
   }
 }
 
@@ -1362,13 +1693,9 @@ async function loadAdminUsers() {
   try {
     const snap = await getDocs(query(collection(db,'users'), orderBy('createdAt','desc')));
     c.innerHTML = '';
-    if (snap.empty) {
-      c.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>Aucun utilisateur.</p></div>';
-      return;
-    }
+    if (snap.empty) { c.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>Aucun utilisateur.</p></div>'; return; }
     snap.docs.forEach(d => c.appendChild(buildUserCard({ id:d.id, ...d.data() })));
   } catch (err) {
-    console.error(err);
     document.getElementById('admin-users-container').innerHTML =
       '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Erreur chargement utilisateurs.</p></div>';
   }
@@ -1408,6 +1735,8 @@ function buildUserCard(user) {
         : user.isBanned
           ? `<button class="btn-sm btn-unban" onclick="unbanUser('${uid}')"><i class="fas fa-undo"></i> Réactiver</button>` : ''}
       ${user.role !== 'admin'
+        ? `<button class="btn-sm btn-msg" onclick="openAdminMessage('${uid}','${escHtml(user.name||user.email)}')"><i class="fas fa-envelope"></i> Message</button>` : ''}
+      ${user.role !== 'admin'
         ? `<button class="btn-sm btn-del-sm" onclick="deleteUser('${uid}')"><i class="fas fa-trash"></i> Supprimer</button>` : ''}
     </div>`;
   return card;
@@ -1440,10 +1769,7 @@ async function loadAdminSongs() {
   try {
     const snap = await getDocs(query(collection(db,'songs'), orderBy('createdAt','desc')));
     c.innerHTML = '';
-    if (snap.empty) {
-      c.innerHTML = '<div class="empty-state"><i class="fas fa-music"></i><p>Aucun morceau.</p></div>';
-      return;
-    }
+    if (snap.empty) { c.innerHTML = '<div class="empty-state"><i class="fas fa-music"></i><p>Aucun morceau.</p></div>'; return; }
     snap.docs.forEach(d => c.appendChild(buildSongCard({ id:d.id, ...d.data() }, true, false)));
   } catch (err) { console.error(err); }
 }
@@ -1454,10 +1780,7 @@ async function loadAdminArticles() {
   try {
     const snap = await getDocs(query(collection(db,'articles'), orderBy('createdAt','desc')));
     c.innerHTML = '';
-    if (snap.empty) {
-      c.innerHTML = '<div class="empty-state"><i class="fas fa-newspaper"></i><p>Aucun article.</p></div>';
-      return;
-    }
+    if (snap.empty) { c.innerHTML = '<div class="empty-state"><i class="fas fa-newspaper"></i><p>Aucun article.</p></div>'; return; }
     snap.docs.forEach(d => c.appendChild(buildArticleCard({ id:d.id, ...d.data() }, true)));
   } catch (err) { console.error(err); }
 }
@@ -1467,8 +1790,3 @@ async function loadAdminArticles() {
   const pid = new URLSearchParams(window.location.search).get('play');
   if (pid) setTimeout(() => window.playSong(pid), 2500);
 })();
-
-console.log('✅ F2K STREAM chargé avec succès !');
-</script>
-</body>
-</html>
