@@ -26,7 +26,7 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
 .nav-btn { background:var(--primary)!important; color:#fff!important; padding:.42rem 1.1rem; border-radius:6px; font-weight:600!important; }
 .nav-btn:hover { background:var(--primary-dark)!important; }
 .admin-badge { background:var(--accent); color:#000; padding:.12rem .5rem; border-radius:20px; font-size:.68rem; font-weight:700; margin-left:.3rem; }
-.notif-btn { position:relative; cursor:pointer; color:var(--text2); font-size:1.1rem; transition:color .3s; }
+.notif-btn { position:relative; cursor:pointer; color:var(--text2); font-size:1.1rem; transition:color .3s; background:none; border:none; }
 .notif-btn:hover { color:#fff; }
 .notif-dot { position:absolute; top:-4px; right:-4px; width:10px; height:10px; background:var(--danger); border-radius:50%; display:none; }
 .notif-dot.show { display:block; }
@@ -54,7 +54,7 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
 /* SONG CARD */
 .song-card { background:var(--card); border-radius:16px; overflow:hidden; border:1px solid var(--border); transition:transform .3s,box-shadow .3s; }
 .song-card:hover { transform:translateY(-4px); box-shadow:0 16px 40px rgba(124,58,237,.2); }
-.song-card.hidden-song { opacity:.5; border:1px dashed var(--danger); }
+.song-card.hidden-song { opacity:.55; border:1px dashed var(--danger); }
 .song-cover-wrapper { position:relative; height:190px; overflow:hidden; }
 .song-cover { width:100%; height:100%; object-fit:cover; transition:transform .4s; }
 .song-card:hover .song-cover { transform:scale(1.05); }
@@ -131,7 +131,7 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
 .file-preview.active { display:block; }
 .preview-image { max-width:130px; max-height:130px; border-radius:8px; margin-top:.4rem; border:2px solid var(--border); }
 
-/* DASHBOARD SECTIONS */
+/* DASHBOARD */
 .dashboard-section { background:var(--card); border-radius:16px; padding:1.8rem; margin:1.2rem 0; border:1px solid var(--border); }
 .dashboard-section h2 { font-family:'Syne',sans-serif; font-size:1.4rem; color:#fff; margin-bottom:1.5rem; }
 .dashboard-section h3 { font-family:'Syne',sans-serif; font-size:1.05rem; color:var(--text); margin-bottom:1rem; padding-bottom:.5rem; border-bottom:1px solid var(--border); }
@@ -162,13 +162,24 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
 .btn-msg { background:rgba(124,58,237,.2); color:#c4b5fd; border:1px solid rgba(124,58,237,.3); }
 .btn-msg:hover { background:var(--primary); color:#fff; }
 
-/* ARTICLE CARDS */
+/* ARTICLES */
 .article-card { background:var(--card); border-radius:16px; overflow:hidden; border:1px solid var(--border); transition:transform .3s; }
 .article-card:hover { transform:translateY(-3px); }
 .article-image { width:100%; height:170px; object-fit:cover; }
 .article-info { padding:1.1rem; }
 .article-title { font-family:'Syne',sans-serif; font-size:.98rem; font-weight:700; color:#fff; margin-bottom:.35rem; }
 .article-date { color:var(--text2); font-size:.78rem; margin-bottom:.7rem; }
+
+/* HOME ARTICLES */
+.home-articles { margin-top:2.5rem; }
+.home-articles-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.2rem; margin-top:1rem; }
+.home-article-card { background:var(--card); border-radius:14px; overflow:hidden; border:1px solid var(--border); display:flex; gap:1rem; padding:.9rem; align-items:flex-start; transition:transform .3s; cursor:pointer; }
+.home-article-card:hover { transform:translateY(-2px); }
+.home-article-img { width:80px; height:80px; object-fit:cover; border-radius:10px; flex-shrink:0; background:var(--card2); display:flex; align-items:center; justify-content:center; }
+.home-article-info { flex:1; min-width:0; }
+.home-article-title { font-family:'Syne',sans-serif; font-size:.9rem; font-weight:700; color:#fff; margin-bottom:.25rem; }
+.home-article-date { color:var(--text2); font-size:.75rem; margin-bottom:.4rem; }
+.home-article-excerpt { color:var(--text2); font-size:.8rem; line-height:1.5; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
 
 /* RANKINGS */
 .ranking-section { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1.5rem; margin-top:1.2rem; }
@@ -182,7 +193,7 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
 .ranking-artist { color:var(--text2); font-size:.76rem; }
 .ranking-val { color:var(--accent); font-weight:700; font-size:.82rem; }
 
-/* SHARE MODAL */
+/* SHARE */
 .share-link-item { background:var(--bg2); padding:.9rem; border-radius:10px; margin-bottom:.7rem; border:1px solid var(--border); }
 .share-link-item label { display:block; font-weight:600; margin-bottom:.4rem; font-size:.85rem; color:var(--text); }
 .share-url { display:flex; gap:.4rem; }
@@ -217,38 +228,22 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
 .empty-state { text-align:center; padding:2.5rem; color:var(--text2); grid-column:1/-1; }
 .empty-state i { font-size:2.5rem; margin-bottom:.8rem; color:var(--border); display:block; }
 
-/* FOOTER */
-.footer { text-align:center; padding:2rem; color:var(--text2); margin-top:3rem; border-top:1px solid var(--border); font-size:.88rem; }
-.footer p { margin:.35rem 0; }
-.footer .brand { font-family:'Syne',sans-serif; font-weight:800; color:#fff; font-size:1.05rem; }
-.footer .copyright { font-size:.78rem; opacity:.6; margin-top:.7rem; }
-
 /* MESSAGERIE */
 .msg-bubble { background:var(--card2); border-radius:12px; padding:.9rem 1.1rem; margin-bottom:.7rem; border:1px solid var(--border); }
 .msg-bubble.from-admin { border-left:3px solid var(--primary); }
 .msg-bubble.from-user { border-left:3px solid var(--green); }
 .msg-meta { font-size:.72rem; color:var(--text2); margin-bottom:.35rem; }
 .msg-text { font-size:.88rem; color:var(--text); line-height:1.6; }
-.msg-reply-box { display:flex; gap:.5rem; margin-top:.7rem; }
-.msg-reply-box input { flex:1; padding:.5rem .8rem; background:var(--bg2); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:.85rem; font-family:'DM Sans',sans-serif; }
-.msg-reply-box button { padding:.5rem 1rem; background:var(--primary); color:#fff; border:none; border-radius:8px; cursor:pointer; font-size:.82rem; font-weight:600; }
 
-/* WHATSAPP FLOTANT */
-.whatsapp-float { position:fixed; bottom:90px; right:20px; width:56px; height:56px; background:#25D366; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.6rem; color:#fff; box-shadow:0 4px 20px rgba(37,211,102,.4); z-index:1400; cursor:pointer; transition:transform .3s,box-shadow .3s; text-decoration:none; }
-.whatsapp-float:hover { transform:scale(1.1); box-shadow:0 6px 28px rgba(37,211,102,.6); }
-.whatsapp-tooltip { position:absolute; right:66px; background:#1a1033; color:#fff; padding:.4rem .8rem; border-radius:8px; font-size:.78rem; white-space:nowrap; font-family:'DM Sans',sans-serif; opacity:0; pointer-events:none; transition:opacity .3s; }
-.whatsapp-float:hover .whatsapp-tooltip { opacity:1; }
+/* WHATSAPP */
+.whatsapp-float { position:fixed; bottom:90px; right:20px; width:56px; height:56px; background:#25D366; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.6rem; color:#fff; box-shadow:0 4px 20px rgba(37,211,102,.4); z-index:1400; cursor:pointer; transition:transform .3s; text-decoration:none; }
+.whatsapp-float:hover { transform:scale(1.1); }
 
-/* HOME ARTICLES SECTION */
-.home-articles { margin-top:2.5rem; }
-.home-articles-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.2rem; margin-top:1rem; }
-.home-article-card { background:var(--card); border-radius:14px; overflow:hidden; border:1px solid var(--border); display:flex; gap:1rem; padding:.9rem; align-items:flex-start; transition:transform .3s; }
-.home-article-card:hover { transform:translateY(-2px); }
-.home-article-img { width:80px; height:80px; object-fit:cover; border-radius:10px; flex-shrink:0; }
-.home-article-info { flex:1; min-width:0; }
-.home-article-title { font-family:'Syne',sans-serif; font-size:.9rem; font-weight:700; color:#fff; margin-bottom:.25rem; }
-.home-article-date { color:var(--text2); font-size:.75rem; margin-bottom:.4rem; }
-.home-article-excerpt { color:var(--text2); font-size:.8rem; line-height:1.5; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+/* FOOTER */
+.footer { text-align:center; padding:2rem; color:var(--text2); margin-top:3rem; border-top:1px solid var(--border); font-size:.88rem; }
+.footer p { margin:.35rem 0; }
+.footer .brand { font-family:'Syne',sans-serif; font-weight:800; color:#fff; font-size:1.05rem; }
+.footer .copyright { font-size:.78rem; opacity:.6; margin-top:.7rem; }
 
 @media(max-width:768px) {
   .navbar { flex-direction:column; gap:.7rem; padding:.7rem 1rem; }
@@ -260,6 +255,11 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
 </head>
 <body>
 
+<!-- BOUTON WHATSAPP FLOTTANT -->
+<a class="whatsapp-float" href="https://wa.me/22901998787 42?text=Bonjour%20F2K%20STREAM%2C%20je%20vous%20contacte%20depuis%20le%20site." target="_blank">
+  <i class="fab fa-whatsapp"></i>
+</a>
+
 <!-- NAVBAR -->
 <nav class="navbar">
   <div class="logo" onclick="window.location.reload()">F2K STREAM</div>
@@ -269,10 +269,10 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
     <a class="tab-trigger" data-tab="articles">Actualités</a>
     <a class="tab-trigger" data-tab="dashboard" id="dashboard-link" style="display:none">Espace Artiste</a>
     <a class="tab-trigger" data-tab="admin" id="admin-link" style="display:none">Admin</a>
-    <a id="notif-btn" class="notif-btn" style="display:none" onclick="openMessages()">
+    <button class="notif-btn" id="notif-btn" style="display:none" onclick="openMessages()">
       <i class="fas fa-bell"></i>
       <span class="notif-dot" id="notif-dot"></span>
-    </a>
+    </button>
     <a id="login-btn" class="nav-btn">Connexion</a>
     <a id="register-btn">Inscription</a>
     <a id="logout-btn" style="display:none">Déconnexion</a>
@@ -281,12 +281,6 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
 
 <div class="overlay" id="overlay"></div>
 <div class="toast" id="toast"></div>
-
-<!-- BOUTON WHATSAPP FLOTTANT -->
-<a class="whatsapp-float" href="https://wa.me/22901998787 42?text=Bonjour%20F2K%20STREAM%2C%20je%20vous%20contacte%20depuis%20le%20site." target="_blank">
-  <i class="fab fa-whatsapp"></i>
-  <span class="whatsapp-tooltip">Contacter l'admin</span>
-</a>
 
 <div class="container">
   <div class="hero">
@@ -319,8 +313,6 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
     <div class="songs-grid" id="songs-container">
       <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>
     </div>
-
-    <!-- ACTUALITÉS EN PAGE D'ACCUEIL -->
     <div class="home-articles">
       <p class="section-title">📰 Dernières actualités</p>
       <div class="home-articles-grid" id="home-articles-container">
@@ -427,18 +419,15 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
         </p>
       </form>
     </div>
-
     <div class="dashboard-section">
       <h3>Mes sons publiés</h3>
       <div class="songs-grid" id="my-songs-container">
         <div class="empty-state"><i class="fas fa-music"></i><p>Tu n'as pas encore publié de son.</p></div>
       </div>
     </div>
-
-    <!-- MESSAGERIE ARTISTE -->
     <div class="dashboard-section">
       <h3>💬 Mes messages avec l'Admin</h3>
-      <div id="my-messages-container" style="margin-bottom:1rem;">
+      <div id="my-messages-container">
         <div class="empty-state"><i class="fas fa-envelope-open"></i><p>Aucun message.</p></div>
       </div>
     </div>
@@ -448,7 +437,6 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
   <div class="tab-content" id="tab-admin">
     <div class="dashboard-section">
       <h2>👑 Administration</h2>
-
       <div class="admin-stats">
         <div class="stat-card"><div class="stat-card-num" id="stat-users">-</div><div class="stat-card-label">Utilisateurs</div></div>
         <div class="stat-card"><div class="stat-card-num" id="stat-songs">-</div><div class="stat-card-label">Sons publiés</div></div>
@@ -456,7 +444,6 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
         <div class="stat-card"><div class="stat-card-num" id="stat-articles">-</div><div class="stat-card-label">Articles</div></div>
       </div>
 
-      <!-- PUBLIER UN SON (ADMIN) -->
       <div style="margin-bottom:2.5rem">
         <h3>🎵 Publier un son directement</h3>
         <form id="admin-upload-form" style="margin-top:1rem">
@@ -512,7 +499,6 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
         </form>
       </div>
 
-      <!-- PUBLIER UN ARTICLE -->
       <div style="margin-bottom:2.5rem">
         <h3>📰 Publier un article</h3>
         <form id="article-form" style="max-width:600px;margin-top:1rem">
@@ -526,7 +512,6 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
         </form>
       </div>
 
-      <!-- SONS EN ATTENTE -->
       <div style="margin-bottom:2.5rem">
         <h3>⏳ Sons en attente de validation</h3>
         <div class="songs-grid" id="admin-pending-container">
@@ -534,7 +519,6 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
         </div>
       </div>
 
-      <!-- GESTION UTILISATEURS -->
       <div style="margin-bottom:2.5rem">
         <h3>👥 Gestion des utilisateurs</h3>
         <div class="users-grid" id="admin-users-container">
@@ -542,7 +526,6 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
         </div>
       </div>
 
-      <!-- TOUS LES MORCEAUX -->
       <div style="margin-bottom:2.5rem">
         <h3>🎵 Tous les morceaux</h3>
         <div class="songs-grid" id="admin-songs-container">
@@ -550,14 +533,12 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
         </div>
       </div>
 
-      <!-- ARTICLES PUBLIÉS -->
       <div style="margin-bottom:2.5rem">
         <h3>📰 Articles publiés</h3>
         <div class="articles-grid" id="admin-articles-container">
           <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>
         </div>
       </div>
-
     </div>
   </div>
 </div>
@@ -649,14 +630,14 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
   <p style="text-align:center;color:var(--text2);font-size:.82rem"><i class="fas fa-info-circle"></i> Ce lien peut être partagé partout !</p>
 </div>
 
-<!-- MODAL MESSAGERIE -->
+<!-- MODAL MESSAGES ARTISTE -->
 <div class="modal" id="messages-modal" style="max-width:520px">
   <div class="modal-header">
     <h2>💬 Messages</h2>
     <button class="close-modal" id="close-messages">&times;</button>
   </div>
   <div id="messages-thread" style="max-height:350px;overflow-y:auto;margin-bottom:1rem;"></div>
-  <div id="send-msg-box" style="display:flex;gap:.5rem;">
+  <div style="display:flex;gap:.5rem;">
     <input type="text" id="msg-input" placeholder="Écrire un message..." style="flex:1;padding:.6rem .9rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.88rem;">
     <button onclick="sendMessage()" style="padding:.6rem 1.1rem;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;">Envoyer</button>
   </div>
@@ -680,11 +661,10 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
 <footer class="footer">
   <p class="brand">F2K STREAM</p>
   <p>La voix des artistes indépendants</p>
-  <p><i class="fas fa-phone"></i> +229 01 99 87 87 42 &nbsp;|&nbsp; <i class="fas fa-envelope"></i> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="bed88cd5d3cbd2cad7cddbccc8d7dddbfed9d3dfd7d290ddd1d3">[email&#160;protected]</a></p>
+  <p><i class="fas fa-phone"></i> +229 01 99 87 87 42 &nbsp;|&nbsp; <i class="fas fa-envelope"></i> f2kmultiservice@gmail.com</p>
   <p class="copyright">© 2025 F2K MULTISERVICE. Tous droits réservés.</p>
-</footer>
-
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module">
+  </footer>
+  <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getFirestore, collection, addDoc, query, orderBy, limit, getDocs, where, updateDoc, doc, increment, getDoc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -715,6 +695,7 @@ const authModal = document.getElementById('auth-modal');
 const shareModal = document.getElementById('share-modal');
 const messagesModal = document.getElementById('messages-modal');
 const adminMsgModal = document.getElementById('admin-msg-modal');
+const articleShareModal = document.getElementById('article-share-modal');
 const loginForm = document.getElementById('login-form');
 const registerForm = document.getElementById('register-form');
 const loginBtn = document.getElementById('login-btn');
@@ -749,8 +730,7 @@ let isAdmin = false;
 let allSongs = [];
 let currentGenre = '';
 let currentSearch = '';
-let currentMsgUserId = null;
-let currentMsgUserName = null;
+let adminMsgTargetId = null;
 let msgUnsubscribe = null;
 
 // ── TOAST ────────────────────────────────────────────
@@ -763,14 +743,15 @@ function showToast(msg, type = 'success') {
 // ── MODALS ────────────────────────────────────────────
 function openModal(m) { m.classList.add('active'); overlay.classList.add('active'); }
 function closeAll() {
-  [authModal, shareModal, messagesModal, adminMsgModal,
-   document.getElementById('article-share-modal')].forEach(m => m && m.classList.remove('active'));
+  [authModal, shareModal, messagesModal, adminMsgModal, articleShareModal]
+    .forEach(m => m && m.classList.remove('active'));
   overlay.classList.remove('active');
   if (msgUnsubscribe) { msgUnsubscribe(); msgUnsubscribe = null; }
 }
 overlay.addEventListener('click', closeAll);
 document.getElementById('close-modal').addEventListener('click', closeAll);
 document.getElementById('close-share').addEventListener('click', closeAll);
+document.getElementById('close-article-share').addEventListener('click', closeAll);
 document.getElementById('close-messages').addEventListener('click', closeAll);
 document.getElementById('close-admin-msg').addEventListener('click', closeAll);
 
@@ -791,6 +772,12 @@ window.copyLink = function(type) {
   const el = type === 'listen' ? listenLink : downloadLink;
   el.select(); document.execCommand('copy');
   showToast('Lien copié !');
+};
+
+window.copyArticleLink = function() {
+  const input = document.getElementById('article-share-link');
+  input.select(); document.execCommand('copy');
+  showToast('Lien article copié !');
 };
 
 // ── TABS ─────────────────────────────────────────────
@@ -862,7 +849,7 @@ function renderSongs() {
 }
 
 // ── CLOUDINARY UPLOAD ─────────────────────────────────
-async function uploadToCatbox(file) {
+async function uploadToCloudinary(file) {
   const isAudio = file.type.includes('audio') || file.name.toLowerCase().endsWith('.mp3');
   const resourceType = isAudio ? 'raw' : 'image';
   const url = 'https://api.cloudinary.com/v1_1/' + CLOUDINARY_CLOUD + '/' + resourceType + '/upload';
@@ -881,7 +868,6 @@ async function deleteFromCloudinary(publicId, resourceType) {
   try {
     const timestamp = Math.floor(Date.now() / 1000);
     const strToSign = `public_id=${publicId}&timestamp=${timestamp}${CLOUDINARY_API_SECRET}`;
-    // Génération SHA1 via SubtleCrypto
     const msgBuffer = new TextEncoder().encode(strToSign);
     const hashBuffer = await crypto.subtle.digest('SHA-1', msgBuffer);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
@@ -971,8 +957,8 @@ onAuthStateChanged(auth, async user => {
     } else {
       adminLink.style.display = 'none';
       dashboardLink.innerHTML = 'Espace Artiste';
+      listenForNotifications();
     }
-    listenForNotifications();
   } else {
     currentUser = null; isAdmin = false;
     loginBtn.style.display = 'inline'; registerBtn.style.display = 'inline';
@@ -986,8 +972,7 @@ onAuthStateChanged(auth, async user => {
     window.showTab('home');
   }
 });
-
-// ── FILE DROPZONES ────────────────────────────────────
+    // ── FILE DROPZONES ────────────────────────────────────
 function setupDropzone(dzId, inputEl, previewEl, isImg, fnSpanId) {
   const dz = document.getElementById(dzId);
   dz.addEventListener('click', () => inputEl.click());
@@ -1045,8 +1030,8 @@ async function handleSongSubmit(e, isAdminForm) {
 
   try {
     showToast('Upload en cours... Ne ferme pas la page');
-    const coverResult = await uploadToCatbox(cover);
-    const audioResult = await uploadToCatbox(audio);
+    const coverResult = await uploadToCloudinary(cover);
+    const audioResult = await uploadToCloudinary(audio);
     await addDoc(collection(db, 'songs'), {
       title, artistName, label, year: parseInt(year),
       featuring, genre, description,
@@ -1096,7 +1081,7 @@ articleForm.addEventListener('submit', async e => {
   try {
     let imageUrl = ''; let imagePublicId = '';
     if (imgFile) {
-      const r = await uploadToCatbox(imgFile);
+      const r = await uploadToCloudinary(imgFile);
       imageUrl = r.url; imagePublicId = r.publicId;
     }
     await addDoc(collection(db, 'articles'), {
@@ -1124,6 +1109,11 @@ async function loadSongs() {
   }
 }
 
+// ── ESCAPE HTML ───────────────────────────────────────
+function escHtml(str) {
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
 // ── BUILD SONG CARD ───────────────────────────────────
 function buildSongCard(song, showDelete, showPending) {
   const card = document.createElement('div');
@@ -1136,24 +1126,28 @@ function buildSongCard(song, showDelete, showPending) {
   const isOwner = currentUser && currentUser.uid === song.artistId;
   const canDelete = showDelete || isAdmin || isOwner;
   const canHide = isOwner || isAdmin;
+  const au = encodeURIComponent(song.audioUrl||'');
+  const ti = encodeURIComponent(song.title||'');
+  const ar = encodeURIComponent(song.artistName||'');
+  const co = encodeURIComponent(song.coverUrl||'');
 
   card.innerHTML = `
     <div class="song-cover-wrapper">
-      <img class="song-cover" src="${song.coverUrl}" alt="${escHtml(song.title)}" loading="lazy"
+      <img class="song-cover" src="${song.coverUrl||''}" alt="${escHtml(song.title)}" loading="lazy"
            onerror="this.src='https://placehold.co/300x190/1e1540/7c3aed?text=F2K'">
       <div class="song-cover-overlay"></div>
       <span class="song-genre-badge">${escHtml(song.genre||'')}</span>
       ${showPending ? '<span class="pending-badge">⏳ En attente</span>' : ''}
-      ${song.hidden && !showPending ? '<span class="hidden-badge">🙈 Masqué</span>' : ''}
+      ${song.hidden ? '<span class="hidden-badge">🙈 Masqué</span>' : ''}
     </div>
     <div class="song-info">
       <div class="song-title">${escHtml(song.title)}</div>
-      <div class="song-artist">${escHtml(song.artistName||song.uploadedBy)}${escHtml(ft)}</div>
+      <div class="song-artist">${escHtml((song.artistName||song.uploadedBy||'')+ft)}</div>
       ${meta.length ? `<div class="song-label">${meta.join(' · ')}</div>` : ''}
       <div class="song-stats">
         <span class="stat-item"><i class="fas fa-eye"></i> ${song.views||0}</span>
         <span class="stat-item"><i class="fas fa-download"></i> ${song.downloads||0}</span>
-        <span class="stat-item like-stat" id="likes-${sid}"><i class="fas fa-heart"></i> ${song.likes||0}</span>
+        <span class="stat-item" id="likes-${sid}"><i class="fas fa-heart"></i> ${song.likes||0}</span>
       </div>
       <div class="song-actions">
         ${showPending ? `
@@ -1161,8 +1155,8 @@ function buildSongCard(song, showDelete, showPending) {
           <button class="btn-delete"  onclick="rejectSong('${sid}')"><i class="fas fa-times"></i> Rejeter</button>
         ` : `
           <button class="btn-play"     onclick="playSong('${sid}')"><i class="fas fa-play"></i> Écouter</button>
-          <button class="btn-like"     onclick="likeSong('${sid}')" id="btn-like-${sid}" title="J'aime"><i class="fas fa-heart"></i></button>
-          <button class="btn-download" onclick="downloadSong('${sid}','${encodeURIComponent(song.audioUrl)}','${encodeURIComponent(song.title)}','${encodeURIComponent(song.artistName||'')}','${encodeURIComponent(song.coverUrl||'')}')" title="Télécharger"><i class="fas fa-download"></i></button>
+          <button class="btn-like"     onclick="likeSong('${sid}')" id="btn-like-${sid}"><i class="fas fa-heart"></i></button>
+          <button class="btn-download" onclick="downloadSong('${sid}','${au}','${ti}','${ar}','${co}')" title="Télécharger"><i class="fas fa-download"></i></button>
           <button class="btn-share"    onclick="openShare('${sid}')" title="Partager"><i class="fas fa-share-alt"></i></button>
           ${canHide && !song.hidden ? `<button class="btn-hide" onclick="hideSong('${sid}')" title="Masquer"><i class="fas fa-eye-slash"></i></button>` : ''}
           ${canHide && song.hidden  ? `<button class="btn-unhide" onclick="unhideSong('${sid}')" title="Rendre visible"><i class="fas fa-eye"></i></button>` : ''}
@@ -1173,10 +1167,7 @@ function buildSongCard(song, showDelete, showPending) {
   return card;
 }
 
-function escHtml(str) {
-  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-}
-
+// ── PLAYER ────────────────────────────────────────────
 const songCache = {};
 async function getSong(id) {
   if (songCache[id]) return songCache[id];
@@ -1185,15 +1176,14 @@ async function getSong(id) {
   return null;
 }
 
-// ── PLAYER ────────────────────────────────────────────
 window.playSong = async function(id) {
   const song = allSongs.find(s => s.id === id) || await getSong(id);
   if (!song) return;
   audioElement.src = song.audioUrl;
-  document.getElementById('player-cover').src = song.coverUrl;
+  document.getElementById('player-cover').src = song.coverUrl||'';
   document.getElementById('player-title').textContent = song.title;
   document.getElementById('player-artist').textContent =
-    (song.artistName||song.uploadedBy) + (song.featuring ? ' ft. '+song.featuring : '');
+    (song.artistName||song.uploadedBy||'') + (song.featuring ? ' ft. '+song.featuring : '');
   audioPlayer.classList.add('active');
   audioElement.play();
   playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
@@ -1210,7 +1200,8 @@ stopBtn.addEventListener('click', () => {
   audioPlayer.classList.remove('active');
 });
 audioElement.addEventListener('timeupdate', () => {
-  if (audioElement.duration) progressFill.style.width = (audioElement.currentTime / audioElement.duration * 100) + '%';
+  if (audioElement.duration)
+    progressFill.style.width = (audioElement.currentTime / audioElement.duration * 100) + '%';
 });
 progressBar.addEventListener('click', e => {
   const r = progressBar.getBoundingClientRect();
@@ -1221,58 +1212,18 @@ audioElement.addEventListener('ended', () => {
   progressFill.style.width = '0%';
 });
 
-// ── DOWNLOAD AVEC TAGS ID3 ────────────────────────────
+// ── DOWNLOAD ──────────────────────────────────────────
 window.downloadSong = async function(id, encodedUrl, encodedTitle, encodedArtist, encodedCover) {
-  const url = decodeURIComponent(encodedUrl);
+  const url   = decodeURIComponent(encodedUrl);
   const title = decodeURIComponent(encodedTitle);
   const artist = decodeURIComponent(encodedArtist);
-  const coverUrl = decodeURIComponent(encodedCover);
-
-  showToast('Préparation du téléchargement...');
+  showToast('Téléchargement en cours...');
   updateDoc(doc(db,'songs',id), { downloads: increment(1) }).catch(()=>{});
-
-  try {
-    // Télécharger le MP3
-    const audioResp = await fetch(url);
-    const audioBuffer = await audioResp.arrayBuffer();
-
-    // Télécharger la pochette
-    let coverData = null;
-    if (coverUrl) {
-      try {
-        const coverResp = await fetch(coverUrl);
-        coverData = await coverResp.arrayBuffer();
-      } catch(e) { console.warn('Cover fetch failed', e); }
-    }
-
-    // Écrire les tags ID3 avec browser-id3-writer
-    const writer = new ID3Writer(audioBuffer);
-    writer.setFrame('TIT2', title)
-          .setFrame('TPE1', [artist])
-          .setFrame('TALB', 'F2K STREAM')
-          .setFrame('TPUB', 'F2K STREAM - f2k229.github.io/F2K-STREAM');
-    if (coverData) {
-      writer.setFrame('APIC', {
-        type: 3,
-        data: coverData,
-        description: 'Cover'
-      });
-    }
-    writer.addTag();
-    const taggedBlob = writer.getBlob();
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(taggedBlob);
-    a.download = `${artist} - ${title} [F2K STREAM].mp3`;
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
-    showToast('✅ Téléchargement démarré avec tags !');
-  } catch(err) {
-    console.error('ID3 tag error:', err);
-    // Fallback sans tags
-    const a = document.createElement('a');
-    a.href = url; a.download = `${title}.mp3`; a.target = '_blank';
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  }
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = artist ? `${artist} - ${title}.mp3` : `${title}.mp3`;
+  a.target = '_blank';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
 };
 
 // ── SHARE ─────────────────────────────────────────────
@@ -1284,7 +1235,13 @@ window.openShare = async function(id) {
   openModal(shareModal);
 };
 
-// ── LIKE ─────────────────────────────────────────────
+window.openArticleShare = function(id) {
+  const link = window.location.href.split('?')[0] + '?article=' + id;
+  document.getElementById('article-share-link').value = link;
+  openModal(articleShareModal);
+};
+
+// ── LIKE ──────────────────────────────────────────────
 const likedSongs = JSON.parse(localStorage.getItem('f2k_liked') || '[]');
 
 window.likeSong = async function(id) {
@@ -1321,15 +1278,14 @@ window.unhideSong = async function(id) {
   } catch { showToast('Erreur.', 'error'); }
 };
 
-// ── DELETE SONG (Firebase + Cloudinary) ───────────────
+// ── DELETE SONG ───────────────────────────────────────
 window.deleteSong = async function(id) {
-  if (!confirm('Supprimer ce son définitivement ? (Firebase + Cloudinary)')) return;
+  if (!confirm('Supprimer ce son définitivement ?')) return;
   try {
     const songDoc = await getDoc(doc(db,'songs',id));
     if (songDoc.exists()) {
       const data = songDoc.data();
       await deleteDoc(doc(db,'songs',id));
-      // Supprimer sur Cloudinary
       if (data.coverPublicId) await deleteFromCloudinary(data.coverPublicId, 'image');
       if (data.audioPublicId) await deleteFromCloudinary(data.audioPublicId, 'raw');
     }
@@ -1361,8 +1317,7 @@ window.rejectSong = async function(id) {
     loadAdminAll();
   } catch { showToast('Erreur.', 'error'); }
 };
-
-// ── MY SONGS ──────────────────────────────────────────
+    // ── MY SONGS ──────────────────────────────────────────
 async function loadMySongs() {
   if (!currentUser) return;
   const c = document.getElementById('my-songs-container');
@@ -1383,6 +1338,7 @@ async function loadMySongs() {
 // ── ARTICLES ──────────────────────────────────────────
 async function loadArticles() {
   const c = document.getElementById('articles-container');
+  c.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>';
   try {
     const snap = await getDocs(query(collection(db,'articles'), orderBy('createdAt','desc'), limit(12)));
     c.innerHTML = '';
@@ -1391,7 +1347,10 @@ async function loadArticles() {
       return;
     }
     snap.docs.forEach(d => c.appendChild(buildArticleCard({ id:d.id, ...d.data() }, false)));
-  } catch (err) { console.error(err); }
+  } catch (err) {
+    console.error(err);
+    c.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Erreur de chargement.</p></div>';
+  }
 }
 
 async function loadHomeArticles() {
@@ -1406,20 +1365,26 @@ async function loadHomeArticles() {
     snap.docs.forEach(d => {
       const a = { id:d.id, ...d.data() };
       const date = new Date(a.createdAt).toLocaleDateString('fr-FR');
-      const excerpt = a.content ? a.content.substring(0, 100) + '...' : '';
+      const excerpt = a.content ? a.content.substring(0,100) + '...' : '';
       const card = document.createElement('div');
       card.className = 'home-article-card';
+      card.onclick = () => window.showTab('articles');
       card.innerHTML = `
-        ${a.imageUrl ? `<img src="${a.imageUrl}" alt="${escHtml(a.title)}" class="home-article-img">` : `<div class="home-article-img" style="background:var(--card2);display:flex;align-items:center;justify-content:center;"><i class="fas fa-newspaper" style="color:var(--primary);font-size:1.5rem"></i></div>`}
+        ${a.imageUrl
+          ? `<img src="${a.imageUrl}" alt="${escHtml(a.title)}" class="home-article-img">`
+          : `<div class="home-article-img" style="min-width:80px;min-height:80px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-newspaper" style="color:var(--primary);font-size:1.5rem"></i></div>`}
         <div class="home-article-info">
           <div class="home-article-title">${escHtml(a.title)}</div>
           <div class="home-article-date">${date}</div>
           <div class="home-article-excerpt">${escHtml(excerpt)}</div>
-          <button onclick="window.showTab('articles')" style="margin-top:.5rem;background:none;border:none;color:var(--primary);cursor:pointer;font-size:.78rem;font-weight:600;padding:0;">Lire la suite →</button>
+          <span style="margin-top:.5rem;display:inline-block;color:var(--primary);font-size:.78rem;font-weight:600;">Lire la suite →</span>
         </div>`;
       c.appendChild(card);
     });
-  } catch (err) { console.error(err); }
+  } catch (err) {
+    console.error(err);
+    c.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-exclamation-circle"></i><p>Erreur de chargement.</p></div>';
+  }
 }
 
 function buildArticleCard(article, isAdminView) {
@@ -1431,10 +1396,10 @@ function buildArticleCard(article, isAdminView) {
     ${article.imageUrl ? `<img src="${article.imageUrl}" alt="${escHtml(article.title)}" class="article-image">` : ''}
     <div class="article-info">
       <div class="article-title">${escHtml(article.title)}</div>
-      <div class="article-date">${date} · Par ${escHtml(article.authorName)}</div>
+      <div class="article-date">${date} · Par ${escHtml(article.authorName||'Admin')}</div>
       <div class="article-body">${escHtml(article.content)}</div>
       <div style="margin-top:.9rem;display:flex;gap:.5rem;flex-wrap:wrap;">
-        <button class="btn-share" style="padding:.45rem .9rem;font-size:.8rem;border:none;border-radius:8px;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:.3rem;" onclick="openArticleShare('${aid}')">
+        <button class="btn-share" style="padding:.45rem .9rem;font-size:.8rem;border:none;border-radius:8px;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:.3rem;color:#fff;" onclick="openArticleShare('${aid}')">
           <i class="fas fa-share-alt"></i> Partager
         </button>
         ${isAdminView ? `<button class="btn-sm btn-del-sm" onclick="deleteArticle('${aid}')"><i class="fas fa-trash"></i> Supprimer</button>` : ''}
@@ -1443,22 +1408,7 @@ function buildArticleCard(article, isAdminView) {
   return card;
 }
 
-// ── PARTAGE ARTICLE ──────────────────────────────────
-const articleShareModal = document.getElementById('article-share-modal');
-document.getElementById('close-article-share').addEventListener('click', closeAll);
-
-window.openArticleShare = function(id) {
-  const link = window.location.href.split('?')[0] + '?article=' + id;
-  document.getElementById('article-share-link').value = link;
-  openModal(articleShareModal);
-};
-window.copyArticleLink = function() {
-  const input = document.getElementById('article-share-link');
-  input.select(); document.execCommand('copy');
-  showToast('Lien article copié !');
-};
-
-// ── DELETE ARTICLE (Firebase + Cloudinary) ────────────
+// ── DELETE ARTICLE ────────────────────────────────────
 window.deleteArticle = async function(id) {
   if (!confirm('Supprimer cet article définitivement ?')) return;
   try {
@@ -1468,7 +1418,7 @@ window.deleteArticle = async function(id) {
       await deleteDoc(doc(db,'articles',id));
       if (data.imagePublicId) await deleteFromCloudinary(data.imagePublicId, 'image');
     }
-    showToast('Article supprimé définitivement.');
+    showToast('Article supprimé.');
     loadArticles(); loadHomeArticles(); loadAdminAll();
   } catch { showToast('Erreur.', 'error'); }
 };
@@ -1478,18 +1428,22 @@ async function loadRankings() {
   try {
     const snap = await getDocs(query(collection(db,'songs'), where('approved','==',true)));
     const songs = snap.docs.map(d => ({ id:d.id, ...d.data() })).filter(s => !s.hidden);
-    function topBy(field) { return [...songs].sort((a,b) => (b[field]||0) - (a[field]||0)).slice(0,5); }
+    function topBy(field) {
+      return [...songs].sort((a,b) => (b[field]||0) - (a[field]||0)).slice(0,5);
+    }
     function render(cId, list, field, icon) {
       const el = document.getElementById(cId);
       el.innerHTML = '';
-      if (!list.length) { el.innerHTML = '<p style="color:var(--text2);font-size:.82rem">Aucune donnée.</p>'; return; }
+      if (!list.length) {
+        el.innerHTML = '<p style="color:var(--text2);font-size:.82rem">Aucune donnée.</p>'; return;
+      }
       list.forEach((s,i) => {
         el.innerHTML += `
           <div class="ranking-item">
             <div class="ranking-num">${i+1}</div>
             <div class="ranking-info">
               <div class="ranking-title">${escHtml(s.title)}</div>
-              <div class="ranking-artist">${escHtml(s.artistName||s.uploadedBy)}</div>
+              <div class="ranking-artist">${escHtml(s.artistName||s.uploadedBy||'')}</div>
             </div>
             <div class="ranking-val">${icon} ${s[field]||0}</div>
           </div>`;
@@ -1501,75 +1455,101 @@ async function loadRankings() {
   } catch (err) { console.error('Rankings:', err); }
 }
 
-// ── MESSAGERIE ────────────────────────────────────────
+// ── MESSAGERIE ARTISTE ────────────────────────────────
 function listenForNotifications() {
-  if (!currentUser) return;
-  const q = query(collection(db,'messages'), where('toId','==',currentUser.uid), where('read','==',false));
+  if (!currentUser || isAdmin) return;
+  const q = query(
+    collection(db,'messages'),
+    where('toId','==',currentUser.uid),
+    where('read','==',false)
+  );
   onSnapshot(q, snap => {
     notifDot.classList.toggle('show', !snap.empty);
   });
 }
 
 window.openMessages = function() {
-  if (!currentUser) return;
-  if (isAdmin) return; // admin utilise le panneau admin
+  if (!currentUser || isAdmin) return;
   openModal(messagesModal);
-  loadMessagesThread(currentUser.uid);
+  loadMessagesThread();
 };
 
-async function loadMessagesThread(userId) {
+async function loadMessagesThread() {
   const thread = document.getElementById('messages-thread');
-  thread.innerHTML = '<p style="color:var(--text2);font-size:.85rem">Chargement...</p>';
-  // Marquer comme lus
-  const unread = await getDocs(query(collection(db,'messages'), where('toId','==',userId), where('read','==',false)));
-  for (const d of unread.docs) await updateDoc(doc(db,'messages',d.id), { read: true });
-  notifDot.classList.remove('show');
-
-  const q = query(collection(db,'messages'), where('threadId','==',userId), orderBy('createdAt','asc'));
-  if (msgUnsubscribe) msgUnsubscribe();
-  msgUnsubscribe = onSnapshot(q, snap => {
-    thread.innerHTML = '';
-    if (snap.empty) { thread.innerHTML = '<p style="color:var(--text2);font-size:.85rem;text-align:center">Aucun message pour le moment.</p>'; return; }
-    snap.docs.forEach(d => {
-      const m = d.data();
-      const isFromAdmin = m.fromId !== userId;
-      const div = document.createElement('div');
-      div.className = 'msg-bubble ' + (isFromAdmin ? 'from-admin' : 'from-user');
-      div.innerHTML = `
-        <div class="msg-meta">${isFromAdmin ? '👑 Admin' : '🎤 Toi'} · ${new Date(m.createdAt).toLocaleString('fr-FR')}</div>
-        <div class="msg-text">${escHtml(m.text)}</div>`;
-      thread.appendChild(div);
+  thread.innerHTML = '<p style="color:var(--text2);font-size:.85rem;text-align:center">Chargement...</p>';
+  try {
+    const unread = await getDocs(query(
+      collection(db,'messages'),
+      where('toId','==',currentUser.uid),
+      where('read','==',false)
+    ));
+    for (const d of unread.docs) {
+      await updateDoc(doc(db,'messages',d.id), { read: true });
+    }
+    notifDot.classList.remove('show');
+    const q = query(
+      collection(db,'messages'),
+      where('threadId','==',currentUser.uid),
+      orderBy('createdAt','asc')
+    );
+    if (msgUnsubscribe) msgUnsubscribe();
+    msgUnsubscribe = onSnapshot(q, snap => {
+      thread.innerHTML = '';
+      if (snap.empty) {
+        thread.innerHTML = '<p style="color:var(--text2);font-size:.85rem;text-align:center">Aucun message pour le moment.</p>';
+        return;
+      }
+      snap.docs.forEach(d => {
+        const m = d.data();
+        const fromAdmin = m.fromId !== currentUser.uid;
+        const div = document.createElement('div');
+        div.className = 'msg-bubble ' + (fromAdmin ? 'from-admin' : 'from-user');
+        div.innerHTML = `
+          <div class="msg-meta">${fromAdmin ? '👑 Admin' : '🎤 Toi'} · ${new Date(m.createdAt).toLocaleString('fr-FR')}</div>
+          <div class="msg-text">${escHtml(m.text)}</div>`;
+        thread.appendChild(div);
+      });
+      thread.scrollTop = thread.scrollHeight;
     });
-    thread.scrollTop = thread.scrollHeight;
-  });
+  } catch(err) { console.error(err); }
 }
 
 async function loadMyMessages() {
   if (!currentUser || isAdmin) return;
   const c = document.getElementById('my-messages-container');
   c.innerHTML = '';
-  const q = query(collection(db,'messages'), where('threadId','==',currentUser.uid), orderBy('createdAt','desc'), limit(5));
-  const snap = await getDocs(q);
-  if (snap.empty) {
-    c.innerHTML = '<div class="empty-state"><i class="fas fa-envelope-open"></i><p>Aucun message de l\'admin.</p></div>';
-    return;
-  }
-  snap.docs.forEach(d => {
-    const m = d.data();
-    const isFromAdmin = m.fromId !== currentUser.uid;
-    const div = document.createElement('div');
-    div.className = 'msg-bubble ' + (isFromAdmin ? 'from-admin' : 'from-user');
-    div.innerHTML = `
-      <div class="msg-meta">${isFromAdmin ? '👑 Admin' : '🎤 Toi'} · ${new Date(m.createdAt).toLocaleString('fr-FR')}</div>
-      <div class="msg-text">${escHtml(m.text)}</div>`;
-    c.appendChild(div);
-  });
-  const replyDiv = document.createElement('div');
-  replyDiv.className = 'msg-reply-box';
-  replyDiv.innerHTML = `
-    <input type="text" id="quick-reply-input" placeholder="Répondre à l'admin...">
-    <button onclick="sendQuickReply()">Envoyer</button>`;
-  c.appendChild(replyDiv);
+  try {
+    const snap = await getDocs(query(
+      collection(db,'messages'),
+      where('threadId','==',currentUser.uid),
+      orderBy('createdAt','desc'),
+      limit(5)
+    ));
+    if (snap.empty) {
+      c.innerHTML = '<div class="empty-state"><i class="fas fa-envelope-open"></i><p>Aucun message de l\'admin.</p></div>';
+      return;
+    }
+    const msgs = snap.docs.map(d => d.data()).reverse();
+    msgs.forEach(m => {
+      const fromAdmin = m.fromId !== currentUser.uid;
+      const div = document.createElement('div');
+      div.className = 'msg-bubble ' + (fromAdmin ? 'from-admin' : 'from-user');
+      div.innerHTML = `
+        <div class="msg-meta">${fromAdmin ? '👑 Admin' : '🎤 Toi'} · ${new Date(m.createdAt).toLocaleString('fr-FR')}</div>
+        <div class="msg-text">${escHtml(m.text)}</div>`;
+      c.appendChild(div);
+    });
+    const replyDiv = document.createElement('div');
+    replyDiv.style.cssText = 'display:flex;gap:.5rem;margin-top:.7rem;';
+    replyDiv.innerHTML = `
+      <input type="text" id="quick-reply-input" placeholder="Répondre à l'admin..."
+        style="flex:1;padding:.6rem .9rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;">
+      <button onclick="sendQuickReply()"
+        style="padding:.6rem 1rem;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;">
+        Envoyer
+      </button>`;
+    c.appendChild(replyDiv);
+  } catch(err) { console.error(err); }
 }
 
 window.sendMessage = async function() {
@@ -1577,15 +1557,17 @@ window.sendMessage = async function() {
   const input = document.getElementById('msg-input');
   const text = input.value.trim();
   if (!text) return;
-  await addDoc(collection(db,'messages'), {
-    threadId: currentUser.uid,
-    fromId: currentUser.uid,
-    fromName: currentUser.name || currentUser.email,
-    toId: 'admin',
-    text, read: false,
-    createdAt: new Date().toISOString()
-  });
-  input.value = '';
+  try {
+    await addDoc(collection(db,'messages'), {
+      threadId: currentUser.uid,
+      fromId: currentUser.uid,
+      fromName: currentUser.name || currentUser.email,
+      toId: 'admin',
+      text, read: false,
+      createdAt: new Date().toISOString()
+    });
+    input.value = '';
+  } catch(err) { showToast('Erreur envoi message.', 'error'); }
 };
 
 window.sendQuickReply = async function() {
@@ -1593,41 +1575,42 @@ window.sendQuickReply = async function() {
   const input = document.getElementById('quick-reply-input');
   const text = input.value.trim();
   if (!text) return;
-  await addDoc(collection(db,'messages'), {
-    threadId: currentUser.uid,
-    fromId: currentUser.uid,
-    fromName: currentUser.name || currentUser.email,
-    toId: 'admin',
-    text, read: false,
-    createdAt: new Date().toISOString()
-  });
-  input.value = '';
-  showToast('Message envoyé !');
-  loadMyMessages();
+  try {
+    await addDoc(collection(db,'messages'), {
+      threadId: currentUser.uid,
+      fromId: currentUser.uid,
+      fromName: currentUser.name || currentUser.email,
+      toId: 'admin',
+      text, read: false,
+      createdAt: new Date().toISOString()
+    });
+    input.value = '';
+    showToast('Message envoyé !');
+    loadMyMessages();
+  } catch(err) { showToast('Erreur.', 'error'); }
 };
-
-// ── MESSAGERIE ADMIN ──────────────────────────────────
-let adminMsgTargetId = null;
-
+    // ── MESSAGERIE ADMIN ──────────────────────────────────
 window.openAdminMessage = function(userId, userName) {
   adminMsgTargetId = userId;
-  currentMsgUserId = userId;
-  currentMsgUserName = userName;
-  document.getElementById('admin-msg-target-name').textContent = `À : ${userName}`;
+  document.getElementById('admin-msg-target-name').textContent = 'À : ' + userName;
   openModal(adminMsgModal);
   const thread = document.getElementById('admin-msg-thread');
   thread.innerHTML = '';
-  const q = query(collection(db,'messages'), where('threadId','==',userId), orderBy('createdAt','asc'));
+  const q = query(
+    collection(db,'messages'),
+    where('threadId','==',userId),
+    orderBy('createdAt','asc')
+  );
   if (msgUnsubscribe) msgUnsubscribe();
   msgUnsubscribe = onSnapshot(q, snap => {
     thread.innerHTML = '';
     snap.docs.forEach(d => {
       const m = d.data();
-      const isAdmin2 = m.fromId !== userId;
+      const fromAdmin = m.fromId !== userId;
       const div = document.createElement('div');
-      div.className = 'msg-bubble ' + (isAdmin2 ? 'from-admin' : 'from-user');
+      div.className = 'msg-bubble ' + (fromAdmin ? 'from-admin' : 'from-user');
       div.innerHTML = `
-        <div class="msg-meta">${isAdmin2 ? '👑 Admin' : `🎤 ${escHtml(m.fromName)}`} · ${new Date(m.createdAt).toLocaleString('fr-FR')}</div>
+        <div class="msg-meta">${fromAdmin ? '👑 Admin' : '🎤 ' + escHtml(m.fromName||'')} · ${new Date(m.createdAt).toLocaleString('fr-FR')}</div>
         <div class="msg-text">${escHtml(m.text)}</div>`;
       thread.appendChild(div);
     });
@@ -1636,25 +1619,33 @@ window.openAdminMessage = function(userId, userName) {
 };
 
 window.sendAdminMessage = async function() {
-  if (!adminMsgTargetId) return;
+  if (!adminMsgTargetId || !currentUser) return;
   const input = document.getElementById('admin-msg-input');
   const text = input.value.trim();
   if (!text) return;
-  await addDoc(collection(db,'messages'), {
-    threadId: adminMsgTargetId,
-    fromId: currentUser.uid,
-    fromName: 'Administrateur',
-    toId: adminMsgTargetId,
-    text, read: false,
-    createdAt: new Date().toISOString()
-  });
-  input.value = '';
+  try {
+    await addDoc(collection(db,'messages'), {
+      threadId: adminMsgTargetId,
+      fromId: currentUser.uid,
+      fromName: 'Administrateur',
+      toId: adminMsgTargetId,
+      text, read: false,
+      createdAt: new Date().toISOString()
+    });
+    input.value = '';
+  } catch(err) { showToast('Erreur envoi.', 'error'); }
 };
 
-// ── ADMIN ─────────────────────────────────────────────
+// ── ADMIN ALL ─────────────────────────────────────────
 async function loadAdminAll() {
   if (!isAdmin) return;
-  await Promise.all([updateAdminStats(), loadAdminPending(), loadAdminUsers(), loadAdminSongs(), loadAdminArticles()]);
+  await Promise.all([
+    updateAdminStats(),
+    loadAdminPending(),
+    loadAdminUsers(),
+    loadAdminSongs(),
+    loadAdminArticles()
+  ]);
 }
 
 async function updateAdminStats() {
@@ -1669,7 +1660,7 @@ async function updateAdminStats() {
     document.getElementById('stat-songs').textContent    = s.size;
     document.getElementById('stat-pending').textContent  = p.size;
     document.getElementById('stat-articles').textContent = a.size;
-  } catch (err) { console.error(err); }
+  } catch(err) { console.error(err); }
 }
 
 async function loadAdminPending() {
@@ -1678,11 +1669,14 @@ async function loadAdminPending() {
   try {
     const snap = await getDocs(query(collection(db,'songs'), where('approved','==',false)));
     c.innerHTML = '';
-    if (snap.empty) { c.innerHTML = '<div class="empty-state"><i class="fas fa-check-double"></i><p>Aucun son en attente.</p></div>'; return; }
+    if (snap.empty) {
+      c.innerHTML = '<div class="empty-state"><i class="fas fa-check-double"></i><p>Aucun son en attente.</p></div>';
+      return;
+    }
     const docs = snap.docs.map(d => ({ id:d.id, ...d.data() }))
       .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
     docs.forEach(s => c.appendChild(buildSongCard(s, false, true)));
-  } catch (err) {
+  } catch(err) {
     c.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Erreur chargement.</p></div>';
   }
 }
@@ -1693,11 +1687,13 @@ async function loadAdminUsers() {
   try {
     const snap = await getDocs(query(collection(db,'users'), orderBy('createdAt','desc')));
     c.innerHTML = '';
-    if (snap.empty) { c.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>Aucun utilisateur.</p></div>'; return; }
+    if (snap.empty) {
+      c.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>Aucun utilisateur.</p></div>';
+      return;
+    }
     snap.docs.forEach(d => c.appendChild(buildUserCard({ id:d.id, ...d.data() })));
-  } catch (err) {
-    document.getElementById('admin-users-container').innerHTML =
-      '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Erreur chargement utilisateurs.</p></div>';
+  } catch(err) {
+    c.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Erreur chargement.</p></div>';
   }
 }
 
@@ -1713,13 +1709,14 @@ function buildUserCard(user) {
       ? '<span class="user-status-confirmed">✅ Confirmé</span>'
       : '<span class="user-status-pending">⏳ En attente</span>';
   const date = user.createdAt ? new Date(user.createdAt).toLocaleDateString('fr-FR') : '';
-  const uid = user.id;
+  const uid  = user.id;
+  const uname = escHtml(user.name||user.email||'');
   card.innerHTML = `
     <div class="user-card-header">
       <div class="user-avatar">${initial}</div>
       <div class="user-info">
         <div class="user-name">${escHtml(user.name||'Sans nom')} <span class="role-badge ${roleClass}">${roleName}</span></div>
-        <div class="user-email">${escHtml(user.email)}</div>
+        <div class="user-email">${escHtml(user.email||'')}</div>
         ${user.whatsapp ? `<div class="user-meta">📱 ${escHtml(user.whatsapp)}</div>` : ''}
       </div>
     </div>
@@ -1735,7 +1732,7 @@ function buildUserCard(user) {
         : user.isBanned
           ? `<button class="btn-sm btn-unban" onclick="unbanUser('${uid}')"><i class="fas fa-undo"></i> Réactiver</button>` : ''}
       ${user.role !== 'admin'
-        ? `<button class="btn-sm btn-msg" onclick="openAdminMessage('${uid}','${escHtml(user.name||user.email)}')"><i class="fas fa-envelope"></i> Message</button>` : ''}
+        ? `<button class="btn-sm btn-msg" onclick="openAdminMessage('${uid}','${uname}')"><i class="fas fa-envelope"></i> Message</button>` : ''}
       ${user.role !== 'admin'
         ? `<button class="btn-sm btn-del-sm" onclick="deleteUser('${uid}')"><i class="fas fa-trash"></i> Supprimer</button>` : ''}
     </div>`;
@@ -1758,7 +1755,7 @@ window.unbanUser = async function(uid) {
   catch { showToast('Erreur.', 'error'); }
 };
 window.deleteUser = async function(uid) {
-  if (!confirm('Supprimer définitivement ce compte ? Action irréversible.')) return;
+  if (!confirm('Supprimer définitivement ce compte ?')) return;
   try { await deleteDoc(doc(db,'users',uid)); showToast('Compte supprimé.'); loadAdminUsers(); updateAdminStats(); }
   catch { showToast('Erreur.', 'error'); }
 };
@@ -1769,9 +1766,11 @@ async function loadAdminSongs() {
   try {
     const snap = await getDocs(query(collection(db,'songs'), orderBy('createdAt','desc')));
     c.innerHTML = '';
-    if (snap.empty) { c.innerHTML = '<div class="empty-state"><i class="fas fa-music"></i><p>Aucun morceau.</p></div>'; return; }
+    if (snap.empty) {
+      c.innerHTML = '<div class="empty-state"><i class="fas fa-music"></i><p>Aucun morceau.</p></div>'; return;
+    }
     snap.docs.forEach(d => c.appendChild(buildSongCard({ id:d.id, ...d.data() }, true, false)));
-  } catch (err) { console.error(err); }
+  } catch(err) { console.error(err); }
 }
 
 async function loadAdminArticles() {
@@ -1780,13 +1779,21 @@ async function loadAdminArticles() {
   try {
     const snap = await getDocs(query(collection(db,'articles'), orderBy('createdAt','desc')));
     c.innerHTML = '';
-    if (snap.empty) { c.innerHTML = '<div class="empty-state"><i class="fas fa-newspaper"></i><p>Aucun article.</p></div>'; return; }
+    if (snap.empty) {
+      c.innerHTML = '<div class="empty-state"><i class="fas fa-newspaper"></i><p>Aucun article.</p></div>'; return;
+    }
     snap.docs.forEach(d => c.appendChild(buildArticleCard({ id:d.id, ...d.data() }, true)));
-  } catch (err) { console.error(err); }
+  } catch(err) { console.error(err); }
 }
 
-// ── URL PARAMS ──────────────────────────────────────
+// ── URL PARAMS ────────────────────────────────────────
 (function() {
   const pid = new URLSearchParams(window.location.search).get('play');
   if (pid) setTimeout(() => window.playSong(pid), 2500);
 })();
+
+console.log('✅ F2K STREAM chargé avec succès !');
+
+</script>
+</body>
+</html>
