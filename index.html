@@ -1213,17 +1213,39 @@ audioElement.addEventListener('ended', () => {
 });
 
 // ── DOWNLOAD ──────────────────────────────────────────
+function sanitizeFilename(name) {
+  return String(name || '')
+    .replace(/[\\/:*?"<>|]+/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 window.downloadSong = async function(id, encodedUrl, encodedTitle, encodedArtist, encodedCover) {
-  const url   = decodeURIComponent(encodedUrl);
-  const title = decodeURIComponent(encodedTitle);
+  const url    = decodeURIComponent(encodedUrl);
+  const title  = decodeURIComponent(encodedTitle);
   const artist = decodeURIComponent(encodedArtist);
-  showToast('Téléchargement en cours...');
+  const filename = sanitizeFilename(artist ? `${artist} - ${title}` : title) + '.mp3';
+
+  showToast('Téléchargement en cours... Ne ferme pas la page');
   updateDoc(doc(db,'songs',id), { downloads: increment(1) }).catch(()=>{});
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = artist ? `${artist} - ${title}.mp3` : `${title}.mp3`;
-  a.target = '_blank';
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('network');
+    const blob = await res.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 15000);
+    showToast('Téléchargement terminé !');
+  } catch (err) {
+    console.error(err);
+    showToast('Erreur de téléchargement. Réessaie.', 'error');
+  }
 };
 
 // ── SHARE ─────────────────────────────────────────────
