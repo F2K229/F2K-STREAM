@@ -6,6 +6,7 @@
 <title>F2K STREAM - Plateforme Musicale</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://leekpay.fr/js/leekpay.js"></script>
 <style>
 :root {
   --primary: #7c3aed; --primary-dark: #5b21b6; --accent: #f59e0b;
@@ -267,6 +268,8 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
     <a class="tab-trigger" data-tab="home">Accueil</a>
     <a class="tab-trigger" data-tab="rankings">Classements</a>
     <a class="tab-trigger" data-tab="articles">Actualités</a>
+    <a class="tab-trigger" data-tab="services">Services</a>
+    <a class="tab-trigger" data-tab="events">Événements</a>
     <a class="tab-trigger" data-tab="dashboard" id="dashboard-link" style="display:none">Espace Artiste</a>
     <a class="tab-trigger" data-tab="admin" id="admin-link" style="display:none">Admin</a>
     <button class="notif-btn" id="notif-btn" style="display:none" onclick="openMessages()">
@@ -292,6 +295,8 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
     <button class="tab-button active" data-tab="home">🎵 Découvrir</button>
     <button class="tab-button" data-tab="rankings">🏆 Classements</button>
     <button class="tab-button" data-tab="articles">📰 Actualités</button>
+    <button class="tab-button" data-tab="services">🛠️ Services</button>
+    <button class="tab-button" data-tab="events">🎫 Événements</button>
   </div>
 
   <!-- ===== ACCUEIL ===== -->
@@ -339,8 +344,27 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
     </div>
   </div>
 
+  <!-- ===== BOUTIQUE DE SERVICES ===== -->
+  <div class="tab-content" id="tab-services">
+    <p class="section-title">🛠️ Boutique de services F2K MULTISERVICE</p>
+    <p style="color:var(--text2);font-size:.9rem;margin-bottom:1.3rem">Confie-nous une prestation : on s'occupe du reste.</p>
+    <div class="songs-grid" id="services-container"></div>
+  </div>
+
+  <!-- ===== ÉVÉNEMENTS ===== -->
+  <div class="tab-content" id="tab-events">
+    <p class="section-title">🎫 Événements à venir</p>
+    <div class="songs-grid" id="events-container">
+      <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>
+    </div>
+  </div>
+
   <!-- ===== ESPACE ARTISTE ===== -->
   <div class="tab-content" id="tab-dashboard">
+    <div class="dashboard-section" id="premium-box">
+      <h3>⭐ Abonnement Premium</h3>
+      <div id="premium-box-content"><p style="color:var(--text2);font-size:.88rem">Connecte-toi pour voir ton statut Premium.</p></div>
+    </div>
     <div class="dashboard-section">
       <h2>🎤 Espace Artiste / Producteur</h2>
       <form id="upload-form" class="upload-form">
@@ -539,6 +563,53 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
           <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>
         </div>
       </div>
+
+      <div style="margin-bottom:2.5rem">
+        <h3>📢 Publicités</h3>
+        <form id="ad-form" style="max-width:600px;margin-top:1rem">
+          <div class="form-row">
+            <div class="form-group"><label>Titre *</label><input type="text" id="ad-title" required></div>
+            <div class="form-group"><label>Lien (URL) *</label><input type="url" id="ad-link" placeholder="https://..." required></div>
+          </div>
+          <div class="form-group"><label>Image *</label><input type="file" id="ad-image" accept="image/*" required style="color:var(--text2)"></div>
+          <button type="submit" class="btn" id="ad-btn">
+            <span id="ad-btn-text">Publier la publicité</span>
+            <span class="loading" id="ad-loading" style="display:none"></span>
+          </button>
+        </form>
+        <div class="users-grid" id="admin-ads-container" style="margin-top:1.5rem">
+          <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:2.5rem">
+        <h3>🛠️ Commandes de services</h3>
+        <div class="users-grid" id="admin-orders-container">
+          <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:2.5rem">
+        <h3>🎫 Événements</h3>
+        <form id="event-form" style="max-width:600px;margin-top:1rem">
+          <div class="form-row">
+            <div class="form-group"><label>Titre *</label><input type="text" id="event-title" required></div>
+            <div class="form-group"><label>Date *</label><input type="date" id="event-date" required></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Lieu *</label><input type="text" id="event-location" required></div>
+            <div class="form-group"><label>Prix billet (FCFA) *</label><input type="number" id="event-price" min="0" required></div>
+          </div>
+          <div class="form-group"><label>Image</label><input type="file" id="event-image" accept="image/*" style="color:var(--text2)"></div>
+          <button type="submit" class="btn" id="event-btn">
+            <span id="event-btn-text">Publier l'événement</span>
+            <span class="loading" id="event-loading" style="display:none"></span>
+          </button>
+        </form>
+        <div class="users-grid" id="admin-events-container" style="margin-top:1.5rem">
+          <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -615,6 +686,53 @@ body::before { content:''; position:fixed; inset:0; background:radial-gradient(e
   <p style="text-align:center;color:var(--text2);font-size:.82rem"><i class="fas fa-info-circle"></i> Ces liens peuvent être partagés partout !</p>
 </div>
 
+<!-- MODAL BOOST -->
+<div class="modal" id="boost-modal">
+  <div class="modal-header">
+    <h2>🚀 Booster ce son</h2>
+    <button class="close-modal" id="close-boost">&times;</button>
+  </div>
+  <p style="color:var(--text2);font-size:.85rem;margin-bottom:1rem">Un son boosté apparaît en tête de la page d'accueil pendant la durée choisie.</p>
+  <div style="display:flex;flex-direction:column;gap:.7rem" id="boost-options"></div>
+</div>
+
+<!-- MODAL POURBOIRE -->
+<div class="modal" id="tip-modal">
+  <div class="modal-header">
+    <h2>💰 Soutenir l'artiste</h2>
+    <button class="close-modal" id="close-tip">&times;</button>
+  </div>
+  <p style="color:var(--text2);font-size:.85rem;margin-bottom:1rem" id="tip-target-name"></p>
+  <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem" id="tip-quick-amounts"></div>
+  <div class="form-group">
+    <label>Ou montant libre (FCFA)</label>
+    <input type="number" id="tip-custom-amount" min="100" step="50" placeholder="Ex: 750">
+  </div>
+  <button class="btn" onclick="sendCustomTip()">Envoyer mon soutien</button>
+</div>
+
+<!-- MODAL COMMANDE SERVICE -->
+<div class="modal" id="service-modal">
+  <div class="modal-header">
+    <h2 id="service-modal-title">Commander</h2>
+    <button class="close-modal" id="close-service">&times;</button>
+  </div>
+  <div class="form-group">
+    <label>Décris ta demande *</label>
+    <textarea id="service-order-desc" rows="4" placeholder="Détails de ta commande (style, délai souhaité, références...)"></textarea>
+  </div>
+  <button class="btn" onclick="submitServiceOrder()">Payer et commander</button>
+</div>
+
+<!-- MODAL BILLET ÉVÉNEMENT -->
+<div class="modal" id="ticket-modal">
+  <div class="modal-header">
+    <h2 id="ticket-modal-title">Acheter un billet</h2>
+    <button class="close-modal" id="close-ticket">&times;</button>
+  </div>
+  <div id="ticket-modal-body"></div>
+</div>
+
 <!-- MODAL PARTAGE ARTICLE -->
 <div class="modal" id="article-share-modal">
   <div class="modal-header">
@@ -688,6 +806,26 @@ const CLOUDINARY_PRESET = 'f2k_stream';
 const CLOUDINARY_API_KEY = '682489431741992';
 const CLOUDINARY_API_SECRET = 'm5kn8KaRV7xUWF7MlU7rkIcMjBU';
 
+// ⚠️ Remplace par ta vraie clé PUBLIQUE LeekPay (Dashboard → Clés API → pk_live_xxx)
+// Ne mets JAMAIS ta clé secrète (sk_live_xxx) ici, uniquement la clé publique.
+const LEEKPAY_PUBLIC_KEY = 'pk_live_VOTRE_CLE_PUBLIQUE';
+
+// ── PAIEMENT LEEKPAY (helper générique) ───────────────
+function payWithLeekPay(amount, description, onSuccess) {
+  if (!window.LeekPay) {
+    showToast('Module de paiement indisponible. Réessaie plus tard.', 'error');
+    return;
+  }
+  LeekPay.checkout({
+    amount: Math.round(amount),
+    currency: 'XOF',
+    apiKey: LEEKPAY_PUBLIC_KEY,
+    description,
+    onSuccess: function(data) { onSuccess(data); },
+    onCancel: function() { showToast('Paiement annulé.', 'error'); }
+  });
+}
+
 // ── DOM ──────────────────────────────────────────────
 const overlay = document.getElementById('overlay');
 const toast = document.getElementById('toast');
@@ -732,6 +870,11 @@ let currentGenre = '';
 let currentSearch = '';
 let adminMsgTargetId = null;
 let msgUnsubscribe = null;
+let isPremium = false;
+
+function computeIsPremium(userData) {
+  return !!(userData && userData.premiumUntil && new Date(userData.premiumUntil) > new Date());
+}
 
 // ── TOAST ────────────────────────────────────────────
 function showToast(msg, type = 'success') {
@@ -743,7 +886,9 @@ function showToast(msg, type = 'success') {
 // ── MODALS ────────────────────────────────────────────
 function openModal(m) { m.classList.add('active'); overlay.classList.add('active'); }
 function closeAll() {
-  [authModal, shareModal, messagesModal, adminMsgModal, articleShareModal]
+  [authModal, shareModal, messagesModal, adminMsgModal, articleShareModal,
+   document.getElementById('boost-modal'), document.getElementById('tip-modal'),
+   document.getElementById('service-modal'), document.getElementById('ticket-modal')]
     .forEach(m => m && m.classList.remove('active'));
   overlay.classList.remove('active');
   if (msgUnsubscribe) { msgUnsubscribe(); msgUnsubscribe = null; }
@@ -754,6 +899,10 @@ document.getElementById('close-share').addEventListener('click', closeAll);
 document.getElementById('close-article-share').addEventListener('click', closeAll);
 document.getElementById('close-messages').addEventListener('click', closeAll);
 document.getElementById('close-admin-msg').addEventListener('click', closeAll);
+document.getElementById('close-boost').addEventListener('click', closeAll);
+document.getElementById('close-tip').addEventListener('click', closeAll);
+document.getElementById('close-service').addEventListener('click', closeAll);
+document.getElementById('close-ticket').addEventListener('click', closeAll);
 
 function showAuthModal(type) {
   openModal(authModal);
@@ -798,6 +947,8 @@ window.showTab = function(tabId) {
   else if (tabId === 'articles') loadArticles();
   else if (tabId === 'dashboard' && currentUser) { loadMySongs(); loadMyMessages(); }
   else if (tabId === 'rankings') loadRankings();
+  else if (tabId === 'services') { /* liste statique, rien à charger */ }
+  else if (tabId === 'events') loadEvents();
 };
 
 tabButtons.forEach(b => b.addEventListener('click', () => window.showTab(b.dataset.tab)));
@@ -839,11 +990,25 @@ function renderSongs() {
     container.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><p>Aucun son trouvé.</p></div>';
     return;
   }
-  list.forEach(song => {
+  const now = Date.now();
+  list = [...list].sort((a,b) => {
+    const aBoost = a.boostedUntil && new Date(a.boostedUntil).getTime() > now ? 1 : 0;
+    const bBoost = b.boostedUntil && new Date(b.boostedUntil).getTime() > now ? 1 : 0;
+    if (aBoost !== bBoost) return bBoost - aBoost;
+    const aPrem = a.artistPremium ? 1 : 0;
+    const bPrem = b.artistPremium ? 1 : 0;
+    if (aPrem !== bPrem) return bPrem - aPrem;
+    return 0; // conserve l'ordre initial (déjà trié par date décroissante)
+  });
+  list.forEach((song, i) => {
     container.appendChild(buildSongCard(song, false, false));
     if (likedSongs.includes(song.id)) {
       const btn = document.getElementById('btn-like-' + song.id);
       if (btn) btn.classList.add('liked');
+    }
+    if (!isPremium && (i+1) % 6 === 0) {
+      const adCard = buildAdCard((i/6) % (currentAds.length||1) | 0);
+      if (adCard) container.appendChild(adCard);
     }
   });
 }
@@ -938,6 +1103,7 @@ onAuthStateChanged(auth, async user => {
     if (uDoc.exists()) {
       currentUser = { ...user, ...uDoc.data() };
       isAdmin = user.email === ADMIN_EMAIL || uDoc.data().role === 'admin';
+      isPremium = computeIsPremium(uDoc.data());
     } else if (user.email === ADMIN_EMAIL) {
       await setDoc(doc(db, 'users', user.uid), {
         name:'Administrateur', email:user.email, role:'admin',
@@ -945,6 +1111,7 @@ onAuthStateChanged(auth, async user => {
       });
       isAdmin = true;
       currentUser = { ...user, name:'Administrateur', role:'admin' };
+      isPremium = false;
     }
     loginBtn.style.display = 'none';
     registerBtn.style.display = 'none';
@@ -956,11 +1123,12 @@ onAuthStateChanged(auth, async user => {
       dashboardLink.innerHTML = 'Espace Artiste <span class="admin-badge">Admin</span>';
     } else {
       adminLink.style.display = 'none';
-      dashboardLink.innerHTML = 'Espace Artiste';
+      dashboardLink.innerHTML = isPremium ? 'Espace Artiste <span class="admin-badge" style="background:var(--accent)">⭐ Premium</span>' : 'Espace Artiste';
       listenForNotifications();
     }
+    updatePremiumBox();
   } else {
-    currentUser = null; isAdmin = false;
+    currentUser = null; isAdmin = false; isPremium = false;
     loginBtn.style.display = 'inline'; registerBtn.style.display = 'inline';
     logoutBtn.style.display = 'none';
     dashboardLink.style.display = 'none'; adminLink.style.display = 'none';
@@ -968,7 +1136,7 @@ onAuthStateChanged(auth, async user => {
   }
   if (!authInitialized) {
     authInitialized = true;
-    loadSongs(); loadRankings(); loadArticles(); loadHomeArticles();
+    loadSongs(); loadRankings(); loadArticles(); loadHomeArticles(); loadAds();
     window.showTab('home');
   }
 });
@@ -1042,6 +1210,9 @@ async function handleSongSubmit(e, isAdminForm) {
       audioUrl: audioResult.url, audioPublicId: audioResult.publicId,
       approved: !!isAdminForm,
       hidden: false,
+      artistPremium: !!isPremium,
+      boostedUntil: null,
+      tipsTotal: 0,
       likes:0, downloads:0, views:0,
       createdAt: new Date().toISOString()
     });
@@ -1130,6 +1301,8 @@ function buildSongCard(song, showDelete, showPending) {
   const ti = encodeURIComponent(song.title||'');
   const ar = encodeURIComponent(song.artistName||'');
   const co = encodeURIComponent(song.coverUrl||'');
+  const isBoosted = song.boostedUntil && new Date(song.boostedUntil).getTime() > Date.now();
+  const canBoost = (isOwner || isAdmin) && !showPending;
 
   card.innerHTML = `
     <div class="song-cover-wrapper">
@@ -1139,6 +1312,8 @@ function buildSongCard(song, showDelete, showPending) {
       <span class="song-genre-badge">${escHtml(song.genre||'')}</span>
       ${showPending ? '<span class="pending-badge">⏳ En attente</span>' : ''}
       ${song.hidden ? '<span class="hidden-badge">🙈 Masqué</span>' : ''}
+      ${isBoosted ? '<span class="pending-badge" style="background:#0ea5e9;right:auto;left:8px;top:34px">🚀 Boosté</span>' : ''}
+      ${song.artistPremium ? '<span class="pending-badge" style="background:var(--accent);left:8px;top:8px;right:auto">⭐</span>' : ''}
     </div>
     <div class="song-info">
       <div class="song-title">${escHtml(song.title)}</div>
@@ -1148,6 +1323,7 @@ function buildSongCard(song, showDelete, showPending) {
         <span class="stat-item"><i class="fas fa-eye"></i> ${song.views||0}</span>
         <span class="stat-item"><i class="fas fa-download"></i> ${song.downloads||0}</span>
         <span class="stat-item" id="likes-${sid}"><i class="fas fa-heart"></i> ${song.likes||0}</span>
+        ${isOwner ? `<span class="stat-item" title="Total pourboires reçus">💰 ${song.tipsTotal||0} FCFA</span>` : ''}
       </div>
       <div class="song-actions">
         ${showPending ? `
@@ -1158,6 +1334,8 @@ function buildSongCard(song, showDelete, showPending) {
           <button class="btn-like"     onclick="likeSong('${sid}')" id="btn-like-${sid}"><i class="fas fa-heart"></i></button>
           <button class="btn-download" onclick="downloadSong('${sid}','${au}','${ti}','${ar}','${co}')" title="Télécharger"><i class="fas fa-download"></i></button>
           <button class="btn-share"    onclick="openShare('${sid}')" title="Partager"><i class="fas fa-share-alt"></i></button>
+          <button class="btn-like"     onclick="openTipModal('${sid}','${escHtml(song.artistName||song.uploadedBy||'')}')" title="Soutenir l'artiste"><i class="fas fa-coins"></i></button>
+          ${canBoost ? `<button class="btn-unhide" onclick="openBoostModal('${sid}')" title="Booster ce son"><i class="fas fa-rocket"></i></button>` : ''}
           ${canHide && !song.hidden ? `<button class="btn-hide" onclick="hideSong('${sid}')" title="Masquer"><i class="fas fa-eye-slash"></i></button>` : ''}
           ${canHide && song.hidden  ? `<button class="btn-unhide" onclick="unhideSong('${sid}')" title="Rendre visible"><i class="fas fa-eye"></i></button>` : ''}
           ${canDelete ? `<button class="btn-delete" onclick="deleteSong('${sid}')" title="Supprimer"><i class="fas fa-trash"></i></button>` : ''}
@@ -1339,6 +1517,342 @@ window.rejectSong = async function(id) {
     loadAdminAll();
   } catch { showToast('Erreur.', 'error'); }
 };
+
+// ── BOOST ─────────────────────────────────────────────
+const BOOST_OPTIONS = [
+  { label: '24 heures', hours: 24, price: 1000 },
+  { label: '7 jours', hours: 168, price: 5000 }
+];
+let boostTargetId = null;
+
+window.openBoostModal = function(songId) {
+  boostTargetId = songId;
+  const box = document.getElementById('boost-options');
+  box.innerHTML = BOOST_OPTIONS.map(o => `
+    <button class="btn" onclick="confirmBoost(${o.hours},${o.price})">${o.label} — ${o.price} FCFA</button>
+  `).join('');
+  openModal(document.getElementById('boost-modal'));
+};
+
+window.confirmBoost = function(hours, price) {
+  if (!boostTargetId) return;
+  const songId = boostTargetId;
+  payWithLeekPay(price, `Boost son F2K STREAM - ${hours}h`, async () => {
+    try {
+      const boostedUntil = new Date(Date.now() + hours*3600*1000).toISOString();
+      await updateDoc(doc(db,'songs',songId), { boostedUntil });
+      const cached = allSongs.find(s => s.id === songId);
+      if (cached) cached.boostedUntil = boostedUntil;
+      closeAll();
+      showToast('🚀 Son boosté avec succès !');
+      loadSongs(); loadMySongs(); if (isAdmin) loadAdminAll();
+    } catch (err) { console.error(err); showToast('Erreur boost.', 'error'); }
+  });
+};
+
+// ── POURBOIRES ────────────────────────────────────────
+const TIP_QUICK_AMOUNTS = [200, 500, 1000, 2000];
+let tipTargetId = null;
+let tipTargetArtist = '';
+
+window.openTipModal = function(songId, artistName) {
+  if (!currentUser) { showAuthModal('login'); return; }
+  tipTargetId = songId;
+  tipTargetArtist = artistName;
+  document.getElementById('tip-target-name').textContent = `Soutiens ${artistName} avec un petit pourboire.`;
+  document.getElementById('tip-custom-amount').value = '';
+  const box = document.getElementById('tip-quick-amounts');
+  box.innerHTML = TIP_QUICK_AMOUNTS.map(a => `
+    <button class="btn" style="width:auto;padding:.6rem 1rem" onclick="sendTip(${a})">${a} FCFA</button>
+  `).join('');
+  openModal(document.getElementById('tip-modal'));
+};
+
+window.sendCustomTip = function() {
+  const val = parseInt(document.getElementById('tip-custom-amount').value);
+  if (!val || val < 100) { showToast('Montant minimum : 100 FCFA', 'error'); return; }
+  sendTip(val);
+};
+
+window.sendTip = function(amount) {
+  if (!tipTargetId || !currentUser) return;
+  const songId = tipTargetId;
+  payWithLeekPay(amount, `Pourboire artiste F2K STREAM`, async () => {
+    try {
+      await addDoc(collection(db,'tips'), {
+        songId, amount,
+        fromId: currentUser.uid, fromName: currentUser.name || currentUser.email,
+        artistName: tipTargetArtist,
+        createdAt: new Date().toISOString()
+      });
+      await updateDoc(doc(db,'songs',songId), { tipsTotal: increment(amount) });
+      closeAll();
+      showToast('💰 Merci pour ton soutien !');
+      loadSongs(); loadMySongs();
+    } catch (err) { console.error(err); showToast('Erreur envoi pourboire.', 'error'); }
+  });
+};
+
+// ── BOUTIQUE DE SERVICES ──────────────────────────────
+const SERVICES_CATALOG = [
+  { id:'mixage', name:'Mixage & Mastering', price:15000, desc:"Mixage professionnel et mastering de ton morceau." },
+  { id:'cover',  name:'Création de pochette (cover)', price:5000,  desc:"Design graphique personnalisé pour ta pochette." },
+  { id:'clip',   name:'Montage de clip vidéo', price:25000, desc:"Montage professionnel de ton clip musical." },
+  { id:'promo',  name:'Promotion réseaux sociaux', price:10000, desc:"Campagne de promotion de ton son sur les réseaux." }
+];
+
+function renderServicesList() {
+  const c = document.getElementById('services-container');
+  if (!c) return;
+  c.innerHTML = SERVICES_CATALOG.map(s => `
+    <div class="song-card">
+      <div class="song-info" style="padding:1.3rem">
+        <div class="song-title" style="font-size:1.05rem;margin-bottom:.5rem">${escHtml(s.name)}</div>
+        <p style="color:var(--text2);font-size:.85rem;margin-bottom:1rem;line-height:1.5">${escHtml(s.desc)}</p>
+        <div style="color:var(--accent);font-weight:700;margin-bottom:1rem">${s.price.toLocaleString('fr-FR')} FCFA</div>
+        <button class="btn" onclick="openServiceModal('${s.id}')">Commander</button>
+      </div>
+    </div>`).join('');
+}
+renderServicesList();
+
+let serviceTarget = null;
+window.openServiceModal = function(serviceId) {
+  if (!currentUser) { showAuthModal('login'); return; }
+  const s = SERVICES_CATALOG.find(x => x.id === serviceId);
+  if (!s) return;
+  serviceTarget = s;
+  document.getElementById('service-modal-title').textContent = `Commander : ${s.name} (${s.price.toLocaleString('fr-FR')} FCFA)`;
+  document.getElementById('service-order-desc').value = '';
+  openModal(document.getElementById('service-modal'));
+};
+
+window.submitServiceOrder = function() {
+  if (!serviceTarget || !currentUser) return;
+  const desc = document.getElementById('service-order-desc').value.trim();
+  if (!desc) { showToast('Décris ta demande.', 'error'); return; }
+  const s = serviceTarget;
+  payWithLeekPay(s.price, `Service F2K - ${s.name}`, async () => {
+    try {
+      await addDoc(collection(db,'service_orders'), {
+        service: s.name, serviceId: s.id, price: s.price, description: desc,
+        userId: currentUser.uid, userName: currentUser.name || currentUser.email,
+        userEmail: currentUser.email,
+        status: 'en_attente',
+        createdAt: new Date().toISOString()
+      });
+      closeAll();
+      showToast('✅ Commande envoyée ! On te contacte vite.');
+    } catch (err) { console.error(err); showToast('Erreur commande.', 'error'); }
+  });
+};
+
+async function loadAdminOrders() {
+  const c = document.getElementById('admin-orders-container');
+  if (!c) return;
+  c.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>';
+  try {
+    const snap = await getDocs(query(collection(db,'service_orders'), orderBy('createdAt','desc')));
+    c.innerHTML = '';
+    if (snap.empty) { c.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucune commande.</p></div>'; return; }
+    snap.docs.forEach(d => {
+      const o = { id:d.id, ...d.data() };
+      const statusLabel = o.status === 'livre' ? '✅ Livré' : o.status === 'en_cours' ? '🔧 En cours' : '⏳ En attente';
+      const card = document.createElement('div');
+      card.className = 'user-card';
+      card.innerHTML = `
+        <div class="user-info">
+          <div class="user-name">${escHtml(o.service)} <span class="role-badge role-artist">${(o.price||0).toLocaleString('fr-FR')} FCFA</span></div>
+          <div class="user-email">${escHtml(o.userName||'')}</div>
+          <div class="user-meta">${escHtml(o.description||'')}</div>
+        </div>
+        <div style="font-size:.78rem;color:var(--text2)">${statusLabel}</div>
+        <div class="user-actions">
+          ${o.status !== 'en_cours' && o.status !== 'livre' ? `<button class="btn-sm btn-confirm" onclick="updateOrderStatus('${o.id}','en_cours')"><i class="fas fa-play"></i> En cours</button>` : ''}
+          ${o.status !== 'livre' ? `<button class="btn-sm btn-confirm" onclick="updateOrderStatus('${o.id}','livre')"><i class="fas fa-check"></i> Livré</button>` : ''}
+          <button class="btn-sm btn-del-sm" onclick="deleteOrder('${o.id}')"><i class="fas fa-trash"></i></button>
+        </div>`;
+      c.appendChild(card);
+    });
+  } catch (err) { console.error(err); }
+}
+window.updateOrderStatus = async function(id, status) {
+  try { await updateDoc(doc(db,'service_orders',id), { status }); showToast('Statut mis à jour.'); loadAdminOrders(); }
+  catch { showToast('Erreur.', 'error'); }
+};
+window.deleteOrder = async function(id) {
+  if (!confirm('Supprimer cette commande ?')) return;
+  try { await deleteDoc(doc(db,'service_orders',id)); showToast('Commande supprimée.'); loadAdminOrders(); }
+  catch { showToast('Erreur.', 'error'); }
+};
+
+// ── ÉVÉNEMENTS / BILLETTERIE ──────────────────────────
+async function loadEvents() {
+  const c = document.getElementById('events-container');
+  c.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>';
+  try {
+    const snap = await getDocs(query(collection(db,'events'), orderBy('date','asc')));
+    c.innerHTML = '';
+    const today = new Date(); today.setHours(0,0,0,0);
+    const events = snap.docs.map(d => ({ id:d.id, ...d.data() })).filter(e => new Date(e.date) >= today);
+    if (!events.length) {
+      c.innerHTML = '<div class="empty-state"><i class="fas fa-calendar"></i><p>Aucun événement à venir.</p></div>';
+      return;
+    }
+    events.forEach(e => c.appendChild(buildEventCard(e)));
+  } catch (err) {
+    console.error(err);
+    c.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Erreur de chargement.</p></div>';
+  }
+}
+
+function buildEventCard(e) {
+  const card = document.createElement('div');
+  card.className = 'song-card';
+  const date = new Date(e.date).toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  card.innerHTML = `
+    <div class="song-cover-wrapper">
+      <img class="song-cover" src="${e.imageUrl||''}" alt="${escHtml(e.title)}" loading="lazy" onerror="this.src='https://placehold.co/300x190/1e1540/f59e0b?text=F2K'">
+      <div class="song-cover-overlay"></div>
+      <span class="song-genre-badge">${e.price ? Number(e.price).toLocaleString('fr-FR')+' FCFA' : 'Gratuit'}</span>
+    </div>
+    <div class="song-info">
+      <div class="song-title">${escHtml(e.title)}</div>
+      <div class="song-artist">📍 ${escHtml(e.location||'')}</div>
+      <div class="song-label">📅 ${date}</div>
+      <div class="song-actions">
+        <button class="btn-play" onclick="openTicketModal('${e.id}')"><i class="fas fa-ticket-alt"></i> Acheter un billet</button>
+      </div>
+    </div>`;
+  return card;
+}
+
+let ticketTarget = null;
+window.openTicketModal = async function(eventId) {
+  if (!currentUser) { showAuthModal('login'); return; }
+  const snap = await getDoc(doc(db,'events',eventId));
+  if (!snap.exists()) return;
+  const e = { id: snap.id, ...snap.data() };
+  ticketTarget = e;
+  document.getElementById('ticket-modal-title').textContent = `Billet : ${e.title}`;
+  document.getElementById('ticket-modal-body').innerHTML = `
+    <p style="color:var(--text2);font-size:.88rem;margin-bottom:1rem">📍 ${escHtml(e.location||'')} — ${new Date(e.date).toLocaleDateString('fr-FR')}</p>
+    <p style="color:var(--accent);font-weight:700;font-size:1.1rem;margin-bottom:1rem">${Number(e.price||0).toLocaleString('fr-FR')} FCFA</p>
+    <button class="btn" onclick="confirmTicketPurchase()">Payer et recevoir mon billet</button>`;
+  openModal(document.getElementById('ticket-modal'));
+};
+
+window.confirmTicketPurchase = function() {
+  if (!ticketTarget || !currentUser) return;
+  const e = ticketTarget;
+  const issueTicket = async () => {
+    try {
+      const code = 'F2K-' + Math.random().toString(36).slice(2,8).toUpperCase();
+      await addDoc(collection(db,'event_tickets'), {
+        eventId: e.id, eventTitle: e.title,
+        buyerId: currentUser.uid, buyerName: currentUser.name || currentUser.email,
+        buyerEmail: currentUser.email,
+        code, createdAt: new Date().toISOString()
+      });
+      document.getElementById('ticket-modal-body').innerHTML = `
+        <p style="color:var(--green);font-weight:700;margin-bottom:.6rem"><i class="fas fa-check-circle"></i> Paiement confirmé !</p>
+        <p style="color:var(--text2);font-size:.85rem;margin-bottom:1rem">Présente ce code à l'entrée :</p>
+        <p style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:#fff;text-align:center;background:var(--bg2);padding:1rem;border-radius:10px;letter-spacing:2px">${code}</p>`;
+      showToast('🎫 Billet généré !');
+    } catch (err) { console.error(err); showToast('Erreur génération billet.', 'error'); }
+  };
+  if (!e.price || Number(e.price) <= 0) { issueTicket(); return; }
+  payWithLeekPay(e.price, `Billet ${e.title}`, issueTicket);
+};
+
+async function loadAdminEvents() {
+  const c = document.getElementById('admin-events-container');
+  if (!c) return;
+  c.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>';
+  try {
+    const snap = await getDocs(query(collection(db,'events'), orderBy('date','desc')));
+    c.innerHTML = '';
+    if (snap.empty) { c.innerHTML = '<div class="empty-state"><i class="fas fa-calendar"></i><p>Aucun événement.</p></div>'; return; }
+    for (const d of snap.docs) {
+      const e = { id:d.id, ...d.data() };
+      const ticketsSnap = await getDocs(query(collection(db,'event_tickets'), where('eventId','==',e.id)));
+      const card = document.createElement('div');
+      card.className = 'user-card';
+      card.innerHTML = `
+        <div class="user-info">
+          <div class="user-name">${escHtml(e.title)}</div>
+          <div class="user-email">📍 ${escHtml(e.location||'')} — ${new Date(e.date).toLocaleDateString('fr-FR')}</div>
+          <div class="user-meta">🎫 ${ticketsSnap.size} billet(s) vendu(s) · ${Number(e.price||0).toLocaleString('fr-FR')} FCFA</div>
+        </div>
+        <div class="user-actions">
+          <button class="btn-sm btn-del-sm" onclick="deleteEvent('${e.id}','${e.imagePublicId||''}')"><i class="fas fa-trash"></i> Supprimer</button>
+        </div>`;
+      c.appendChild(card);
+    }
+  } catch (err) { console.error(err); }
+}
+window.deleteEvent = async function(id, publicId) {
+  if (!confirm('Supprimer cet événement ?')) return;
+  try {
+    await deleteDoc(doc(db,'events',id));
+    if (publicId) await deleteFromCloudinary(publicId, 'image');
+    showToast('Événement supprimé.');
+    loadAdminEvents(); loadEvents();
+  } catch { showToast('Erreur.', 'error'); }
+};
+
+// ── FORMULAIRES ADMIN : PUB & ÉVÉNEMENT ───────────────
+const adForm = document.getElementById('ad-form');
+if (adForm) adForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  const title = document.getElementById('ad-title').value.trim();
+  const link  = document.getElementById('ad-link').value.trim();
+  const imgFile = document.getElementById('ad-image').files[0];
+  if (!title || !link || !imgFile) { showToast('Remplis tous les champs.', 'error'); return; }
+  const btnText = document.getElementById('ad-btn-text');
+  const btnLoad = document.getElementById('ad-loading');
+  const btn = document.getElementById('ad-btn');
+  btn.disabled = true; btnText.style.display = 'none'; btnLoad.style.display = 'inline-block';
+  try {
+    const r = await uploadToCloudinary(imgFile);
+    await addDoc(collection(db,'ads'), {
+      title, link, imageUrl: r.url, imagePublicId: r.publicId,
+      active: true, createdAt: new Date().toISOString()
+    });
+    adForm.reset();
+    showToast('Publicité publiée !');
+    loadAdminAds(); loadAds();
+  } catch (err) { console.error(err); showToast('Erreur publication.', 'error'); }
+  finally { btn.disabled = false; btnText.style.display = 'inline'; btnLoad.style.display = 'none'; }
+});
+
+const eventForm = document.getElementById('event-form');
+if (eventForm) eventForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  const title = document.getElementById('event-title').value.trim();
+  const date = document.getElementById('event-date').value;
+  const location = document.getElementById('event-location').value.trim();
+  const price = parseInt(document.getElementById('event-price').value) || 0;
+  const imgFile = document.getElementById('event-image').files[0];
+  if (!title || !date || !location) { showToast('Remplis tous les champs obligatoires.', 'error'); return; }
+  const btnText = document.getElementById('event-btn-text');
+  const btnLoad = document.getElementById('event-loading');
+  const btn = document.getElementById('event-btn');
+  btn.disabled = true; btnText.style.display = 'none'; btnLoad.style.display = 'inline-block';
+  try {
+    let imageUrl = '', imagePublicId = '';
+    if (imgFile) { const r = await uploadToCloudinary(imgFile); imageUrl = r.url; imagePublicId = r.publicId; }
+    await addDoc(collection(db,'events'), {
+      title, date, location, price, imageUrl, imagePublicId,
+      createdAt: new Date().toISOString()
+    });
+    eventForm.reset();
+    showToast('Événement publié !');
+    loadAdminEvents(); loadEvents();
+  } catch (err) { console.error(err); showToast('Erreur publication.', 'error'); }
+  finally { btn.disabled = false; btnText.style.display = 'inline'; btnLoad.style.display = 'none'; }
+});
+
     // ── MY SONGS ──────────────────────────────────────────
 async function loadMySongs() {
   if (!currentUser) return;
@@ -1356,6 +1870,53 @@ async function loadMySongs() {
     docs.forEach(s => c.appendChild(buildSongCard(s, true, !s.approved)));
   } catch (err) { console.error(err); }
 }
+
+// ── PREMIUM ───────────────────────────────────────────
+const PREMIUM_PLANS = [
+  { label: '1 mois', days: 30, price: 2000 },
+  { label: '3 mois', days: 90, price: 5000 }
+];
+
+function updatePremiumBox() {
+  const box = document.getElementById('premium-box-content');
+  if (!box) return;
+  if (!currentUser) {
+    box.innerHTML = '<p style="color:var(--text2);font-size:.88rem">Connecte-toi pour voir ton statut Premium.</p>';
+    return;
+  }
+  if (isPremium) {
+    const until = new Date(currentUser.premiumUntil).toLocaleDateString('fr-FR');
+    box.innerHTML = `
+      <p style="color:var(--green);font-weight:600;font-size:.9rem"><i class="fas fa-star"></i> Tu es Premium jusqu'au ${until}.</p>
+      <p style="color:var(--text2);font-size:.8rem;margin-top:.4rem">Tes sons passent en priorité dans la file de validation et sont mis en avant.</p>`;
+  } else {
+    box.innerHTML = `
+      <p style="color:var(--text2);font-size:.85rem;margin-bottom:1rem">Passe Premium : validation prioritaire de tes sons, badge ⭐ visible, mise en avant sur la plateforme.</p>
+      <div style="display:flex;gap:.7rem;flex-wrap:wrap">
+        ${PREMIUM_PLANS.map(p => `
+          <button class="btn" style="width:auto;padding:.7rem 1.2rem" onclick="subscribePremium(${p.price},${p.days},'${p.label}')">
+            ${p.label} — ${p.price} FCFA
+          </button>`).join('')}
+      </div>`;
+  }
+}
+
+window.subscribePremium = function(price, days, label) {
+  if (!currentUser) { showAuthModal('login'); return; }
+  payWithLeekPay(price, `Abonnement Premium F2K STREAM - ${label}`, async () => {
+    try {
+      const base = isPremium && currentUser.premiumUntil && new Date(currentUser.premiumUntil) > new Date()
+        ? new Date(currentUser.premiumUntil) : new Date();
+      base.setDate(base.getDate() + days);
+      const premiumUntil = base.toISOString();
+      await updateDoc(doc(db,'users',currentUser.uid), { premiumUntil });
+      currentUser.premiumUntil = premiumUntil;
+      isPremium = true;
+      updatePremiumBox();
+      showToast('⭐ Abonnement Premium activé !');
+    } catch (err) { console.error(err); showToast('Erreur activation Premium.', 'error'); }
+  });
+};
 
 // ── ARTICLES ──────────────────────────────────────────
 async function loadArticles() {
@@ -1442,6 +2003,86 @@ window.deleteArticle = async function(id) {
     }
     showToast('Article supprimé.');
     loadArticles(); loadHomeArticles(); loadAdminAll();
+  } catch { showToast('Erreur.', 'error'); }
+};
+
+// ── PUBLICITÉS ────────────────────────────────────────
+let currentAds = [];
+
+async function loadAds() {
+  try {
+    const snap = await getDocs(query(collection(db,'ads'), where('active','==',true)));
+    currentAds = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+  } catch (err) { console.error('Ads:', err); currentAds = []; }
+}
+
+function buildAdCard(index) {
+  if (!currentAds.length) return null;
+  const ad = currentAds[index % currentAds.length];
+  const card = document.createElement('a');
+  card.className = 'song-card';
+  card.style.cssText = 'display:block;text-decoration:none;color:inherit;';
+  card.href = ad.link || '#';
+  card.target = '_blank';
+  card.rel = 'noopener';
+  card.innerHTML = `
+    <div class="song-cover-wrapper">
+      <img class="song-cover" src="${ad.imageUrl||''}" alt="${escHtml(ad.title||'Publicité')}" loading="lazy">
+      <span class="song-genre-badge" style="background:rgba(14,165,233,.85)">Sponsorisé</span>
+    </div>
+    <div class="song-info">
+      <div class="song-title">${escHtml(ad.title||'')}</div>
+      <div class="song-artist">Publicité</div>
+    </div>`;
+  return card;
+}
+
+async function loadAdminAds() {
+  const c = document.getElementById('admin-ads-container');
+  if (!c) return;
+  c.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Chargement...</p></div>';
+  try {
+    const snap = await getDocs(query(collection(db,'ads'), orderBy('createdAt','desc')));
+    c.innerHTML = '';
+    if (snap.empty) {
+      c.innerHTML = '<div class="empty-state"><i class="fas fa-bullhorn"></i><p>Aucune publicité.</p></div>';
+      return;
+    }
+    snap.docs.forEach(d => {
+      const ad = { id:d.id, ...d.data() };
+      const card = document.createElement('div');
+      card.className = 'user-card';
+      card.innerHTML = `
+        <div class="user-card-header">
+          <img src="${ad.imageUrl||''}" style="width:52px;height:52px;border-radius:8px;object-fit:cover" alt="">
+          <div class="user-info">
+            <div class="user-name">${escHtml(ad.title||'')}</div>
+            <div class="user-email">${escHtml(ad.link||'')}</div>
+          </div>
+        </div>
+        <div class="user-actions">
+          <button class="btn-sm ${ad.active ? 'btn-ban' : 'btn-confirm'}" onclick="toggleAd('${ad.id}',${!ad.active})">
+            <i class="fas fa-power-off"></i> ${ad.active ? 'Désactiver' : 'Activer'}
+          </button>
+          <button class="btn-sm btn-del-sm" onclick="deleteAd('${ad.id}','${ad.imagePublicId||''}')"><i class="fas fa-trash"></i> Supprimer</button>
+        </div>`;
+      c.appendChild(card);
+    });
+  } catch (err) { console.error(err); }
+}
+
+window.toggleAd = async function(id, active) {
+  try { await updateDoc(doc(db,'ads',id), { active }); showToast('Publicité mise à jour.'); loadAdminAds(); loadAds(); }
+  catch { showToast('Erreur.', 'error'); }
+};
+
+window.deleteAd = async function(id, publicId) {
+  if (!confirm('Supprimer cette publicité ?')) return;
+  try {
+    await deleteDoc(doc(db,'ads',id));
+    if (publicId) await deleteFromCloudinary(publicId, 'image');
+    showToast('Publicité supprimée.');
+    loadAdminAds(); loadAds();
   } catch { showToast('Erreur.', 'error'); }
 };
 
@@ -1666,7 +2307,10 @@ async function loadAdminAll() {
     loadAdminPending(),
     loadAdminUsers(),
     loadAdminSongs(),
-    loadAdminArticles()
+    loadAdminArticles(),
+    loadAdminAds(),
+    loadAdminOrders(),
+    loadAdminEvents()
   ]);
 }
 
@@ -1696,7 +2340,7 @@ async function loadAdminPending() {
       return;
     }
     const docs = snap.docs.map(d => ({ id:d.id, ...d.data() }))
-      .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+      .sort((a,b) => (b.artistPremium?1:0) - (a.artistPremium?1:0) || new Date(a.createdAt) - new Date(b.createdAt));
     docs.forEach(s => c.appendChild(buildSongCard(s, false, true)));
   } catch(err) {
     c.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Erreur chargement.</p></div>';
