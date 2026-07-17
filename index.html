@@ -806,12 +806,43 @@ const CLOUDINARY_PRESET = 'f2k_stream';
 const CLOUDINARY_API_KEY = '682489431741992';
 const CLOUDINARY_API_SECRET = 'm5kn8KaRV7xUWF7MlU7rkIcMjBU';
 
-// ⚠️ Remplace par ta vraie clé PUBLIQUE LeekPay (Dashboard → Clés API → pk_live_xxx)
-// Ne mets JAMAIS ta clé secrète (sk_live_xxx) ici, uniquement la clé publique.
-const LEEKPAY_PUBLIC_KEY = 'pk_live_VOTRE_CLE_PUBLIQUE';
+const LEEKPAY_PUBLIC_KEY = 'pk_live_xmMacBrBoRShH2jT9iUHLHyQFfOrGFpr';
 
-// ── PAIEMENT LEEKPAY (helper générique) ───────────────
-function payWithLeekPay(amount, description, onSuccess) {
+// ── PAIEMENT LEEKPAY (avec confirmation SERVEUR obligatoire) ──────
+// IMPORTANT : le navigateur ne doit JAMAIS être la source de vérité pour
+// savoir si un paiement a réussi. L'événement `onSuccess` du SDK LeekPay
+// signifie seulement que le widget de paiement s'est bien déroulé dans
+// le navigateur — il ne prouve rien côté serveur et peut être déclenché
+// artificiellement (ex: appel direct de la fonction depuis la console).
+//
+// Le vrai flux :
+//  1. Le client crée un document Firestore `transactions` en status "pending".
+//  2. Le client ouvre LeekPay.checkout(). Si onSuccess se déclenche, on
+//     affiche juste "paiement reçu, confirmation en cours" et on ÉCOUTE
+//     le document de transaction.
+//  3. LeekPay envoie un webhook signé à une Cloud Function (voir le fichier
+//     functions/index.js fourni séparément), qui vérifie la signature,
+//     puis — et SEULEMENT à ce moment — écrit les effets réels (Premium,
+//     boost, ticket, commande...) et passe status: "completed".
+//  4. Le client voit alors le changement via onSnapshot et met à jour l'UI.
+//
+// Sans cette Cloud Function + les règles Firestore associées (fournies
+// séparément), ce fichier seul ne peut pas garantir qu'un paiement a
+// réellement eu lieu — un fichier HTML/JS statique ne peut pas faire
+// autorité sur ce qui se passe côté serveur.
+
+async function createPendingTransaction(type, payload, amount) {
+  if (!currentUser) throw new Error('Non connecté');
+  const ref = await addDoc(collection(db, 'transactions'), {
+    type, ...payload, amount,
+    uid: currentUser.uid,
+    status: 'pending',
+    createdAt: new Date().toISOString()
+  });
+  return ref.id;
+}
+
+function payWithLeekPay(amount, description, transactionId, onPending) {
   if (!window.LeekPay) {
     showToast('Module de paiement indisponible. Réessaie plus tard.', 'error');
     return;
@@ -820,10 +851,30 @@ function payWithLeekPay(amount, description, onSuccess) {
     amount: Math.round(amount),
     currency: 'XOF',
     apiKey: LEEKPAY_PUBLIC_KEY,
-    description,
-    onSuccess: function(data) { onSuccess(data); },
-    onCancel: function() { showToast('Paiement annulé.', 'error'); }
+    // L'id de transaction voyage dans la description pour que la Cloud
+    // Function puisse relier le webhook LeekPay au bon document Firestore.
+    description: `${description} [txn:${transactionId}]`,
+    onSuccess: function() { onPending(transactionId); },
+    onCancel: function() {
+      updateDoc(doc(db,'transactions',transactionId), { status:'cancelled' }).catch(()=>{});
+      showToast('Paiement annulé.', 'error');
+    }
   });
+}
+
+// Écoute la confirmation SERVEUR (écrite par la Cloud Function après
+// validation du webhook), avec un délai d'attente raisonnable.
+function watchTransaction(transactionId, { onCompleted, onFailed, onTimeout }) {
+  let done = false;
+  const unsub = onSnapshot(doc(db,'transactions',transactionId), snap => {
+    if (!snap.exists() || done) return;
+    const t = snap.data();
+    if (t.status === 'completed') { done = true; unsub(); onCompleted(t); }
+    else if (t.status === 'failed' || t.status === 'cancelled') { done = true; unsub(); onFailed && onFailed(t); }
+  });
+  setTimeout(() => {
+    if (!done) { done = true; unsub(); onTimeout && onTimeout(); }
+  }, 120000); // 2 minutes
 }
 
 // ── DOM ──────────────────────────────────────────────
@@ -1174,6 +1225,13 @@ setupDropzone('admin-audio-dropzone', adminAudioFile, adminAudioPreview, false, 
 async function handleSongSubmit(e, isAdminForm) {
   e.preventDefault();
   if (!currentUser) { showAuthModal('login'); return; }
+  // Garde de défense en profondeur : seule l'UI admin doit permettre isAdminForm=true.
+  // La vraie barrière DOIT être les règles Firestore (champ "approved" non modifiable
+  // par un utilisateur dont le rôle n'est pas admin) — voir firestore.rules fourni séparément.
+  if (isAdminForm && !isAdmin) {
+    showToast("Action réservée à l'administrateur", 'error');
+    return;
+  }
   const p = isAdminForm ? 'admin-' : '';
   const title       = document.getElementById(p+'song-title').value.trim();
   const artistName  = document.getElementById(p+'song-artist-name').value.trim();
@@ -1291,7 +1349,7 @@ function buildSongCard(song, showDelete, showPending) {
   card.className = 'song-card' + (song.hidden ? ' hidden-song' : '');
   const ft = song.featuring ? ' ft. ' + song.featuring : '';
   const meta = [];
-  if (song.label) meta.push('🏷️ ' + song.label);
+  if (song.label) meta.push('🏷️ ' + escHtml(song.label));
   if (song.year)  meta.push('📅 ' + song.year);
   const sid = song.id;
   const isOwner = currentUser && currentUser.uid === song.artistId;
@@ -1461,9 +1519,17 @@ window.likeSong = async function(id) {
 };
 
 // ── HIDE / UNHIDE ─────────────────────────────────────
+// Ces gardes (isOwner/isAdmin) sont une défense en profondeur côté UI.
+// La barrière réelle doit venir des règles Firestore (firestore.rules fourni séparément) :
+// un client peut toujours appeler ces fonctions depuis la console du navigateur.
 window.hideSong = async function(id) {
+  if (!currentUser) return;
   if (!confirm('Masquer ce son ? Il ne sera plus visible publiquement.')) return;
   try {
+    const songDoc = await getDoc(doc(db,'songs',id));
+    if (!songDoc.exists()) return;
+    const isOwner = songDoc.data().artistId === currentUser.uid;
+    if (!isOwner && !isAdmin) { showToast('Action non autorisée.', 'error'); return; }
     await updateDoc(doc(db,'songs',id), { hidden: true });
     showToast('Son masqué.');
     loadSongs(); loadMySongs(); if (isAdmin) loadAdminAll();
@@ -1471,7 +1537,12 @@ window.hideSong = async function(id) {
 };
 
 window.unhideSong = async function(id) {
+  if (!currentUser) return;
   try {
+    const songDoc = await getDoc(doc(db,'songs',id));
+    if (!songDoc.exists()) return;
+    const isOwner = songDoc.data().artistId === currentUser.uid;
+    if (!isOwner && !isAdmin) { showToast('Action non autorisée.', 'error'); return; }
     await updateDoc(doc(db,'songs',id), { hidden: false });
     showToast('Son rendu visible !');
     loadSongs(); loadMySongs(); if (isAdmin) loadAdminAll();
@@ -1480,11 +1551,14 @@ window.unhideSong = async function(id) {
 
 // ── DELETE SONG ───────────────────────────────────────
 window.deleteSong = async function(id) {
+  if (!currentUser) return;
   if (!confirm('Supprimer ce son définitivement ?')) return;
   try {
     const songDoc = await getDoc(doc(db,'songs',id));
     if (songDoc.exists()) {
       const data = songDoc.data();
+      const isOwner = data.artistId === currentUser.uid;
+      if (!isOwner && !isAdmin) { showToast('Action non autorisée.', 'error'); return; }
       await deleteDoc(doc(db,'songs',id));
       if (data.coverPublicId) await deleteFromCloudinary(data.coverPublicId, 'image');
       if (data.audioPublicId) await deleteFromCloudinary(data.audioPublicId, 'raw');
@@ -1496,6 +1570,7 @@ window.deleteSong = async function(id) {
 };
 
 window.approveSong = async function(id) {
+  if (!isAdmin) { showToast("Action réservée à l'administrateur", 'error'); return; }
   try {
     await updateDoc(doc(db,'songs',id), { approved: true });
     showToast('Son validé et publié !');
@@ -1504,6 +1579,7 @@ window.approveSong = async function(id) {
 };
 
 window.rejectSong = async function(id) {
+  if (!isAdmin) { showToast("Action réservée à l'administrateur", 'error'); return; }
   if (!confirm('Rejeter et supprimer ce son ?')) return;
   try {
     const songDoc = await getDoc(doc(db,'songs',id));
@@ -1534,20 +1610,24 @@ window.openBoostModal = function(songId) {
   openModal(document.getElementById('boost-modal'));
 };
 
-window.confirmBoost = function(hours, price) {
-  if (!boostTargetId) return;
+window.confirmBoost = async function(hours, price) {
+  if (!boostTargetId || !currentUser) return;
   const songId = boostTargetId;
-  payWithLeekPay(price, `Boost son F2K STREAM - ${hours}h`, async () => {
-    try {
-      const boostedUntil = new Date(Date.now() + hours*3600*1000).toISOString();
-      await updateDoc(doc(db,'songs',songId), { boostedUntil });
-      const cached = allSongs.find(s => s.id === songId);
-      if (cached) cached.boostedUntil = boostedUntil;
-      closeAll();
-      showToast('🚀 Son boosté avec succès !');
-      loadSongs(); loadMySongs(); if (isAdmin) loadAdminAll();
-    } catch (err) { console.error(err); showToast('Erreur boost.', 'error'); }
-  });
+  try {
+    const txnId = await createPendingTransaction('boost', { songId, hours }, price);
+    payWithLeekPay(price, `Boost son F2K STREAM - ${hours}h`, txnId, () => {
+      showToast('Paiement reçu, confirmation en cours...');
+      watchTransaction(txnId, {
+        onCompleted: () => {
+          closeAll();
+          showToast('🚀 Son boosté avec succès !');
+          loadSongs(); loadMySongs(); if (isAdmin) loadAdminAll();
+        },
+        onFailed: () => showToast('Paiement non confirmé. Contacte le support si tu as été débité.', 'error'),
+        onTimeout: () => showToast('La confirmation prend plus de temps que prévu, vérifie dans quelques minutes.', 'error')
+      });
+    });
+  } catch (err) { console.error(err); showToast('Erreur lors du paiement.', 'error'); }
 };
 
 // ── POURBOIRES ────────────────────────────────────────
@@ -1574,23 +1654,25 @@ window.sendCustomTip = function() {
   sendTip(val);
 };
 
-window.sendTip = function(amount) {
+window.sendTip = async function(amount) {
   if (!tipTargetId || !currentUser) return;
   const songId = tipTargetId;
-  payWithLeekPay(amount, `Pourboire artiste F2K STREAM`, async () => {
-    try {
-      await addDoc(collection(db,'tips'), {
-        songId, amount,
-        fromId: currentUser.uid, fromName: currentUser.name || currentUser.email,
-        artistName: tipTargetArtist,
-        createdAt: new Date().toISOString()
+  const artistName = tipTargetArtist;
+  try {
+    const txnId = await createPendingTransaction('tip', { songId, artistName }, amount);
+    payWithLeekPay(amount, `Pourboire artiste F2K STREAM`, txnId, () => {
+      showToast('Paiement reçu, confirmation en cours...');
+      watchTransaction(txnId, {
+        onCompleted: () => {
+          closeAll();
+          showToast('💰 Merci pour ton soutien !');
+          loadSongs(); loadMySongs();
+        },
+        onFailed: () => showToast('Paiement non confirmé. Contacte le support si tu as été débité.', 'error'),
+        onTimeout: () => showToast('La confirmation prend plus de temps que prévu, vérifie dans quelques minutes.', 'error')
       });
-      await updateDoc(doc(db,'songs',songId), { tipsTotal: increment(amount) });
-      closeAll();
-      showToast('💰 Merci pour ton soutien !');
-      loadSongs(); loadMySongs();
-    } catch (err) { console.error(err); showToast('Erreur envoi pourboire.', 'error'); }
-  });
+    });
+  } catch (err) { console.error(err); showToast('Erreur envoi pourboire.', 'error'); }
 };
 
 // ── BOUTIQUE DE SERVICES ──────────────────────────────
@@ -1627,24 +1709,28 @@ window.openServiceModal = function(serviceId) {
   openModal(document.getElementById('service-modal'));
 };
 
-window.submitServiceOrder = function() {
+window.submitServiceOrder = async function() {
   if (!serviceTarget || !currentUser) return;
   const desc = document.getElementById('service-order-desc').value.trim();
   if (!desc) { showToast('Décris ta demande.', 'error'); return; }
   const s = serviceTarget;
-  payWithLeekPay(s.price, `Service F2K - ${s.name}`, async () => {
-    try {
-      await addDoc(collection(db,'service_orders'), {
-        service: s.name, serviceId: s.id, price: s.price, description: desc,
-        userId: currentUser.uid, userName: currentUser.name || currentUser.email,
-        userEmail: currentUser.email,
-        status: 'en_attente',
-        createdAt: new Date().toISOString()
+  try {
+    const txnId = await createPendingTransaction('service', {
+      serviceId: s.id, service: s.name, description: desc,
+      userName: currentUser.name || currentUser.email, userEmail: currentUser.email
+    }, s.price);
+    payWithLeekPay(s.price, `Service F2K - ${s.name}`, txnId, () => {
+      showToast('Paiement reçu, confirmation en cours...');
+      watchTransaction(txnId, {
+        onCompleted: () => {
+          closeAll();
+          showToast('✅ Commande envoyée ! On te contacte vite.');
+        },
+        onFailed: () => showToast('Paiement non confirmé. Contacte le support si tu as été débité.', 'error'),
+        onTimeout: () => showToast('La confirmation prend plus de temps que prévu, vérifie dans quelques minutes.', 'error')
       });
-      closeAll();
-      showToast('✅ Commande envoyée ! On te contacte vite.');
-    } catch (err) { console.error(err); showToast('Erreur commande.', 'error'); }
-  });
+    });
+  } catch (err) { console.error(err); showToast('Erreur commande.', 'error'); }
 };
 
 async function loadAdminOrders() {
@@ -1742,10 +1828,18 @@ window.openTicketModal = async function(eventId) {
   openModal(document.getElementById('ticket-modal'));
 };
 
-window.confirmTicketPurchase = function() {
+function showTicketCode(code) {
+  document.getElementById('ticket-modal-body').innerHTML = `
+    <p style="color:var(--green);font-weight:700;margin-bottom:.6rem"><i class="fas fa-check-circle"></i> Paiement confirmé !</p>
+    <p style="color:var(--text2);font-size:.85rem;margin-bottom:1rem">Présente ce code à l'entrée :</p>
+    <p style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:#fff;text-align:center;background:var(--bg2);padding:1rem;border-radius:10px;letter-spacing:2px">${escHtml(code)}</p>`;
+}
+
+window.confirmTicketPurchase = async function() {
   if (!ticketTarget || !currentUser) return;
   const e = ticketTarget;
-  const issueTicket = async () => {
+  // Événement gratuit : pas de paiement impliqué, on peut générer le billet directement.
+  const issueFreeTicket = async () => {
     try {
       const code = 'F2K-' + Math.random().toString(36).slice(2,8).toUpperCase();
       await addDoc(collection(db,'event_tickets'), {
@@ -1754,15 +1848,31 @@ window.confirmTicketPurchase = function() {
         buyerEmail: currentUser.email,
         code, createdAt: new Date().toISOString()
       });
-      document.getElementById('ticket-modal-body').innerHTML = `
-        <p style="color:var(--green);font-weight:700;margin-bottom:.6rem"><i class="fas fa-check-circle"></i> Paiement confirmé !</p>
-        <p style="color:var(--text2);font-size:.85rem;margin-bottom:1rem">Présente ce code à l'entrée :</p>
-        <p style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:#fff;text-align:center;background:var(--bg2);padding:1rem;border-radius:10px;letter-spacing:2px">${code}</p>`;
+      showTicketCode(code);
       showToast('🎫 Billet généré !');
     } catch (err) { console.error(err); showToast('Erreur génération billet.', 'error'); }
   };
-  if (!e.price || Number(e.price) <= 0) { issueTicket(); return; }
-  payWithLeekPay(e.price, `Billet ${e.title}`, issueTicket);
+  if (!e.price || Number(e.price) <= 0) { issueFreeTicket(); return; }
+
+  // Événement payant : le billet n'est créé QUE par la Cloud Function,
+  // après confirmation du paiement via le webhook LeekPay.
+  try {
+    const txnId = await createPendingTransaction('ticket', {
+      eventId: e.id, eventTitle: e.title,
+      buyerName: currentUser.name || currentUser.email, buyerEmail: currentUser.email
+    }, e.price);
+    payWithLeekPay(e.price, `Billet ${e.title}`, txnId, () => {
+      showToast('Paiement reçu, confirmation en cours...');
+      watchTransaction(txnId, {
+        onCompleted: (t) => {
+          if (t.resultCode) showTicketCode(t.resultCode);
+          else showToast('Paiement confirmé ! Retrouve ton billet dans ton espace.');
+        },
+        onFailed: () => showToast('Paiement non confirmé. Contacte le support si tu as été débité.', 'error'),
+        onTimeout: () => showToast('La confirmation prend plus de temps que prévu, vérifie dans quelques minutes.', 'error')
+      });
+    });
+  } catch (err) { console.error(err); showToast('Erreur lors du paiement.', 'error'); }
 };
 
 async function loadAdminEvents() {
@@ -1792,6 +1902,7 @@ async function loadAdminEvents() {
   } catch (err) { console.error(err); }
 }
 window.deleteEvent = async function(id, publicId) {
+  if (!isAdmin) { showToast("Action réservée à l'administrateur", 'error'); return; }
   if (!confirm('Supprimer cet événement ?')) return;
   try {
     await deleteDoc(doc(db,'events',id));
@@ -1901,21 +2012,27 @@ function updatePremiumBox() {
   }
 }
 
-window.subscribePremium = function(price, days, label) {
+window.subscribePremium = async function(price, days, label) {
   if (!currentUser) { showAuthModal('login'); return; }
-  payWithLeekPay(price, `Abonnement Premium F2K STREAM - ${label}`, async () => {
-    try {
-      const base = isPremium && currentUser.premiumUntil && new Date(currentUser.premiumUntil) > new Date()
-        ? new Date(currentUser.premiumUntil) : new Date();
-      base.setDate(base.getDate() + days);
-      const premiumUntil = base.toISOString();
-      await updateDoc(doc(db,'users',currentUser.uid), { premiumUntil });
-      currentUser.premiumUntil = premiumUntil;
-      isPremium = true;
-      updatePremiumBox();
-      showToast('⭐ Abonnement Premium activé !');
-    } catch (err) { console.error(err); showToast('Erreur activation Premium.', 'error'); }
-  });
+  try {
+    const txnId = await createPendingTransaction('premium', { days, label }, price);
+    payWithLeekPay(price, `Abonnement Premium F2K STREAM - ${label}`, txnId, () => {
+      showToast('Paiement reçu, confirmation en cours...');
+      watchTransaction(txnId, {
+        onCompleted: async () => {
+          const uDoc = await getDoc(doc(db,'users',currentUser.uid));
+          if (uDoc.exists()) {
+            currentUser = { ...currentUser, ...uDoc.data() };
+            isPremium = computeIsPremium(uDoc.data());
+          }
+          updatePremiumBox();
+          showToast('⭐ Abonnement Premium activé !');
+        },
+        onFailed: () => showToast('Paiement non confirmé. Contacte le support si tu as été débité.', 'error'),
+        onTimeout: () => showToast('La confirmation prend plus de temps que prévu, vérifie dans quelques minutes.', 'error')
+      });
+    });
+  } catch (err) { console.error(err); showToast('Erreur activation Premium.', 'error'); }
 };
 
 // ── ARTICLES ──────────────────────────────────────────
@@ -1993,6 +2110,7 @@ function buildArticleCard(article, isAdminView) {
 
 // ── DELETE ARTICLE ────────────────────────────────────
 window.deleteArticle = async function(id) {
+  if (!isAdmin) { showToast("Action réservée à l'administrateur", 'error'); return; }
   if (!confirm('Supprimer cet article définitivement ?')) return;
   try {
     const artDoc = await getDoc(doc(db,'articles',id));
@@ -2072,11 +2190,13 @@ async function loadAdminAds() {
 }
 
 window.toggleAd = async function(id, active) {
+  if (!isAdmin) { showToast("Action réservée à l'administrateur", 'error'); return; }
   try { await updateDoc(doc(db,'ads',id), { active }); showToast('Publicité mise à jour.'); loadAdminAds(); loadAds(); }
   catch { showToast('Erreur.', 'error'); }
 };
 
 window.deleteAd = async function(id, publicId) {
+  if (!isAdmin) { showToast("Action réservée à l'administrateur", 'error'); return; }
   if (!confirm('Supprimer cette publicité ?')) return;
   try {
     await deleteDoc(doc(db,'ads',id));
@@ -2406,21 +2526,25 @@ function buildUserCard(user) {
 }
 
 window.confirmUser = async function(uid) {
+  if (!isAdmin) { showToast("Action réservée à l'administrateur", 'error'); return; }
   if (!confirm('Confirmer ce compte ?')) return;
   try { await updateDoc(doc(db,'users',uid), { isConfirmed:true }); showToast('Compte confirmé !'); loadAdminUsers(); }
   catch { showToast('Erreur.', 'error'); }
 };
 window.banUser = async function(uid) {
+  if (!isAdmin) { showToast("Action réservée à l'administrateur", 'error'); return; }
   if (!confirm('Bannir cet utilisateur ?')) return;
   try { await updateDoc(doc(db,'users',uid), { isBanned:true }); showToast('Utilisateur banni.'); loadAdminUsers(); }
   catch { showToast('Erreur.', 'error'); }
 };
 window.unbanUser = async function(uid) {
+  if (!isAdmin) { showToast("Action réservée à l'administrateur", 'error'); return; }
   if (!confirm('Réactiver ce compte ?')) return;
   try { await updateDoc(doc(db,'users',uid), { isBanned:false, isConfirmed:true }); showToast('Compte réactivé !'); loadAdminUsers(); }
   catch { showToast('Erreur.', 'error'); }
 };
 window.deleteUser = async function(uid) {
+  if (!isAdmin) { showToast("Action réservée à l'administrateur", 'error'); return; }
   if (!confirm('Supprimer définitivement ce compte ?')) return;
   try { await deleteDoc(doc(db,'users',uid)); showToast('Compte supprimé.'); loadAdminUsers(); updateAdminStats(); }
   catch { showToast('Erreur.', 'error'); }
